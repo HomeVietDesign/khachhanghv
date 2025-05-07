@@ -3,6 +3,20 @@ namespace HomeViet;
 
 final class Common {
 
+	public static function get_estimate_page() {
+		$pages = self::get_page_by_template('estimate.php');
+
+		return ($pages) ? $pages[0] : null;
+	}
+
+	public static function get_page_by_template($template = '') {
+		$args = array(
+			'meta_key' => '_wp_page_template',
+			'meta_value' => $template
+		);
+		return get_pages($args); 
+	}
+
 	public static function cf_captcha_verify($token) {
 		// Get Turnstile Keys from Settings
 		$key = sanitize_text_field(fw_get_db_settings_option('cf_turnstile_key'));
