@@ -81,6 +81,7 @@ class Assets {
 		wp_register_script( 'owlcarousel', THEME_URI.'/libs/owlcarousel/owl.carousel.min.js', ['jquery'], '2.3.4', true);
 		wp_register_script( 'select2', THEME_URI.'/libs/select2/dist/js/select2.full.min.js', ['jquery'], '4.0.13', true);
 		wp_register_script( 'isotope', THEME_URI.'/libs/isotope/isotope.pkgd.min.js', ['jquery'], '3.0.6', true);
+		wp_register_script( 'jquery-input-number', THEME_URI.'/libs/jquery-input-number/jquery-input-number.js', ['jquery'], '', true);
 
 		$deps = [
 			'jquery',
@@ -88,6 +89,7 @@ class Assets {
 			'imagesloaded',
 			'isotope',
 			'select2',
+			'jquery-input-number',
 			//'lodash',
 		];
 		if(is_single()) {
@@ -96,30 +98,12 @@ class Assets {
 	
 		wp_enqueue_script( 'TranSon', THEME_URI.'/assets/js/main.js', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/js/main.js')), true);
 
-		// $kws = fw_get_db_settings_option('product_keywords');
-		// $data_kws = [];
-		// if(!empty($kws)) {
-
-		// 	foreach ($kws as $key => $value) {
-		// 		if(!empty($value['page'])) {
-		// 			$data_kws[] = [
-		// 				'id' => get_permalink( $value['page'][0] ),
-		// 				'text' => $value['name']
-		// 			];
-		// 		}
-		// 	}
-		// }
-
-		//$thank_you_page = fw_get_db_settings_option('thank_you_page', '');
-
 		$provinces = get_terms([
 			'taxonomy' => 'province',
 			'fields' => 'id=>name',
 			'hide_empty' => false,
 		]);
-
 		$a_provinces = [];
-
 		if($provinces) {
 			foreach ($provinces as $id => $name) {
 				$a_provinces[] = [
@@ -128,6 +112,28 @@ class Assets {
 				];
 			}
 		}
+
+		$passwords = get_terms([
+			'taxonomy' => 'passwords',
+			//'fields' => 'id=>name',
+			'hide_empty' => false,
+			//'exclude' => [],
+		]);
+		$a_clients = [];
+		if($passwords) {
+			foreach ($passwords as $pass) {
+				$a_clients[] = [
+					'id' => $pass->term_id,
+					'text' => $pass->name,
+					'desc' => $pass->description
+				];
+			}
+		}
+
+		
+		$estimate_page = Common::get_estimate_page();
+		$estimate_page_name = ($estimate_page)?$estimate_page->post_title:'';
+		$estimate_page_url = ($estimate_page)?get_permalink($estimate_page):'';
 
 		$data = [
 			'home_url'=>esc_url(home_url()), 
@@ -138,8 +144,10 @@ class Assets {
 			'preview' => (isset($_GET['preview']))?1:0,
 			'popup_content_timeout' => absint(fw_get_db_settings_option('popup_content_timeout', 120)),
 			'nonce' => wp_create_nonce( 'global' ),
-			'provinces' => $a_provinces
-
+			'provinces' => $a_provinces,
+			'clients' => $a_clients,
+			'estimate_page_name' => $estimate_page_name,
+			'estimate_url' => $estimate_page_url,
 		];
 
 		wp_localize_script( 'jquery', 'theme', $data );
@@ -151,41 +159,6 @@ class Assets {
 		ob_start();
 		?>
 		<script type="text/javascript">
-			/*
-			function remove_savedlist() {
-				setCookie('savedlist', '', -1);
-			}
-
-			function remove_from_savedlist(id) {
-				id = ''+id;
-				let savedlist = get_savedlist();
-				const index = savedlist.indexOf(id);
-				if(index!==-1) {
-					savedlist.splice(index, 1);
-				}
-				setCookie('savedlist', savedlist, 14);
-			}
-
-			function add_to_savedlist(id) {
-				let savedlist = get_savedlist();
-				id = ''+id;
-				if(savedlist.indexOf(id)===-1) {
-					savedlist.push(id);
-				}
-				setCookie('savedlist', savedlist, 14);
-			}
-
-			function get_savedlist() {
-				let savedlist = getCookie('savedlist');
-				if(savedlist!='') {
-					savedlist = savedlist.split(',');
-					//if(typeof savedlist == 'string') savedlist = [savedlist];
-				} else {
-					savedlist = [];
-				}
-				return savedlist;
-			}
-			*/
 			const isValidUrl = urlString=> {
 				let httpRegex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 				return httpRegex.test(urlString);
