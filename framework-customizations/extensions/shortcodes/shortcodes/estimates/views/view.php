@@ -33,6 +33,7 @@ if($contractor_cats && $client) {
 					]
 				]
 			]);
+
 			if($contractors) {
 			?>
 			<section class="accordion-item mb-3">

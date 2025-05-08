@@ -92,7 +92,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 				$estimate_attachment_upload = media_handle_upload( 'estimate_attachment', $estimate_contractor );
 
-				if ( $estimate_attachment_upload && ! isset( $estimate_attachment_upload['error'] ) ) {
+				if ($estimate_attachment['error']==0 && $estimate_attachment_upload && ! is_array( $estimate_attachment_upload ) ) {
 					$new_estimate['attachment_id'] = $estimate_attachment_upload;
 					if($estimate_attachment_id) wp_delete_attachment($estimate_attachment_id, true);
 				}

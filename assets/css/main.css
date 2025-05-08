@@ -1,4 +1,3 @@
-
 html {
 	-webkit-text-size-adjust: none;
 }
@@ -950,23 +949,31 @@ div[id^="modal-fw-shortcode-design-cost-"] .btn-close,
 	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
 	--bs-accordion-border-radius: 0;
 	--bs-accordion-inner-border-radius: 0;
-	--bs-accordion-active-color: #fff;
+	--bs-accordion-active-color: #ff0;
 	--bs-accordion-active-bg: transparent;
 	--bs-accordion-body-padding-x: 1rem;
 	--bs-accordion-body-padding-y: 1rem;
 
-	--bs-accordion-btn-color: #ff0;
+	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
 .fw-shortcode-estimates .accordion .accordion-button {
-	font-weight: bold;
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
 }
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
-
+.fw-shortcode-estimates .accordion .accordion-button::after {
+	display: none;
+}
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-estimates .accordion .accordion-button:focus {
+	box-shadow: none;
 }
 .fw-shortcode-estimates .contractor-thumbnail {
 	padding-bottom: 60%;
