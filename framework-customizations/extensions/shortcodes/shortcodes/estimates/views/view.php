@@ -33,7 +33,6 @@ if($contractor_cats && $client) {
 					]
 				]
 			]);
-
 			if($contractors) {
 			?>
 			<section class="accordion-item mb-3">
@@ -46,11 +45,13 @@ if($contractor_cats && $client) {
 						<?php
 						foreach($contractors as $contractor_id) {
 							$estimates = get_post_meta($contractor_id, '_estimates', true);
-							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:['cat'=>'', 'value'=>'', 'attachment_id'=>''];
+							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'attachment_id'=>''];
 							//debug($estimate);
 							$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 							$external_url = get_post_meta($contractor_id, '_external_url', true);
 							$external_url = ($external_url!='')?esc_url($external_url):'#';
+
+							$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 							?>
 							<div class="col-lg-3 col-md-6 estimate-item mb-4">
 								<div class="estimate border border-dark">
@@ -63,8 +64,15 @@ if($contractor_cats && $client) {
 									<div class="contractor-info contractor-info-<?=$contractor_id?> text-center px-1">
 										<div class="contractor-title py-3 fs-5">
 											<a class="d-block text-truncate" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
-											<div class="text-truncate fs-6 text-yellow">
-												<?php echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
+											<div class="text-truncate fs-6 text-yellow d-flex flex-wrap justify-content-center">
+												<?php //echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
+												<?php
+												if($cats) {
+													foreach ($cats as $key => $cat) {
+														echo '<div>'.(($key>0)?', ':' ').esc_html($cat->name).'</div>';
+													}
+												}
+												?>
 											</div>
 										</div>
 										

@@ -17,17 +17,25 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		//$oContractor = get_post($contractor);
 
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client])?$estimates[$client]:['cat'=>'', 'value'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 		$external_url = get_post_meta($contractor_id, '_external_url', true);
 		$external_url = ($external_url!='')?esc_url($external_url):'#';
 		if($client && $contractor_id) {
+			$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 		?>
 			<div class="contractor-title py-3 fs-5">
 				<a class="d-block text-truncate" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
 				<div class="text-truncate fs-6 text-yellow">
-					<?php echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
+					<?php //echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
+					<?php
+					if($cats) {
+						foreach ($cats as $key => $cat) {
+							echo '<div>'.(($key>0)?', ':' ').esc_html($cat->name).'</div>';
+						}
+					}
+					?>
 				</div>
 			</div>
 			
@@ -69,16 +77,16 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):'';
 			$estimate_value = isset($_POST['estimate_value'])?absint(str_replace(',', '', $_POST['estimate_value'])):0;
-			$estimate_cat = isset($_POST['estimate_cat'])?sanitize_text_field($_POST['estimate_cat']):'';
+			//$estimate_cat = isset($_POST['estimate_cat'])?sanitize_text_field($_POST['estimate_cat']):'';
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:['cat'=>'', 'value'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
-					'cat' => $estimate_cat,
+					//'cat' => $estimate_cat,
 					'value' => $estimate_value,
 					'attachment_id' => $estimate_attachment_id
 				];
@@ -95,6 +103,10 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				if ($estimate_attachment['error']==0 && $estimate_attachment_upload && ! is_array( $estimate_attachment_upload ) ) {
 					$new_estimate['attachment_id'] = $estimate_attachment_upload;
 					if($estimate_attachment_id) wp_delete_attachment($estimate_attachment_id, true);
+				}
+
+				if($new_estimate['attachment_id']=='' || $new_estimate['attachment_id']==0) {
+					if($estimate['attachment_id']) wp_delete_attachment($estimate['attachment_id'], true);
 				}
 
 				$estimates[$estimate_client] = $new_estimate;
@@ -116,7 +128,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		if($client && $contractor) {
 			$estimates = get_post_meta($contractor, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['cat'=>'', 'value'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
 
 			$attachment_url = ($estimate['attachment_id'])?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -125,9 +137,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				<div class="mb-3">
+				<!-- <div class="mb-3">
 					<input type="text" id="estimate_cat" name="estimate_cat" class="form-control" placeholder="Hạng mục" value="<?=esc_attr($estimate['cat'])?>">
-				</div>
+				</div> -->
 				<div class="mb-3">
 					<input type="tel" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo ($estimate['value'])?esc_attr(number_format(absint($estimate['value']),0,'.',',')):''; ?>">
 				</div>
