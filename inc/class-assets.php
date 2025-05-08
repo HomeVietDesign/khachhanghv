@@ -117,7 +117,7 @@ class Assets {
 			'taxonomy' => 'passwords',
 			//'fields' => 'id=>name',
 			'hide_empty' => false,
-			//'exclude' => [],
+			'exclude' => [get_option( 'default_term_passwords', -1 )],
 		]);
 		$a_clients = [];
 		if($passwords) {

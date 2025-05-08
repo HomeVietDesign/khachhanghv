@@ -65,7 +65,6 @@ if($contractor_cats && $client) {
 										<div class="contractor-title py-3 fs-5">
 											<a class="d-block text-truncate" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
 											<div class="text-truncate fs-6 text-yellow d-flex flex-wrap justify-content-center">
-												<?php //echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
 												<?php
 												if($cats) {
 													foreach ($cats as $key => $cat) {

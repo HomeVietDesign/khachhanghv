@@ -421,12 +421,12 @@ class Custom_Types {
 			'menu_name'         => 'Chủ đầu tư',
 		);
 
-		// $default_password = [
-		// 	'name' => 'HV@5011',
-		// 	'slug' => 'hv-5011',
-		// 	'description' => 'Mặc định'
-		// ];
-		// $default = (int) get_option( 'default_term_passwords', -1 );
+		$default_password = [
+			'name' => 'HV@5011',
+			'slug' => 'hv-5011',
+			'description' => 'Mặc định'
+		];
+		$default = (int) get_option( 'default_term_passwords', -1 );
 		// delete_option( 'default_term_passwords' );
 		$args = array(
 			'hierarchical'      => false,

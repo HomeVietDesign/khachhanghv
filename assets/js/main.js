@@ -825,6 +825,7 @@ window.addEventListener('DOMContentLoaded', function(){
 							data: {client:formData.get('estimate_client'), contractor:formData.get('estimate_contractor')},
 							success: function(info) {
 								$('.contractor-info-'+formData.get('estimate_contractor')).html(info);
+								$('#edit-estimate .btn-close').trigger('click');
 							}
 						});
 					}
