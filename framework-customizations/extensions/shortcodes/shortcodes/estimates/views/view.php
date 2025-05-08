@@ -48,7 +48,7 @@ if($contractor_cats && $client) {
 						<?php
 						foreach($contractors as $contractor_id) {
 							$estimates = get_post_meta($contractor_id, '_estimates', true);
-							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'link'=>'', 'attachment_id'=>''];
+							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'attachment_id'=>''];
 							//debug($estimate);
 							$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 							$external_url = get_post_meta($contractor_id, '_external_url', true);
@@ -95,12 +95,6 @@ if($contractor_cats && $client) {
 												$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
 												?>
 												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem dự toán</a>
-												<?php
-											}
-
-											if( (has_role('administrator') || ($current_password && $current_password->term_id == $default_term_password)) && $estimate['link'] ) {
-												?>
-												<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url($estimate['link'])?>" target="_blank">Làm dự toán</a>
 												<?php
 											}
 											?>

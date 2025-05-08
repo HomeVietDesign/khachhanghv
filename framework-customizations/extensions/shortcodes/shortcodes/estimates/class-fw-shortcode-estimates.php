@@ -19,7 +19,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'link'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 		$external_url = get_post_meta($contractor_id, '_external_url', true);
@@ -60,11 +60,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					<?php
 				}
 
-				if( (has_role('administrator') || ($current_password && $current_password->term_id == $default_term_password)) && $estimate['link'] ) {
-					?>
-					<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url($estimate['link'])?>" target="_blank">Làm dự toán</a>
-					<?php
-				}
 				?>
 			</div>
 		<?php
@@ -83,7 +78,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):'';
-			$estimate_link = isset($_POST['estimate_link'])?sanitize_url($_POST['estimate_link']):'';
 			$estimate_value = isset($_POST['estimate_value'])?absint(str_replace(',', '', $_POST['estimate_value'])):0;
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
@@ -94,7 +88,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 				$new_estimate = [
 					'value' => $estimate_value,
-					'link' => $estimate_link,
 					'attachment_id' => $estimate_attachment_id
 				];
 
@@ -135,7 +128,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		if($client && $contractor) {
 			$estimates = get_post_meta($contractor, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'link'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
 
 			$attachment_url = ($estimate['attachment_id'])?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -146,9 +139,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<div id="edit-estimate-response"></div>
 				<div class="mb-3">
 					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo ($estimate['value'])?esc_attr(number_format(absint($estimate['value']),0,'.',',')):''; ?>">
-				</div>
-				<div class="mb-3">
-					<input type="text" id="estimate_link" name="estimate_link" placeholder="Link làm dự toán" class="form-control" value="<?php echo ($estimate['link'])?esc_url($estimate['link']):''; ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
