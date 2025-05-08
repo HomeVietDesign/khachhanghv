@@ -5,6 +5,9 @@
 /**
  * @var array $atts
  */
+global $current_password;
+$default_term_password = get_option( 'default_term_passwords', -1 );
+
 $client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 $contractor_cats = get_terms(['taxonomy' => 'contractor_cat','parent'=>0]);
 
@@ -45,7 +48,7 @@ if($contractor_cats && $client) {
 						<?php
 						foreach($contractors as $contractor_id) {
 							$estimates = get_post_meta($contractor_id, '_estimates', true);
-							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'attachment_id'=>''];
+							$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'link'=>'', 'attachment_id'=>''];
 							//debug($estimate);
 							$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 							$external_url = get_post_meta($contractor_id, '_external_url', true);
@@ -58,7 +61,7 @@ if($contractor_cats && $client) {
 									<div class="contractor-thumbnail position-relative">
 										<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>" target="_blank"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 										<?php if(has_role('administrator')) { ?>
-										<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold m-1 position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>">Sửa</button>
+										<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold m-1 position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
 										<?php } ?>
 									</div>
 									<div class="contractor-info contractor-info-<?=$contractor_id?> text-center px-1">
@@ -92,6 +95,12 @@ if($contractor_cats && $client) {
 												$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
 												?>
 												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem dự toán</a>
+												<?php
+											}
+
+											if( (has_role('administrator') || ($current_password && $current_password->term_id == $default_term_password)) && $estimate['link'] ) {
+												?>
+												<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url($estimate['link'])?>" target="_blank">Làm dự toán</a>
 												<?php
 											}
 											?>
