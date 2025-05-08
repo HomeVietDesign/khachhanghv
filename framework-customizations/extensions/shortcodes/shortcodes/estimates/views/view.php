@@ -62,10 +62,9 @@ if($contractor_cats && $client) {
 										<?php } ?>
 									</div>
 									<div class="contractor-info contractor-info-<?=$contractor_id?> text-center px-1">
-										<div class="contractor-title py-3 fs-5">
+										<div class="contractor-title pt-3 mb-1 fs-5">
 											<a class="d-block text-truncate" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
 											<div class="text-truncate fs-6 text-yellow d-flex flex-wrap justify-content-center">
-												<?php //echo ($estimate['cat']) ? esc_html($estimate['cat']) : '...'; ?>
 												<?php
 												if($cats) {
 													foreach ($cats as $key => $cat) {
@@ -76,7 +75,7 @@ if($contractor_cats && $client) {
 											</div>
 										</div>
 										
-										<div class="contractor-value mb-3">
+										<div class="contractor-value mb-1">
 											<span>Tổng giá trị:</span>
 											<span class="text-red fw-bold"><?php echo ($estimate['value']) ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span>
 										</div>

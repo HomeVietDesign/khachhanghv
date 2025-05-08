@@ -173,13 +173,6 @@ class Setup {
 			add_filter('post_type_link', [$this, 'contractor_page_link'], 10, 2);
 		}
 
-		// elseif($current_password) {
-		// 	$province = get_term_meta( $current_password->term_id, 'province', true );
-
-		// 	if($province) $current_province = get_term_by('term_id', $province[0], 'province');
-
-		// }
-
 	}
 
 	public function contractor_page_link($post_link, $post) {

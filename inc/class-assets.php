@@ -113,11 +113,12 @@ class Assets {
 			}
 		}
 
+		$default_term_passwords = (int) get_option( 'default_term_passwords', -1 );
 		$passwords = get_terms([
 			'taxonomy' => 'passwords',
 			//'fields' => 'id=>name',
 			'hide_empty' => false,
-			//'exclude' => [],
+			'exclude' => [$default_term_passwords],
 		]);
 		$a_clients = [];
 		if($passwords) {

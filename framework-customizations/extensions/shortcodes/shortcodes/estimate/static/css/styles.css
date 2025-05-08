@@ -1,9 +1,0 @@
-.fw-shortcode-estimate .contractor-thumbnail {
-	padding-bottom: 60%;
-	overflow: hidden;
-}
-.fw-shortcode-estimate .thumbnail-image img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
