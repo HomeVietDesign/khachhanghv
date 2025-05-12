@@ -60,7 +60,7 @@ if($contractor_cats && $client) {
 									$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 									?>
 									<div class="col-lg-3 col-md-6 estimate-item mb-4">
-										<div class="estimate border border-dark">
+										<div class="estimate border border-dark h-100">
 											<div class="contractor-thumbnail position-relative">
 												<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>" target="_blank"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 												<?php if(has_role('administrator')) { ?>

@@ -11,6 +11,7 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-select-post-export.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-post.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-interior.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-passwords.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-province.php';

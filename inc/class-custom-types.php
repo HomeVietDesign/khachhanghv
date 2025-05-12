@@ -193,7 +193,6 @@ class Custom_Types {
 			'parent_item_colon'  => 'Nhà thầu cấp trên:',
 			'menu_name'          => 'Nhà thầu',
 		);
-	
 		$args = array(
 			'labels'              => $labels,
 			'hierarchical'        => false,
@@ -223,7 +222,6 @@ class Custom_Types {
 				'page-attributes',
 			),
 		);
-	
 		register_post_type( 'contractor', $args );
 
 		$labels = array(
@@ -240,7 +238,6 @@ class Custom_Types {
 			'parent_item_colon'  => 'Trang nhà thầu cha:',
 			'menu_name'          => 'Trang nhà thầu',
 		);
-	
 		$args = array(
 			'labels'              => $labels,
 			'hierarchical'        => true,
@@ -274,8 +271,54 @@ class Custom_Types {
 				//'post-formats',
 			),
 		);
-	
 		register_post_type( 'contractor_page', $args );
+
+		// nhà thầu
+		$labels = array(
+			'name'               => 'Nội thất',
+			'singular_name'      => 'Nội thất',
+			'add_new'            => 'Thêm mới Nội thất',
+			'add_new_item'       => 'Thêm mới Nội thất',
+			'edit_item'          => 'Sửa Nội thất',
+			'new_item'           => 'Nội thất mới',
+			'view_item'          => 'Xem Nội thất',
+			'search_items'       => 'Tìm Nội thất',
+			'not_found'          => 'Không có Nội thất nào',
+			'not_found_in_trash' => 'Không có Nội thất nào trong Thùng rác',
+			'parent_item_colon'  => 'Nội thất cấp trên:',
+			'menu_name'          => 'Nội thất',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 6,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			//'rewrite'             => ['slug'=>'noi-that'],
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'interior', $args );
+
 	}
 
 	/**

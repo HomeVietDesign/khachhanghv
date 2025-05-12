@@ -136,6 +136,10 @@ class Assets {
 		$estimate_page_name = ($estimate_page)?$estimate_page->post_title:'';
 		$estimate_page_url = ($estimate_page)?get_permalink($estimate_page):'';
 
+		$estimate_interior_page = Common::get_estimate_interior_page();
+		$estimate_interior_page_name = ($estimate_interior_page)?$estimate_interior_page->post_title:'';
+		$estimate_interior_page_url = ($estimate_interior_page)?get_permalink($estimate_interior_page):'';
+
 		$data = [
 			'home_url'=>esc_url(home_url()), 
 			'ajax_url'=>esc_url(admin_url('admin-ajax.php')),
@@ -149,6 +153,8 @@ class Assets {
 			'clients' => $a_clients,
 			'estimate_page_name' => $estimate_page_name,
 			'estimate_url' => $estimate_page_url,
+			'estimate_interior_page_name' => $estimate_interior_page_name,
+			'estimate_interior_url' => $estimate_interior_page_url,
 		];
 
 		wp_localize_script( 'jquery', 'theme', $data );

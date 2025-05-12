@@ -975,6 +975,7 @@ div[id^="modal-fw-shortcode-design-cost-"] .btn-close,
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }
+.fw-shortcode-estimates-interior .interior-thumbnail,
 .fw-shortcode-estimates .contractor-thumbnail {
 	padding-bottom: 60%;
 	overflow: hidden;
