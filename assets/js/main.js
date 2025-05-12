@@ -139,7 +139,7 @@ window.addEventListener('DOMContentLoaded', function(){
 					$menu = '<li class="menu-item">';
 				}
 
-				$menu += '<a href="'+theme['estimate_url']+'">'+theme['estimate_page_name']+'</a>';
+				$menu += '<a href="#">'+theme['estimate_page_name']+'</a>';
 				
 				if(theme['clients'].length>0) {
 					$menu += '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
