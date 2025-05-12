@@ -18,10 +18,9 @@ class FW_Shortcode_Estimates_Interior extends FW_Shortcode
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$interior_id = isset($_GET['interior'])?absint($_GET['interior']):0;
 
-		$estimates = get_post_meta($interior_id, '_estimates', true);
-		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'url'=>''];
-
 		if($client && $interior_id) {
+			$estimates = get_term_meta($client, '_estimates', true);
+			$estimate = isset($estimates[$interior_id])?$estimates[$interior_id]:['value'=>'', 'url'=>''];
 		?>
 			<div class="interior-title pt-3 mb-1 fs-5 text-uppercase">
 				<?php echo esc_html(get_the_title( $interior_id )); ?>
@@ -60,18 +59,18 @@ class FW_Shortcode_Estimates_Interior extends FW_Shortcode
 			$estimate_interior_url = isset($_POST['estimate_interior_url'])?sanitize_url($_POST['estimate_interior_url']):'';
 			
 			if($estimate_client && $estimate_interior) {
-				$estimates = get_post_meta($estimate_interior, '_estimates', true);
+				$estimates = get_term_meta($estimate_client, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'url'=>''];
+				$estimate = isset($estimates[$estimate_interior])?$estimates[$estimate_interior]:[ 'value'=>'', 'url'=>''];
 
 				$new_estimate = [
 					'value' => $estimate_interior_value,
 					'url' => $estimate_interior_url
 				];
 
-				$estimates[$estimate_client] = $new_estimate;
+				$estimates[$estimate_interior] = $new_estimate;
 
-				update_post_meta( $estimate_interior, '_estimates', $estimates );
+				update_term_meta( $estimate_client, '_estimates', $estimates );
 
 				$response['code'] = 1;
 				$response['msg'] = '<p class="text-success">Đã lưu</p>';
@@ -87,8 +86,8 @@ class FW_Shortcode_Estimates_Interior extends FW_Shortcode
 		$interior = isset($_GET['interior'])?absint($_GET['interior']):0;
 
 		if($client && $interior) {
-			$estimates = get_post_meta($interior, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'url'=>''];
+			$estimates = get_term_meta($client, '_estimates', true);
+			$estimate = isset($estimates[$interior])?$estimates[$interior]:['value'=>'', 'url'=>''];
 
 			?>
 			<form id="frm-edit-estimate-interior" method="POST" action="" >

@@ -18,14 +18,15 @@ $interiors = get_posts([
 				]);
 
 if($interiors && $client && has_role('administrator')) {
+
+	$estimates = get_term_meta($client->term_id, '_estimates', true);
 	?>
 	<div class="fw-shortcode-estimates-interior">
 		<div class="row">
 		<?php
 		if($interiors) {
 			foreach($interiors as $interior_id) {
-				$estimates = get_post_meta($interior_id, '_estimates', true);
-				$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'url'=>''];
+				$estimate = isset($estimates[$interior_id])?$estimates[$interior_id]:[ 'value'=>'', 'url'=>''];
 				?>
 				<div class="col-lg-3 col-md-6 estimate-item mb-4">
 					<div class="estimate border border-dark h-100">
