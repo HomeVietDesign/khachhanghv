@@ -14,8 +14,12 @@ $options = array(
 		'type'    => 'box',
         'options' => array(
         	'estimate_value' => array(
-				'label' => 'Giá trị (vnđ)',
+				'label' => 'Giá trị',
 				'type' => 'numeric'
+			),
+			'estimate_unit' => array(
+				'label' => 'Đơn vị',
+				'type' => 'text'
 			),
 			'estimate_attachment' => array(
 				'label' => 'File pdf dự toán',

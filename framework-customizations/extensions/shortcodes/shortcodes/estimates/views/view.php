@@ -53,14 +53,16 @@ if($contractor_cats && $client) {
 									$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
 									$default_estimate = [
 										'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
+										'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
 										'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
 									];
 
 									$estimates = get_post_meta($contractor_id, '_estimates', true);
-									$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'attachment_id'=>''];
+									$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'attachment_id'=>''];
 
 									
 									if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
+									if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
 									if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 									$phone_number = get_post_meta($contractor_id, '_phone_number', true);
@@ -95,8 +97,8 @@ if($contractor_cats && $client) {
 												</div>
 												
 												<div class="contractor-value mb-1">
-													<span>Tổng giá trị:</span>
-													<span class="text-red fw-bold"><?php echo ($estimate['value']!='') ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span>
+													<span>Tổng giá trị: </span>
+													<span class="text-red fw-bold"><?php echo ($estimate['value']!='') ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 												</div>
 												
 												<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
