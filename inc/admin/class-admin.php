@@ -23,13 +23,6 @@ class Admin {
 		//require_once THEME_DIR.'/inc/admin/class-admin-update-posts.php';
 
 		if(is_admin()) {
-			if( ! class_exists( 'WP_List_Table' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-			}
-
-			require_once THEME_DIR.'/inc/admin/class-orders-help-tabs.php';
-			require_once THEME_DIR.'/inc/admin/class-orders-list-table.php';
-			require_once THEME_DIR.'/inc/admin/class-admin-order.php';
 
 			add_action( 'manage_posts_custom_column', [ $this, 'custom_columns_value' ], 2, 2 );
 			add_action( 'manage_pages_custom_column', [ $this, 'custom_columns_value' ], 2, 2 );
@@ -126,7 +119,7 @@ class Admin {
 
 		$columns = array_merge($new_columns, $columns);
 		
-		if($post_type=='post' || $post_type=='page' || $post_type=='seo_post') {
+		if($post_type=='post' || $post_type=='page') {
 			$columns['menu'] = 'Menu';
 		}
 		
@@ -134,28 +127,6 @@ class Admin {
 
 	}
 
-	/*
-	public static function post_code_exists($code, $exclude=0) {
-		$args = array(
-			'post_type'    => 'post',
-			'meta_key'   => '_code',
-			'meta_value'   => $code,
-			'post_status' => ['publish', 'future'],
-			'posts_per_page' => 1,
-			'fields' => 'ids'
-		);
-		if($exclude) {
-			$args['post__not_in'] = [$exclude];
-		}
-
-		$check = new \WP_Query( $args );
-		//debug_log($check);
-		if($check->have_posts()) {
-			return absint($check->posts[0]);
-		}
-		return false;
-	}
-	*/
 
 	public static function post_exists($post_title, $type = '', $status = '', $exclude=0) {
 		global $wpdb;

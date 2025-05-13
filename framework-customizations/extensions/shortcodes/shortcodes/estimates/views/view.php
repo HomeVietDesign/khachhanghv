@@ -97,7 +97,7 @@ if($contractor_cats && $client) {
 													if($estimate['attachment_id']) {
 														$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
 														?>
-														<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem dự toán</a>
+														<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 														<?php
 													}
 													?>
