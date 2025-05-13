@@ -167,8 +167,8 @@ class Custom_Types {
 				'thumbnail',
 				'editor',
 				'excerpt',
-				'revisions',
-				'page-attributes',
+				//'revisions',
+				//'page-attributes',
 			),
 		);
 		register_post_type( 'contractor', $args );

@@ -8,58 +8,24 @@
  */
 
 $options = array(
-	/*
-	'quotes' => array(
+	'estimate' => array(
 		'context' => 'advanced',
-		'title'   => 'Báo giá',
+		'title'   => 'Dự toán mặc định',
 		'type'    => 'box',
         'options' => array(
-        	'_quotes' => array(
-				'type'  => 'addable-popup',
-			    'value' => [],
-			    'label' => 'Báo giá cho khách hàng',
-			    'size' => 'large',
-			    'popup-options' => array(
-			        'title' => array(
-			        	'label' => 'Tiêu đề',
-			        	'type' => 'text'
-			        ),
-			        'customer' => array(
-			        	'label' => 'Khách hàng',
-						'desc'  => '',
-						'type'  => 'multi-select',
-						'population' => 'taxonomy',
-						'source' => 'passwords',
-						'limit' => 1
-			        ),
-			        // 'drawing_url' => array(
-			        // 	'label' => 'URL bản vẽ',
-			        // 	'type' => 'text'
-			        // ),
-			        'document_url' => array(
-			        	'label' => 'URL dự toán',
-			        	'type' => 'text'
-			        ),
-			        'requirement' => array(
-			        	'label' => 'Phương án',
-			        	'type' => 'wp-editor',
-			        	'size' => 'large',
-						'editor_height' => '400',
-			        ),
-			    ),
-			    'template' => '{{- title }}', // box title
-			    'limit' => 0, // limit the number of boxes that can be added
-			    'add-button-text' => 'Thêm',
-			    'sortable' => true,
-			    'fw-storage' => array(
-					'type' => 'post-meta',
-					'post-meta' => '_quotes',
-				),
+        	'estimate_value' => array(
+				'label' => 'Giá trị (vnđ)',
+				'type' => 'numeric'
 			),
-			
+			'estimate_attachment' => array(
+				'label' => 'File pdf dự toán',
+				'type' => 'upload',
+				'images_only' => false,
+				'files_ext' => array( 'pdf' ),
+			),
 		),
 	),
-	*/
+	
 	'info'=>array(
 		'context' => 'advanced',
 		'title'   => 'Cài đặt nâng cao',

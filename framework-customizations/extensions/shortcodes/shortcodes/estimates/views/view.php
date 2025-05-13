@@ -50,9 +50,19 @@ if($contractor_cats && $client) {
 							]);
 							if($contractors) {
 								foreach($contractors as $contractor_id) {
+									$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
+									$default_estimate = [
+										'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
+										'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
+									];
+
 									$estimates = get_post_meta($contractor_id, '_estimates', true);
 									$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'attachment_id'=>''];
-									//debug($estimate);
+
+									
+									if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
+									if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
+
 									$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 									$external_url = get_post_meta($contractor_id, '_external_url', true);
 									$external_url = ($external_url!='')?esc_url($external_url):'#';
@@ -64,7 +74,10 @@ if($contractor_cats && $client) {
 											<div class="contractor-thumbnail position-relative">
 												<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>" target="_blank"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 												<?php if(has_role('administrator')) { ?>
-												<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold m-1 position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+												<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+													<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+													<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+												</div>
 												<?php } ?>
 											</div>
 											<div class="contractor-info contractor-info-<?=$contractor_id?> text-center px-1">
@@ -83,7 +96,7 @@ if($contractor_cats && $client) {
 												
 												<div class="contractor-value mb-1">
 													<span>Tổng giá trị:</span>
-													<span class="text-red fw-bold"><?php echo ($estimate['value']) ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span>
+													<span class="text-red fw-bold"><?php echo ($estimate['value']!='') ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span>
 												</div>
 												
 												<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">

@@ -18,13 +18,24 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
-		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
-
-		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
-		$external_url = get_post_meta($contractor_id, '_external_url', true);
-		$external_url = ($external_url!='')?esc_url($external_url):'#';
+		
 		if($client && $contractor_id) {
+			$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
+			$default_estimate = [
+				'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
+				'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
+			];
+
+			$estimates = get_post_meta($contractor_id, '_estimates', true);
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
+
+			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
+			if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
+
+			$phone_number = get_post_meta($contractor_id, '_phone_number', true);
+			$external_url = get_post_meta($contractor_id, '_external_url', true);
+			$external_url = ($external_url!='')?esc_url($external_url):'#';
+
 			$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 		?>
 			<div class="contractor-title pt-3 mb-1 fs-5">
