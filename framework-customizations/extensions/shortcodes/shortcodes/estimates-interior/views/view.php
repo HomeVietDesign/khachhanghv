@@ -17,12 +17,11 @@ $interiors = get_posts([
 					'fields' => 'ids'
 				]);
 
-if($interiors && $client && has_role('administrator')) {
-
+if( $interiors && $client ) {
 	$estimates = get_term_meta($client->term_id, '_estimates', true);
 	?>
 	<div class="fw-shortcode-estimates-interior">
-		<div class="row">
+		<div class="row justify-content-center">
 		<?php
 		if($interiors) {
 			foreach($interiors as $interior_id) {
@@ -32,7 +31,9 @@ if($interiors && $client && has_role('administrator')) {
 					<div class="estimate border border-dark h-100">
 						<div class="interior-thumbnail position-relative">
 							<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $interior_id, 'full' ); ?></div>
+							<?php if(has_role('administrator')) { ?>
 							<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold m-1 position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#edit-estimate-interior" data-client="<?=$client->term_id?>" data-interior="<?=$interior_id?>" data-interior-title="<?php echo esc_attr(get_the_title( $interior_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+							<?php } ?>
 						</div>
 						<div class="interior-info interior-info-<?=$interior_id?> text-center px-1">
 							<div class="interior-title pt-3 mb-1 fs-5 text-uppercase">

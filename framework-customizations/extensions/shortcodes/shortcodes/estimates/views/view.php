@@ -27,7 +27,7 @@ if($contractor_cats && $client) {
 				</h2>
 				<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
       				<div class="accordion-body">
-						<div class="row">
+						<div class="row justify-content-center">
 						<?php
 						foreach ($childrent as $child) {
 							$contractors = get_posts([
