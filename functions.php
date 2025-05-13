@@ -52,6 +52,7 @@ add_action( 'pre_get_posts', function ( $q )
     if (    !is_admin() // Only target the front end
          && $q->is_main_query() // Only target the main query
          && 'page' === get_option( 'show_on_front' ) // Only target the static front page
+         && $q->is_home()
     ) {
         $q->set( 'post_type', 'contractor_page' );
     }

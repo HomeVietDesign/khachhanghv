@@ -19,6 +19,7 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_rating.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_class.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-estimate_cat.php';
 		//require_once THEME_DIR.'/inc/admin/class-admin-update-posts.php';
 
 		if(is_admin()) {

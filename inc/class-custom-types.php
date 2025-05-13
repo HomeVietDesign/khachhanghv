@@ -319,6 +319,52 @@ class Custom_Types {
 		);
 		register_post_type( 'interior', $args );
 
+		// nhà thầu
+		$labels = array(
+			'name'               => 'Dự toán',
+			'singular_name'      => 'Dự toán',
+			'add_new'            => 'Thêm mới Dự toán',
+			'add_new_item'       => 'Thêm mới Dự toán',
+			'edit_item'          => 'Sửa Dự toán',
+			'new_item'           => 'Dự toán mới',
+			'view_item'          => 'Xem Dự toán',
+			'search_items'       => 'Tìm Dự toán',
+			'not_found'          => 'Không có Dự toán nào',
+			'not_found_in_trash' => 'Không có Dự toán nào trong Thùng rác',
+			'parent_item_colon'  => 'Dự toán cấp trên:',
+			'menu_name'          => 'Dự toán',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 6,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			//'rewrite'             => ['slug'=>'noi-that'],
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'estimate', $args );
+
 	}
 
 	/**
@@ -525,6 +571,32 @@ class Custom_Types {
 		);
 		
 		register_taxonomy( 'province', ['contractor'], $args );
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm dự toán',
+			'singular_name'     => 'Nhóm dự toán',
+			'search_items'      => 'Tìm Nhóm dự toán',
+			'all_items'         => 'Tất cả Nhóm dự toán',
+			'edit_item'         => 'Sửa Nhóm dự toán',
+			'update_item'       => 'Cập nhật Nhóm dự toán',
+			'add_new_item'      => 'Thêm Nhóm dự toán mới',
+			'new_item_name'     => 'Nhóm dự toán mới',
+			'menu_name'         => 'Nhóm dự toán',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'estimate_cat', 'estimate', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {
