@@ -11,7 +11,7 @@ class Assets {
 
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 50);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 50);
-		add_action('wp_enqueue_scripts', [$this, 'recaptcha_script'], 21);
+		//add_action('wp_enqueue_scripts', [$this, 'recaptcha_script'], 21);
 
 	}
 
