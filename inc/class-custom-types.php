@@ -124,59 +124,8 @@ class Custom_Types {
 				'revisions',
 			),
 		);
-	
 		register_post_type( 'content_builder', $args );
 
-		$labels = array(
-			'name'               => 'Trang SEO',
-			'singular_name'      => 'Trang SEO',
-			'add_new'            => 'Thêm mới Trang SEO',
-			'add_new_item'       => 'Thêm mới Trang SEO',
-			'edit_item'          => 'Sửa Trang SEO',
-			'new_item'           => 'Trang SEO mới',
-			'view_item'          => 'Xem Trang SEO',
-			'search_items'       => 'Tìm Trang SEO',
-			'not_found'          => 'Không có Trang SEO nào',
-			'not_found_in_trash' => 'Không có Trang SEO nào trong Thùng rác',
-			'parent_item_colon'  => 'Trang SEO cha:',
-			'menu_name'          => 'Trang SEO',
-		);
-	
-		$args = array(
-			'labels'              => $labels,
-			'hierarchical'        => true,
-			//'description'         => 'description',
-			//'taxonomies'          => array(),
-			'public'              => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'show_in_admin_bar'   => true,
-			'menu_position'       => 12,
-			'menu_icon'           => 'dashicons-edit-page',
-			'show_in_nav_menus'   => true,
-			'publicly_queryable'  => true, // ẩn bài viết ở front-end
-			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
-			'has_archive'         => false,
-			'query_var'           => true,
-			'can_export'          => true,
-			'rewrite'             => ['slug'=>'dich-vu'],
-			'capability_type'     => 'page',
-			'supports'            => array(
-				'title',
-				'editor',
-				//'author',
-				'thumbnail',
-				'excerpt',
-				//'custom-fields',
-				//'trackbacks',
-				//'comments',
-				'revisions',
-				'page-attributes',
-				//'post-formats',
-			),
-		);
-	
-		register_post_type( 'seo_post', $args );
 
 		// nhà thầu
 		$labels = array(
@@ -273,53 +222,6 @@ class Custom_Types {
 		);
 		register_post_type( 'contractor_page', $args );
 
-		// nhà thầu
-		$labels = array(
-			'name'               => 'Nội thất',
-			'singular_name'      => 'Nội thất',
-			'add_new'            => 'Thêm mới Nội thất',
-			'add_new_item'       => 'Thêm mới Nội thất',
-			'edit_item'          => 'Sửa Nội thất',
-			'new_item'           => 'Nội thất mới',
-			'view_item'          => 'Xem Nội thất',
-			'search_items'       => 'Tìm Nội thất',
-			'not_found'          => 'Không có Nội thất nào',
-			'not_found_in_trash' => 'Không có Nội thất nào trong Thùng rác',
-			'parent_item_colon'  => 'Nội thất cấp trên:',
-			'menu_name'          => 'Nội thất',
-		);
-		$args = array(
-			'labels'              => $labels,
-			'hierarchical'        => false,
-			//'description'         => 'description',
-			//'taxonomies'          => array('contractor_cat'),
-			'public'              => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
-			'menu_icon'           => 'dashicons-admin-post',
-			'show_in_nav_menus'   => false,
-			'publicly_queryable'  => false, // ẩn bài viết ở front-end
-			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
-			'has_archive'         => false,
-			'query_var'           => true,
-			'can_export'          => true,
-			//'rewrite'             => ['slug'=>'noi-that'],
-			'rewrite'             => false,
-			'capability_type'     => 'post',
-			'supports'            => array(
-				'title',
-				'thumbnail',
-				//'editor',
-				'excerpt',
-				//'revisions',
-				//'page-attributes',
-			),
-		);
-		register_post_type( 'interior', $args );
-
-		// nhà thầu
 		$labels = array(
 			'name'               => 'Dự toán',
 			'singular_name'      => 'Dự toán',
