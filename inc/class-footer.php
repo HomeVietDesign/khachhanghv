@@ -23,7 +23,7 @@ class Footer {
 	public function logout_post_password() {
 		global $current_password;
 
-		if(is_singular('contractor_page') || is_page_template( 'estimate.php' )) {
+		if(is_singular('contractor_page') || is_page_template( 'estimate.php' ) || is_page_template( 'estimate-manage.php' )) {
 			?>
 			<div class="contractor-actions-fixed position-fixed d-flex">
 			<?php

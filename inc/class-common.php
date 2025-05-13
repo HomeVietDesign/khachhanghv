@@ -3,8 +3,9 @@ namespace HomeViet;
 
 final class Common {
 
-	public static function get_estimate_interior_page() {
-		$pages = self::get_page_by_template('estimate-interior.php');
+
+	public static function get_estimate_manage_page() {
+		$pages = self::get_page_by_template('estimate-manage.php');
 
 		return ($pages) ? $pages[0] : null;
 	}

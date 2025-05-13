@@ -28,7 +28,7 @@ class Authentication {
 			if($current_password) {
 				$required = false;
 			}
-		} elseif ((is_page_template( 'estimate.php' ) || is_page_template( 'estimate-interior.php' )) && !has_role('administrator')) {
+		} elseif ((is_page_template( 'estimate.php' ) || is_page_template( 'estimate-manage.php' )) && !has_role('administrator')) {
 			$required = true;
 
 			if($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) {

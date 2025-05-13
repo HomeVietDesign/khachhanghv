@@ -159,7 +159,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 			}
 
-			if(theme['estimate_interior_url']!='') {
+			if(theme['estimate_manage_url']!='') {
 				let $menu = '';
 				if(theme['clients'].length>0) {
 					$menu = '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
@@ -167,7 +167,7 @@ window.addEventListener('DOMContentLoaded', function(){
 					$menu = '<li class="menu-item">';
 				}
 
-				$menu += '<a href="#">'+theme['estimate_interior_page_name']+'</a>';
+				$menu += '<a href="#">'+theme['estimate_manage_page_name']+'</a>';
 				
 				if(theme['clients'].length>0) {
 					$menu += '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
@@ -175,7 +175,7 @@ window.addEventListener('DOMContentLoaded', function(){
 					theme['clients'].forEach(function(item){
 						//console.log(item);
 						$menu += '<li class="menu-item">';
-						$menu += '<a href="'+theme['estimate_interior_url']+'?client='+item.id+'">'+item.desc+'</a>';
+						$menu += '<a href="'+theme['estimate_manage_url']+'?client='+item.id+'">'+item.desc+'</a>';
 						$menu += '</li>';
 					});
 					$menu += '</ul>';
@@ -880,95 +880,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			let $input = $(this);
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
-
-		// estimate interior
-		$('#edit-estimate-interior').on('show.bs.modal', function (event) {
-			let $modal = $(this),
-				$button = $(event.relatedTarget)
-				,$body = $modal.find('.modal-body')
-				,client = $button.data('client')
-				,interior = $button.data('interior')
-				,interior_title = $button.data('interior-title')
-				;
-
-			$('#edit-estimate-interior-label').text(interior_title);
-
-			$.ajax({
-				url: theme.ajax_url,
-				type: 'GET',
-				data: {
-					action: 'get_edit_estimate_interior_form',
-					client:client,
-					interior:interior
-				},
-				beforeSend: function(xhr) {
-					$body.text('Đang tải..');
-				},
-				success: function(response) {
-					$body.html(response);
-					$body.find('#estimate_interior_value').inputNumber({'negative':false});
-				},
-				error: function() {
-					$body.text('Lỗi khi tải. Tắt mở lại.');
-				},
-				complete: function() {
-					
-				}
-			});
-			
-		}).on('hidden.bs.modal', function (e) {
-			let $modal = $(this),
-				$body = $modal.find('.modal-body');
-
-			$('#edit-estimate-interior-label').text('');
-			$body.text('');
-		});
-
-		$(document).on('submit', '#frm-edit-estimate-interior', function(e){
-			e.preventDefault();
-			let $form = $(this)
-				,formData = new FormData($form[0])
-				,$button = $form.find('[type="submit"]')
-				,$response = $('#edit-estimate-interior-response')
-				;
-			$button.prop('disabled', true);
-
-			$.ajax({
-				url: theme.ajax_url+'?action=update_estimate_interior',
-				type: 'POST',
-				// processData: false,
-				// contentType: false,
-				// data: formData,
-				data: $form.serialize(),
-				dataType: 'json',
-				cache: false,
-				beforeSend: function() {
-					$response.html('<p class="text-primary">Đang xử lý...</p>');
-				},
-				success: function(response) {
-					if(response['code']>0) {
-						$.ajax({
-							url: theme.ajax_url+'?action=get_estimate_interior_info',
-							type: 'GET',
-							cache: false,
-							data: {client:formData.get('estimate_client'), interior:formData.get('estimate_interior')},
-							success: function(info) {
-								$('.interior-info-'+formData.get('estimate_interior')).html(info);
-								$('#edit-estimate-interior .btn-close').trigger('click');
-							}
-						});
-					}
-					$response.html(response['msg']);
-				},
-				error: function(xhr) {
-					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
-				},
-				complete: function() {
-					$button.prop('disabled', false);
-				}
-			});
-		});
-
 
 		// estimate manage
 		$('#edit-estimate-manage').on('show.bs.modal', function (event) {
