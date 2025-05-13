@@ -47,13 +47,9 @@ class Head {
 		<script type="text/javascript">
 			window.addEventListener('DOMContentLoaded', function(){
 				const root = document.querySelector(':root');
-				root.style.setProperty('--footer-buttons-fixed--height', document.getElementById('footer-buttons-fixed').clientHeight+'px');
 				root.style.setProperty('--site-header--height', document.getElementById('site-header').clientHeight+'px');
-				//console.log(document.getElementById('footer-buttons-fixed').clientHeight);
 				window.addEventListener('resize', function(){
-					root.style.setProperty('--footer-buttons-fixed--height', document.getElementById('footer-buttons-fixed').clientHeight+'px');
 					root.style.setProperty('--site-header--height', document.getElementById('site-header').clientHeight+'px');
-					//console.log(document.getElementById('footer-buttons-fixed').clientHeight);
 				});
 			});
 		</script>

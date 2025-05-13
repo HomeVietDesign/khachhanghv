@@ -147,7 +147,6 @@ class Assets {
 			'cf_sitekey'=>fw_get_db_settings_option('cf_turnstile_key'),
 			'is_user_logged_in' => (is_user_logged_in())?1:0,
 			'preview' => (isset($_GET['preview']))?1:0,
-			'popup_content_timeout' => absint(fw_get_db_settings_option('popup_content_timeout', 120)),
 			'nonce' => wp_create_nonce( 'global' ),
 			'provinces' => $a_provinces,
 			'clients' => $a_clients,
