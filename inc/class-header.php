@@ -172,7 +172,7 @@ class Header {
 			self::contractor_menu();
 			return;
 			//$menu = fw_get_db_settings_option('contractor_menu');
-		} elseif(is_page() || is_single() || is_singular( 'seo_post' )) {
+		} elseif(is_page() || is_single()) {
 			$display_menu = fw_get_db_post_option($object->ID, 'display_menu', 'yes');
 			$menu = fw_get_db_post_option($object->ID, 'apply_menu');
 		} else if(is_category() || is_tax()) {

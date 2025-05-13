@@ -8,6 +8,7 @@
  */
 
 $options = array(
+	/*
 	'quotes' => array(
 		'context' => 'advanced',
 		'title'   => 'Báo giá',
@@ -58,6 +59,7 @@ $options = array(
 			
 		),
 	),
+	*/
 	'info'=>array(
 		'context' => 'advanced',
 		'title'   => 'Cài đặt nâng cao',

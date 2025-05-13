@@ -159,8 +159,8 @@ class Custom_Types {
 			'has_archive'         => false,
 			'query_var'           => true,
 			'can_export'          => true,
-			'rewrite'             => ['slug'=>'nha-thau'],
-			//'rewrite'             => false,
+			//'rewrite'             => ['slug'=>'nha-thau'],
+			'rewrite'             => false,
 			'capability_type'     => 'post',
 			'supports'            => array(
 				'title',
