@@ -933,6 +933,7 @@ div[id^="modal-fw-shortcode-design-cost-"] .btn-close,
 	transform: translateY(-50%);
 }
 
+.fw-shortcode-estimate-manage .accordion,
 .fw-shortcode-estimates .accordion {
 	--bs-accordion-color: #fff;
 	--bs-accordion-bg: transparent;
@@ -947,21 +948,26 @@ div[id^="modal-fw-shortcode-design-cost-"] .btn-close,
 	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
+.fw-shortcode-estimate-manage .accordion .accordion-button,
 .fw-shortcode-estimates .accordion .accordion-button {
 	font-size: 30px;
 	font-weight: 600;
 	justify-content: center;
 	text-align: center;
 }
+.fw-shortcode-estimate-manage .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
+.fw-shortcode-estimate-manage .accordion .accordion-button::after,
 .fw-shortcode-estimates .accordion .accordion-button::after {
 	display: none;
 }
+.fw-shortcode-estimate-manage .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
 }
+.fw-shortcode-estimate-manage .accordion .accordion-button:focus,
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }

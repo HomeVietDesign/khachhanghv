@@ -463,7 +463,6 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				beforeSend: function(xhr) {
 					$body.text('Đang tải..');
-					//submit_button.prop('disabled',true);
 				},
 				success: function(response) {
 					$body.html(response);
@@ -511,9 +510,13 @@ window.addEventListener('DOMContentLoaded', function(){
 							url: theme.ajax_url+'?action=get_estimate_info',
 							type: 'GET',
 							cache: false,
+							dataType: 'json',
 							data: {client:formData.get('estimate_client'), contractor:formData.get('estimate_contractor')},
-							success: function(info) {
-								$('.contractor-info-'+formData.get('estimate_contractor')).html(info);
+							success: function(response) {
+								//$('.contractor-info-'+formData.get('estimate_contractor')).html(info);
+								$('.estimate-'+formData.get('estimate_contractor')+' .zalo-link').html(response['zalo']);
+								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
+								//$('.contractor-info-'+formData.get('estimate_contractor')).html(response['info']);
 								$('#edit-estimate .btn-close').trigger('click');
 							}
 						});
