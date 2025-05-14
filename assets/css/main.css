@@ -987,7 +987,7 @@ div[id^="modal-fw-shortcode-design-cost-"] .btn-close,
 	object-fit: cover;
 }
 .client-heading {
-	top: 57px;
+	top: var(--site-header--height);
 	z-index: 9;
 	background: #1c1c1c;
 }

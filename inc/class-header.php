@@ -11,7 +11,9 @@ class Header {
 	}
 
 	public function site_header() {
-		
+		global $current_password;
+
+		if( has_role('administrator') || ( $current_password && $current_password->term_id == get_option( 'default_term_passwords', -1 ) ) ) {
 		?>
 		<header id="site-header" class="position-sticky">
 		<?php
@@ -64,7 +66,7 @@ class Header {
 		?>
 		</header>
 		<?php
-		
+		}
 	}
 
 
@@ -168,7 +170,7 @@ class Header {
 		$display_menu = 'yes';
 		$menu = false;
 		$nav_menu = '';
-		if(is_singular( 'contractor' ) || is_singular( 'contractor_page' )) {
+		if( is_singular( 'contractor' ) || is_singular( 'contractor_page' ) ) {
 			self::contractor_menu();
 			return;
 			//$menu = fw_get_db_settings_option('contractor_menu');

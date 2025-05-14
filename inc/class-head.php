@@ -47,10 +47,15 @@ class Head {
 		<script type="text/javascript">
 			window.addEventListener('DOMContentLoaded', function(){
 				const root = document.querySelector(':root');
-				root.style.setProperty('--site-header--height', document.getElementById('site-header').clientHeight+'px');
-				window.addEventListener('resize', function(){
-					root.style.setProperty('--site-header--height', document.getElementById('site-header').clientHeight+'px');
-				});
+				const site_header = document.getElementById('site-header');
+				if(site_header) {
+					root.style.setProperty('--site-header--height', site_header.clientHeight+'px');
+					window.addEventListener('resize', function(){
+						root.style.setProperty('--site-header--height', site_header.clientHeight+'px');
+					});
+				} else {
+					root.style.setProperty('--site-header--height', '0');
+				}
 			});
 		</script>
 		<?php
