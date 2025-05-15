@@ -12,18 +12,41 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 	}
 
 	public function ajax_get_estimate_info() {
+		global $current_password;
+		$default_term_password = get_option( 'default_term_passwords', -1 );
+
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
-		//$oContractor = get_post($contractor);
 
-		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
-
-		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
-		$external_url = get_post_meta($contractor_id, '_external_url', true);
-		$external_url = ($external_url!='')?esc_url($external_url):'#';
+		$response = [
+			'info' => '',
+			'zalo' => ''
+		];
+		
 		if($client && $contractor_id) {
+			$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
+			$default_estimate = [
+				'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
+				'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
+				'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
+			];
+
+			$estimates = get_post_meta($contractor_id, '_estimates', true);
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+
+			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
+			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
+			if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
+
+			$phone_number = get_post_meta($contractor_id, '_phone_number', true);
+			$external_url = get_post_meta($contractor_id, '_external_url', true);
+			$external_url = ($external_url!='')?esc_url($external_url):'#';
+
 			$cats = get_the_terms( $contractor_id, 'contractor_cat' );
+
+			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
+
+			ob_start();
 		?>
 			<div class="contractor-title pt-3 mb-1 fs-5">
 				<a class="d-block text-truncate" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
@@ -37,12 +60,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					?>
 				</div>
 			</div>
-			
+			<?php if($estimate['value']) { ?>
 			<div class="contractor-value mb-1">
 				<span>Tổng giá trị:</span>
-				<span class="text-red fw-bold"><?php echo ($estimate['value']) ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span>
+				<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 			</div>
-			
+			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 				<?php
 				if($phone_number) {
@@ -54,14 +77,17 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				if($estimate['attachment_id']) {
 					$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
 					?>
-					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem dự toán</a>
+					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 					<?php
 				}
+
 				?>
 			</div>
 		<?php
+			$response['info'] = ob_get_clean();
 		}
-		exit;
+		
+		wp_send_json($response);
 	}
 
 	public function ajax_update_estimate() {
@@ -71,20 +97,24 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			'data' => []
 		];
 
-		if(check_ajax_referer( 'edit-estimate', 'nonce', false )) {
+		if(has_role('administrator') && check_ajax_referer( 'edit-estimate', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):'';
 			$estimate_value = isset($_POST['estimate_value'])?absint(str_replace(',', '', $_POST['estimate_value'])):0;
+			$estimate_unit = isset($_POST['estimate_unit'])?sanitize_text_field($_POST['estimate_unit']):'';
+			$estimate_zalo = isset($_POST['estimate_zalo'])?sanitize_text_field($_POST['estimate_zalo']):'';
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
-					'value' => $estimate_value,
+					'value' => ($estimate_value!=0)?$estimate_value:'',
+					'unit' => $estimate_unit,
+					'zalo' => $estimate_zalo,
 					'attachment_id' => $estimate_attachment_id
 				];
 
@@ -125,7 +155,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		if($client && $contractor) {
 			$estimates = get_post_meta($contractor, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 			$attachment_url = ($estimate['attachment_id'])?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -135,7 +165,13 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
 				<div class="mb-3">
-					<input type="tel" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo ($estimate['value'])?esc_attr(number_format(absint($estimate['value']),0,'.',',')):''; ?>">
+					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo ($estimate['value'])?esc_attr(number_format(absint($estimate['value']),0,'.',',')):''; ?>">
+				</div>
+				<div class="mb-3">
+					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+				</div>
+				<div class="mb-3">
+					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="URL nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>

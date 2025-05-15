@@ -15,7 +15,7 @@ if($class) {
     $index = absint(get_term_meta($class[0]->term_id, 'order', true));
 }
 
-if( !is_user_logged_in() && $current_password) {
+if( has_role('viewer') || (!is_user_logged_in() && $current_password)) {
     $default_province = (int) get_option( 'default_term_province', 0 );
     ?>
     <div class="contractor col-md-6 col-lg-3">

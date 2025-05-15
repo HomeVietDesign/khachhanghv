@@ -5,57 +5,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	jQuery(function($){
 
-
-		function check_input_phone_number(p) {
-			const patt = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
-			return patt.test(p);
-		}
-
-		function check_validity($form) {
-			let valid = true;
-			
-			$form.find('input.wpcf7-form-control').each(function(index, el){
-				let $el = $(el);
-
-				//console.log($el.attr('aria-required'));
-
-				switch(el.type) {
-					case 'text':
-						
-						if(($el.attr('aria-required')=='true' && $el.val()=='') || el.validity.tooLong) {
-							valid = false;
-						}
-						break;
-					case 'tel':
-						if(($el.attr('aria-required')=='true' && $el.val()=='') || !check_input_phone_number(el.value)) {
-							valid = false;
-						}
-						break;
-				}
-
-			});
-
-			return valid;
-		}
-
-		
-		$(document).on('keyup', 'input.wpcf7-form-control', function(e){
-			let $form = $(this).closest('form'),
-				$submit_button = $form.find('[type="submit"]');
-
-			if(check_validity($form)) {
-				$submit_button.prop('disabled', false);
-			} else {
-				$submit_button.prop('disabled', true);
-			}
-
-		});
-
-		$(document).on('submit', '.wpcf7', function( event ) {
-			$(this).find('[type="submit"]').prop('disabled', true);
-		});
-		
-
 		let debounced_contractor_search = debounce((event) => {
 			let kw = $('#contractor-search-input').val().trim(),
 				province = parseInt($('#contractor-search-province').val()),
@@ -130,37 +79,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			
 		});
 
-		function add_custom_menu() {
-			if(theme['estimate_url']!='') {
-				let $menu = '';
-				if(theme['clients'].length>0) {
-					$menu = '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
-				} else {
-					$menu = '<li class="menu-item">';
-				}
-
-				$menu += '<a href="'+theme['estimate_url']+'">'+theme['estimate_page_name']+'</a>';
-				
-				if(theme['clients'].length>0) {
-					$menu += '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-					$menu += '<ul class="sub-menu position-absolute">';
-					theme['clients'].forEach(function(item){
-						//console.log(item);
-						$menu += '<li class="menu-item">';
-						$menu += '<a href="'+theme['estimate_url']+'?client='+item.id+'">'+item.desc+'</a>';
-						$menu += '</li>';
-					});
-					$menu += '</ul>';
-				}
-
-				$menu += '</li>';
-
-				$('#main-nav ul.menu').append($menu);
-
-			}
-		}
-		add_custom_menu();
-
 		function set_vh_size() {
 			let vh = $(window).innerHeight();
 			if($('#site-header').length>0) {
@@ -195,27 +113,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			set_vh_size();
 			align_submenu();
 		}).resize();
-		
-		let $actions_fixed = $('.actions-fixed');
-		let $actions = $('#product-actions');
-		
-		if($actions.length>0 && $actions_fixed.length>0) {
-			if ("IntersectionObserver" in window) {
-				let actionsObserver = new IntersectionObserver(function(entries, observer) {
-					entries.forEach(function(actions) {
-						if(actions.isIntersecting===false && actions.boundingClientRect.top<0) {
-							$actions_fixed.addClass('visible');
-						} else {
-							$actions_fixed.removeClass('visible');
-						}
-						
-					});
-				}, {rootMargin: "0px",threshold: 0});
-
-				actionsObserver.observe($actions.get(0));
-
-			}
-		}
 		
 
 		if($('body').hasClass('single')) {
@@ -308,65 +205,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			});
 		}
 
-		
-		let popped_popup_content = getCookie('popped_popup_content');
-		if($('#modal-popup').length>0 && theme.preview!='1' && !popped_popup_content) {
-			
-			const popup_content = new bootstrap.Modal('#modal-popup');
-			
-			setTimeout(function(){
-				popup_content.show();
-				setCookie('popped_popup_content', 1, 1);
-			}, 1000*parseInt(theme.popup_content_timeout));
-			
-		}
-		
-		/*
-		let popped = getCookie('popped');
-		if($('#modal-popup-image').length>0 && theme.preview!='1' && !popped) {
-			
-			const popup = new bootstrap.Modal('#modal-popup-image');
-			
-			setTimeout(function(){
-				popup.show();
-				setCookie('popped', 1, 1);
-			}, 1000*parseInt(theme.popup_timeout));
-			
-		}
-		
-		// xử lý link nhảy cóc
-		function goToAncho(ancho_name) {
-			let ancho = $('[name="'+ancho_name+'"]'), header_height = $('#site-header').height();
-			if(ancho.length>0) {
-				$('html, body').scrollTop((ancho.offset().top-header_height));
-				setTimeout(function(){
-					$('html, body').scrollTop((ancho.offset().top-header_height));
-				}, 1000);
-			}
-		}
-
-		let hash;
-		hash = window.location.hash.replace('#','');
-		if(hash!='' && $('[name="'+hash+'"]').length>0) {
-			goToAncho(hash);
-		}
-
-		var main = $( '#query-monitor-main' );
-		var menu_item = $( '#wp-admin-bar-query-monitor' );
-
-		$('a[href^="#"]').on('click', function(e){
-			e.preventDefault();
-			hash = $(this).attr('href').replace('#','');
-			if ( menu_item && main && hash.match(/^qm-/) ) {
-				main.toggleClass('qm-show');
-			} else {
-				goToAncho(hash);
-			}
-			return false;
-			
-		});
-		*/
-		
 		$('a[href$="#"]').on('click', function(e){
 			e.preventDefault();
 			return false;
@@ -392,10 +230,8 @@ window.addEventListener('DOMContentLoaded', function(){
 
 		let pmsr = $('.posts-masonry,.list-media');
 		pmsr.imagesLoaded(function(){
-			//setTimeout(function(){
-				pmsr.isotope();
-				pmsr.isotope('layout');
-			//}, 1000);
+			pmsr.isotope();
+			pmsr.isotope('layout');
 		});
 		
 		$('.posts-masonry-loadmore-button').on('click', function(e){
@@ -439,212 +275,6 @@ window.addEventListener('DOMContentLoaded', function(){
 				}
 			});
 
-		});
-
-		// chọn mẫu modal
-		$('#order-product').on('show.bs.modal', function (event) {
-			let modal = $(this),
-				button = $(event.relatedTarget),
-				$modal_label = $('#order-product-label'),
-				attachment = button.data('attachment'),
-				code = button.data('code'),
-				ctype = button.data('type'),
-				id = button.data('id'),
-				msrc = button.data('src-medium');
-
-			switch(ctype) {
-				case 'premium': 
-					$modal_label.find('.title-normal').addClass('hide');
-					$modal_label.find('.title-premium').removeClass('hide');
-					break;
-				default:
-					$modal_label.find('.title-normal').removeClass('hide');
-					$modal_label.find('.title-premium').addClass('hide');
-					break;
-			}
-			
-			$('#product_attachment').val(attachment);
-			$('#product_code').val(code);
-			$('#product_id').val(id);
-			$('#ctype').val(ctype);
-			
-			$('#order-product-preview').html('<img src="'+msrc+'">');
-			
-		}).on('hidden.bs.modal', function (e) {
-			
-			$('#product_customer_name').removeClass('is-invalid');
-			$('#product_customer_name').next('.invalid-feedback').html('');
-			$('#product_customer_phone').removeClass('is-invalid');
-			$('#product_customer_phone').next('.invalid-feedback').html('');
-
-			$('#product_attachment').val(0);
-			$('#product_code').val('');
-			$('#ctype').val('');
-
-			$('#order-product-message').html('');
-			$('#order-product-preview').html('');
-			$('#submit-order').text('Đồng ý');
-			$('#submit-order').prop('disabled',false);
-		});
-
-		// chọn mẫu submit
-		let ajax_order = null;
-		function submit_order_product(event) {
-			
-			let submit_button = $('#order-product-submit'),
-				attachment = parseInt($('#product_attachment').val()),
-				code = $('#product_code').val(),
-				id = parseInt($('#product_id').val()),
-				ctype = $('#ctype').val(),
-				phone = $('#product_customer_phone').val(),
-				phone_number = '',
-				name = $('#product_customer_name').val(),
-				token = $('[name="cf-turnstile-response"]').val(),
-
-				feedback_name = $('#product_customer_name').next('.invalid-feedback'),
-				feedback_phone = $('#product_customer_phone').closest('.input-group').find('.invalid-feedback'),
-				validate_name = validate_phone = false, custom_value = '';
-
-			$('#order-product-message').html('');
-
-			if(attachment<=0) {
-				$('#product_customer_phone').addClass('is-invalid');
-				feedback_phone.html('Lựa chọn không xác định!');
-			} else {
-				if(check_input_phone_number(phone)) {
-					validate_phone = true
-					$('#product_customer_phone').removeClass('is-invalid');
-					feedback_phone.html('');
-				} else {
-					$('#product_customer_phone').addClass('is-invalid');
-					feedback_phone.html('Số điện thoại không đúng!');
-				}
-
-				if(name!='') {
-					validate_name = true
-					$('#product_customer_name').removeClass('is-invalid');
-					feedback_name.html('');
-				} else {
-					$('#product_customer_name').addClass('is-invalid');
-					feedback_name.html('Tên không được trống');
-				}
-
-				if(validate_name && validate_phone){
-
-					if(phone.startsWith('0')) {
-						phone_number = "+84" + phone.slice(1, phone.length);
-					} else if(phone.startsWith('+84')) {
-						phone_number = phone;
-					} else {
-						phone_number = "+84" + phone;  
-					}
-
-					let event_name = '';
-					switch(ctype) {
-						case 'premium': 
-							event_name = 'orderPremiumProduct';
-							break;
-						default:
-							event_name = 'orderProduct';
-							break;
-					}
-
-					if(ajax_order!=null) ajax_order.abort();
-
-					ajax_order = $.ajax({
-						url: theme.ajax_url,
-						type: 'post',
-						data: {
-							action: 'order_product',
-							attachment:attachment,
-							code:code,
-							id:id,
-							name:name,
-							phone:phone_number,
-							ctype:ctype,
-							url: window.btoa(window.location.href),
-							token:token
-						},
-						dataType: 'json',
-						beforeSend: function(xhr) {
-							submit_button.text('Đang gửi..');
-							//submit_button.prop('disabled',true);
-						},
-						success: function(response) {
-							//console.log(response);
-							
-							const eventOrder = new CustomEvent(event_name, {
-								bubbles: true,
-								detail: { attachment: attachment, code: response.data.code, id: response.data.id, name:response.data.name, phone:response.data.phone, fb_pxl_code:response.fb_pxl_code }
-							});
-
-							if(response.code==1) {
-								//console.log(eventOrder);
-								event.target.dispatchEvent(eventOrder);
-							
-								$('#order-product-message').html('<div class="py-5 px-3 text-center text-success">'+response.msg+'</div>');
-								//$('#order-product-preview').html('<div class="py-5 px-3 text-center text-success">'+response.msg+'</div>');
-								submit_button.text('Đã gửi');
-								submit_button.closest('form').trigger('reset');
-
-							} else {
-								submit_button.text('Đồng ý');
-								submit_button.prop('disabled', false);
-								$('#order-product-message').html('<p class="text-danger">'+response.msg+'</p>');
-							}
-							
-						},
-						error: function() {
-							submit_button.text('Đồng ý');
-							submit_button.prop('disabled', false);
-							$('#order-product-message').html('<p class="text-danger">Có lỗi khi gửi! Vui lòng tải lại trang rồi thử lại. Hoặc liên hệ với ban quản trị về sự cố này.</p>');
-						},
-						complete: function() {
-							
-						}
-					});
-
-				}
-			}
-		}
-
-		$('#order-product-submit').on('click', function(e){
-			e.preventDefault();
-			$(this).prop('disabled', true);
-			$('#frm-order-product').submit();
-		});
-
-		$('#frm-order-product').on('submit', function(e){
-			e.preventDefault();
-
-			submit_order_product(e);
-
-			return false;
-
-		}); // submit order
-
-		$('#frm-order-product').find('input.form-control').on('keyup', function(e){
-			let valid = true;
-			$('#frm-order-product').find('input.form-control').each(function(index, el) {
-				switch(el.type) {
-					case 'text':
-						if(el.validity.valueMissing || el.validity.tooLong) {
-							valid = false;
-						}
-						break;
-					case 'tel':
-						if(!check_input_phone_number(el.value)) {
-							valid = false;
-						}
-						break;
-				}
-			});
-			
-			if(valid) {
-				$('#order-product-submit').prop('disabled', false);
-			} else {
-				$('#order-product-submit').prop('disabled', true);
-			}
 		});
 
 		$('#modal-video-player').on('show.bs.modal', function (event) {
@@ -774,14 +404,13 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				beforeSend: function(xhr) {
 					$body.text('Đang tải..');
-					//submit_button.prop('disabled',true);
 				},
 				success: function(response) {
 					$body.html(response);
 					$body.find('#estimate_value').inputNumber({'negative':false});
 				},
 				error: function() {
-					$body.text('Lỗi khí tải. Tắt mở lại.');
+					$body.text('Lỗi khi tải. Tắt mở lại.');
 				},
 				complete: function() {
 					
@@ -822,9 +451,11 @@ window.addEventListener('DOMContentLoaded', function(){
 							url: theme.ajax_url+'?action=get_estimate_info',
 							type: 'GET',
 							cache: false,
+							dataType: 'json',
 							data: {client:formData.get('estimate_client'), contractor:formData.get('estimate_contractor')},
-							success: function(info) {
-								$('.contractor-info-'+formData.get('estimate_contractor')).html(info);
+							success: function(response) {
+								$('.estimate-'+formData.get('estimate_contractor')+' .zalo-link').html(response['zalo']);
+								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
 								$('#edit-estimate .btn-close').trigger('click');
 							}
 						});
@@ -851,6 +482,297 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('input', '#estimate_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		// estimate manage
+		$('#edit-estimate-manage').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,estimate = $button.data('estimate')
+				,estimate_title = $button.data('estimate-title')
+				;
+
+			$('#edit-estimate-manage-label').text(estimate_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_estimate_manage_form',
+					client:client,
+					estimate:estimate
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+					$body.find('#estimate_client_value').inputNumber({'negative':false});
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-estimate-manage-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-estimate-manage', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-estimate-manage-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_estimate_manage',
+				type: 'POST',
+				data: $form.serialize(),
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_estimate_manage_info',
+							type: 'GET',
+							dataType: 'json',
+							cache: false,
+							data: {estimate_client:formData.get('estimate_client'), estimate_id:formData.get('estimate_id')},
+							success: function(response) {
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-info').html(response['info']);
+								$('.estimate-'+formData.get('estimate_id')+' .zalo-link').html(response['zalo']);
+								$('#edit-estimate-manage .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		// edit partner
+		$('#edit-partner').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,partner = $button.data('partner')
+				,partner_title = $button.data('partner-title')
+				;
+
+			$('#edit-partner-label').text(partner_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_partner_form',
+					client:client,
+					partner:partner
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+					$body.find('#partner_value').inputNumber({'negative':false});
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-partner-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-partner', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-partner-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_partner',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_partner_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('partner_client'), partner:formData.get('partner_id')},
+							success: function(response) {
+								$('.partner-'+formData.get('partner_id')+' .zalo-link').html(response['zalo']);
+								$('.partner-'+formData.get('partner_id')+' .partner-info').html(response['info']);
+								$('#edit-partner .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#partner_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#partner_attachment_id').val('');
+			$this.remove();
+		});
+
+		$(document).on('input', '#partner_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="partner_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		// edit document
+		$('#edit-document').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,document = $button.data('document')
+				,document_title = $button.data('document-title')
+				;
+
+			$('#edit-document-label').text(document_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_document_form',
+					client:client,
+					document:document
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+					$body.find('#document_value').inputNumber({'negative':false});
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-document-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-document', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-document-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_document',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_document_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('document_client'), document:formData.get('document_id')},
+							success: function(response) {
+								$('.document-'+formData.get('document_id')+' .zalo-link').html(response['zalo']);
+								$('.document-'+formData.get('document_id')+' .document-info').html(response['info']);
+								$('#edit-document .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#document_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#document_attachment_id').val('');
+			$this.remove();
+		});
+
+		$(document).on('input', '#document_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="document_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
 	});// jQuery

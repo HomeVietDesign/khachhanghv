@@ -71,7 +71,7 @@ $options = array(
 				'type'  => 'numeric',
 				'value' => 120
 			),
-			*/
+			
 			'divider_popup_content' => array(
 				'label' => '',
 				'desc'  => '',
@@ -114,7 +114,7 @@ $options = array(
 				'limit' => 1,
 				'label' => 'Trang sự kiện gửi số điện thoại',
 			],
-
+			*/
 			'cf_turnstile_key' => array(
 				'label' => __( 'Turnstile key' ),
 				'type'  => 'text',

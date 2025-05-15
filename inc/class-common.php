@@ -3,8 +3,8 @@ namespace HomeViet;
 
 final class Common {
 
-	public static function get_estimate_page() {
-		$pages = self::get_page_by_template('estimate.php');
+	public static function get_custom_page($template) {
+		$pages = self::get_page_by_template($template);
 
 		return ($pages) ? $pages[0] : null;
 	}

@@ -173,13 +173,6 @@ class Setup {
 			add_filter('post_type_link', [$this, 'contractor_page_link'], 10, 2);
 		}
 
-		// elseif($current_password) {
-		// 	$province = get_term_meta( $current_password->term_id, 'province', true );
-
-		// 	if($province) $current_province = get_term_by('term_id', $province[0], 'province');
-
-		// }
-
 	}
 
 	public function contractor_page_link($post_link, $post) {
@@ -279,6 +272,9 @@ class Setup {
 		add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
 		add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
+
+		//remove_role( 'viewer' );
+		add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
 	}
 
 	public function query_post_type_for_search( $query ) {

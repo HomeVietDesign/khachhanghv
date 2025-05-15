@@ -21,17 +21,27 @@ class Authentication {
 		global $current_password;
 
 		$post = get_post( $post );
+		
 
-		if($post->post_type=="contractor_page" && !has_role('administrator')) {
+
+		if($post->post_type=="contractor_page") {
 			$required = true;
 
-			if($current_password) {
+			if($current_password || has_role('administrator') || has_role('viewer')) {
 				$required = false;
 			}
+		} elseif(is_page_template( 'estimate.php' )) {
+			$required = true;
 
-			// if(self::check($post)) {
-			// 	$required = false;
-			// }
+			if( has_role('administrator') || has_role('viewer') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+				$required = false;
+			}
+		} elseif ( is_page_template( 'estimate-manage.php' ) || is_page_template( 'partner.php' ) || is_page_template( 'document.php' ) ) {
+			$required = true;
+
+			if( has_role('administrator') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+				$required = false;
+			}
 		}
 
 		return $required;
@@ -56,6 +66,9 @@ class Authentication {
 				  <input name="post_password" type="password" class="form-control" spellcheck="false">
 				  <button class="btn btn-primary" type="submit">Nhập</button>
 				</div>
+				<?php if(!is_user_logged_in()) { ?>
+				<p>Hoặc - <a href="<?php echo esc_url(wp_login_url( fw_current_url() )); ?>">Đăng nhập quản lý</a></p>
+				<?php } ?>
 			</div>
 		</form>
 		<?php

@@ -10,7 +10,7 @@ while (have_posts()) {
 
 	$default_term_province = (int) get_option( 'default_term_province' );
 
-	if(has_role('administrator') || ($current_password_province && $current_password_province->term_id==$default_term_province)):
+	if(has_role('administrator') || has_role('viewer') || ($current_password_province && $current_password_province->term_id==$default_term_province)):
 		$permalink = get_permalink();
 
 		$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
