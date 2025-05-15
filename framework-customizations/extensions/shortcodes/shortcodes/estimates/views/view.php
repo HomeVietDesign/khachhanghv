@@ -58,7 +58,7 @@ if($contractor_cats && $client) {
 										];
 
 										$estimates = get_post_meta($contractor_id, '_estimates', true);
-										$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'attachment_id'=>''];
+										$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 										
 										if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
@@ -77,13 +77,13 @@ if($contractor_cats && $client) {
 													<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>" target="_blank"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 													<?php if(has_role('administrator')) { ?>
 													<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-														<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-														<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+														<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+														<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 													</div>
 													<?php } ?>
 													<div class="zalo-link position-absolute top-0 end-0 p-2">
 													<?php if($estimate['zalo']) { ?>
-														<a class="btn btn-sm btn-primary" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
+														<a class="btn btn-sm btn-shadow" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 													<?php } ?>
 													</div>
 												</div>
@@ -100,12 +100,11 @@ if($contractor_cats && $client) {
 															?>
 														</div>
 													</div>
-													
-													<div class="contractor-value mb-1">
+													<?php if($estimate['value']!='') { ?>													<div class="contractor-value mb-1">
 														<span>Tổng giá trị: </span>
-														<span class="text-red fw-bold"><?php echo ($estimate['value']!='') ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
+														<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 													</div>
-													
+													<?php } ?>
 													<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 														<?php
 														if($phone_number) {

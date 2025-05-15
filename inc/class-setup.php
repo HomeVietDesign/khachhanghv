@@ -272,6 +272,8 @@ class Setup {
 		add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
 		add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
+
+		add_role( 'viewer', 'Theo dõi', array( 'read' => true, 'level_0' => true ) );
 	}
 
 	public function query_post_type_for_search( $query ) {

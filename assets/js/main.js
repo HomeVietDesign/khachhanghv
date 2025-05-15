@@ -79,65 +79,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			
 		});
 
-		function add_custom_menu() {
-			if(theme['estimate_url']!='') {
-				let $menu = '';
-				if(theme['clients'].length>0) {
-					$menu = '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
-				} else {
-					$menu = '<li class="menu-item">';
-				}
-
-				$menu += '<a href="#">'+theme['estimate_page_name']+'</a>';
-				
-				if(theme['clients'].length>0) {
-					$menu += '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-					$menu += '<ul class="sub-menu position-absolute">';
-					theme['clients'].forEach(function(item){
-						//console.log(item);
-						$menu += '<li class="menu-item">';
-						$menu += '<a href="'+theme['estimate_url']+'?client='+item.id+'">'+item.desc+'</a>';
-						$menu += '</li>';
-					});
-					$menu += '</ul>';
-				}
-
-				$menu += '</li>';
-
-				$('#main-nav ul.menu').append($menu);
-
-			}
-
-			if(theme['estimate_manage_url']!='') {
-				let $menu = '';
-				if(theme['clients'].length>0) {
-					$menu = '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
-				} else {
-					$menu = '<li class="menu-item">';
-				}
-
-				$menu += '<a href="#">'+theme['estimate_manage_page_name']+'</a>';
-				
-				if(theme['clients'].length>0) {
-					$menu += '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-					$menu += '<ul class="sub-menu position-absolute">';
-					theme['clients'].forEach(function(item){
-						//console.log(item);
-						$menu += '<li class="menu-item">';
-						$menu += '<a href="'+theme['estimate_manage_url']+'?client='+item.id+'">'+item.desc+'</a>';
-						$menu += '</li>';
-					});
-					$menu += '</ul>';
-				}
-
-				$menu += '</li>';
-
-				$('#main-nav ul.menu').append($menu);
-
-			}
-		}
-		add_custom_menu();
-
 		function set_vh_size() {
 			let vh = $(window).innerHeight();
 			if($('#site-header').length>0) {
@@ -513,10 +454,8 @@ window.addEventListener('DOMContentLoaded', function(){
 							dataType: 'json',
 							data: {client:formData.get('estimate_client'), contractor:formData.get('estimate_contractor')},
 							success: function(response) {
-								//$('.contractor-info-'+formData.get('estimate_contractor')).html(info);
 								$('.estimate-'+formData.get('estimate_contractor')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
-								//$('.contractor-info-'+formData.get('estimate_contractor')).html(response['info']);
 								$('#edit-estimate .btn-close').trigger('click');
 							}
 						});
@@ -611,10 +550,12 @@ window.addEventListener('DOMContentLoaded', function(){
 						$.ajax({
 							url: theme.ajax_url+'?action=get_estimate_manage_info',
 							type: 'GET',
+							dataType: 'json',
 							cache: false,
 							data: {estimate_client:formData.get('estimate_client'), estimate_id:formData.get('estimate_id')},
-							success: function(info) {
-								$('.estimate-info-'+formData.get('estimate_id')).html(info);
+							success: function(response) {
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-info').html(response['info']);
+								$('.estimate-'+formData.get('estimate_id')+' .zalo-link').html(response['zalo']);
 								$('#edit-estimate-manage .btn-close').trigger('click');
 							}
 						});
@@ -628,6 +569,210 @@ window.addEventListener('DOMContentLoaded', function(){
 					$button.prop('disabled', false);
 				}
 			});
+		});
+
+		// edit partner
+		$('#edit-partner').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,partner = $button.data('partner')
+				,partner_title = $button.data('partner-title')
+				;
+
+			$('#edit-partner-label').text(partner_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_partner_form',
+					client:client,
+					partner:partner
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+					$body.find('#partner_value').inputNumber({'negative':false});
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-partner-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-partner', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-partner-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_partner',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_partner_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('partner_client'), partner:formData.get('partner_id')},
+							success: function(response) {
+								$('.partner-'+formData.get('partner_id')+' .zalo-link').html(response['zalo']);
+								$('.partner-'+formData.get('partner_id')+' .partner-info').html(response['info']);
+								$('#edit-partner .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#partner_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#partner_attachment_id').val('');
+			$this.remove();
+		});
+
+		$(document).on('input', '#partner_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="partner_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		// edit document
+		$('#edit-document').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,document = $button.data('document')
+				,document_title = $button.data('document-title')
+				;
+
+			$('#edit-document-label').text(document_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_document_form',
+					client:client,
+					document:document
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+					$body.find('#document_value').inputNumber({'negative':false});
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-document-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-document', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-document-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_document',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_document_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('document_client'), document:formData.get('document_id')},
+							success: function(response) {
+								$('.document-'+formData.get('document_id')+' .zalo-link').html(response['zalo']);
+								$('.document-'+formData.get('document_id')+' .document-info').html(response['info']);
+								$('#edit-document .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#document_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#document_attachment_id').val('');
+			$this.remove();
+		});
+
+		$(document).on('input', '#document_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="document_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
 	});// jQuery

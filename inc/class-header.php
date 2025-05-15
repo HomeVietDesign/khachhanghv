@@ -13,90 +13,16 @@ class Header {
 	public function site_header() {
 		global $current_password;
 
-		if( has_role('administrator') || ( $current_password && $current_password->term_id == get_option( 'default_term_passwords', -1 ) ) ) {
+		if( has_role('administrator') || has_role('viewer') || ( $current_password && $current_password->term_id == get_option( 'default_term_passwords', -1 ) ) ) {
 		?>
 		<header id="site-header" class="position-sticky">
-		<?php
-		self::primary_menu();
-		//self::primary_menu_2();
-
-		if(!(is_singular('contractor_page')||is_singular('contractor')) && (has_nav_menu('secondary_left') || has_nav_menu('secondary_right'))) {
-			?>
-			<nav id="secondary-nav" class="">
-				<div class="container p-0">
-					<div class="d-flex flex-wrap justify-content-center overflow-hidden">
-					<?php
-					if(has_nav_menu('secondary_left')) {
-						?>
-						<div class="secondary-menu-left">
-							<?php wp_nav_menu([
-								'theme_location' => 'secondary_left',
-								'container' => false,
-								'echo' => true,
-								'fallback_cb' => '',
-								'depth' => 1,
-								'walker' => new \HomeViet\Walker_Secondary_Menu(),
-								'items_wrap' => '<ul class="menu list-unstyled p-0 m-0 d-flex">%3$s</ul>',
-							]); ?>
-						</div>
-						<?php
-					}
-
-					if(has_nav_menu('secondary_right')) {
-						?>
-						<div class="secondary-menu-right">
-							<?php wp_nav_menu([
-								'theme_location' => 'secondary_right',
-								'container' => false,
-								'echo' => true,
-								'fallback_cb' => '',
-								'depth' => 1,
-								'walker' => new \HomeViet\Walker_Secondary_Menu(),
-								'items_wrap' => '<ul class="menu list-unstyled p-0 m-0 d-flex">%3$s</ul>',
-							]); ?>
-						</div>
-						<?php
-					}
-					?>
-					</div>
-				</div>
-			</nav>
-			<?php
-		}
-		?>
+			<?php self::primary_menu(); ?>
 		</header>
 		<?php
 		}
 	}
 
-
-	public function primary_menu_2() {
-		$nav_menu = wp_nav_menu([
-				'theme_location' => 'primary',
-				'container' => false,
-				'echo' => false,
-				'fallback_cb' => '',
-				'depth' => 2,
-				'walker' => new \HomeViet\Walker_Primary_Menu(),
-				'items_wrap' => '<ul class="%2$s">%3$s</ul>',
-			]);
-		if($nav_menu!='') {
-			?>
-			<nav id="main-nav">
-				<div class="main-nav-inner"><?php echo $nav_menu; ?></div>
-			</nav>
-			<?php
-		}
-	}
-
-	public static function post_tax_header() {
-
-		the_archive_title( '<h1 class="post-tax-header pt-4 text-center">', '</h1>' );
-		the_archive_description( '<div class="post-tax-description">', '</div>' );
-		
-	}
-
-	public static function contractor_menu() {
+	public static function contractor_menu($menu_html='') {
 		global $view;
 
 		$parent = null;
@@ -111,6 +37,8 @@ class Header {
 			'parent' => 0
 		]);
 		
+		ob_start();
+
 		if($contractor_cats) {
 		?>
 		<nav id="main-nav">
@@ -157,23 +85,109 @@ class Header {
 					<?php
 					}
 				}
+
+				echo $menu_html;
 				?>
 				</ul>
 			</div>
 		</nav>
 		<?php
 		}
+
+		return ob_get_clean();
 	}
 
 	public static function primary_menu() {
+		global $current_password;
+
 		$object = get_queried_object();
 		$display_menu = 'yes';
 		$menu = false;
 		$nav_menu = '';
+
+		$default_term_passwords = (int) get_option( 'default_term_passwords', -1 );
+		$passwords = get_terms([
+			'taxonomy' => 'passwords',
+			'hide_empty' => false,
+			'exclude' => [$default_term_passwords],
+		]);
+
+		$menu_html = '';
+
+		if($passwords) {
+			$estimate_page = Common::get_custom_page('estimate.php');
+			if($estimate_page) {
+				$estimate_page_url = get_permalink($estimate_page);
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+				$menu_html .= '<a href="#">'.esc_html($estimate_page->post_title).'</a>';
+				$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					$menu_html .= '<li class="menu-item">';
+					$menu_html .= '<a href="'.esc_url($estimate_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
+
+			if(has_role('administrator') || ($current_password && $current_password->term_id == get_option( 'default_term_passwords', -1 )) ) {
+				$estimate_manage_page = Common::get_custom_page('estimate-manage.php');
+				if($estimate_manage_page) {
+					$estimate_manage_page_url = get_permalink($estimate_manage_page);
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
+					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<ul class="sub-menu position-absolute">';
+					foreach ($passwords as $key => $value) {
+						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+						$menu_html .= '</li>';
+					}
+					$menu_html .= '</ul>';
+					$menu_html .= '</li>';
+				}
+
+				$partner_page = Common::get_custom_page('partner.php');
+				if($partner_page) {
+					$partner_page_url = get_permalink($partner_page);
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$menu_html .= '<a href="#">'.esc_html($partner_page->post_title).'</a>';
+					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<ul class="sub-menu position-absolute">';
+					foreach ($passwords as $key => $value) {
+						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<a href="'.esc_url($partner_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+						$menu_html .= '</li>';
+					}
+					$menu_html .= '</ul>';
+					$menu_html .= '</li>';
+				}
+
+				$document_page = Common::get_custom_page('document.php');
+				if($document_page) {
+					$document_page_url = get_permalink($document_page);
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$menu_html .= '<a href="#">'.esc_html($document_page->post_title).'</a>';
+					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<ul class="sub-menu position-absolute">';
+					foreach ($passwords as $key => $value) {
+						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<a href="'.esc_url($document_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+						$menu_html .= '</li>';
+					}
+					$menu_html .= '</ul>';
+					$menu_html .= '</li>';
+				}
+			}
+
+		}
+
 		if( is_singular( 'contractor' ) || is_singular( 'contractor_page' ) ) {
-			self::contractor_menu();
+			$contractor_menu = self::contractor_menu($menu_html);
+
+			echo $contractor_menu;
 			return;
-			//$menu = fw_get_db_settings_option('contractor_menu');
 		} elseif(is_page() || is_single()) {
 			$display_menu = fw_get_db_post_option($object->ID, 'display_menu', 'yes');
 			$menu = fw_get_db_post_option($object->ID, 'apply_menu');
@@ -192,7 +206,7 @@ class Header {
 					'fallback_cb' => '',
 					'depth' => 2,
 					'walker' => new \HomeViet\Walker_Primary_Menu(),
-					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s</ul>',
+					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.$menu_html.'</ul>',
 				]);
 
 			} else if(has_nav_menu('primary')) {
@@ -203,7 +217,7 @@ class Header {
 					'fallback_cb' => '',
 					'depth' => 2,
 					'walker' => new \HomeViet\Walker_Primary_Menu(),
-					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s</ul>',
+					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.$menu_html.'</ul>',
 				]);
 			}
 

@@ -74,7 +74,7 @@ class Assets {
 
 	    //wp_enqueue_script('lodash');
 
-		$recaptcha_keys = Common::get_recaptcha_keys();
+		//$recaptcha_keys = Common::get_recaptcha_keys();
 
 		wp_register_script( 'bootstrap', THEME_URI.'/libs/bootstrap/js/bootstrap.bundle.min.js', ['jquery'], '5.1.3', true);
 
@@ -113,47 +113,15 @@ class Assets {
 			}
 		}
 
-		$default_term_passwords = (int) get_option( 'default_term_passwords', -1 );
-		$passwords = get_terms([
-			'taxonomy' => 'passwords',
-			//'fields' => 'id=>name',
-			'hide_empty' => false,
-			'exclude' => [$default_term_passwords],
-		]);
-		$a_clients = [];
-		if($passwords) {
-			foreach ($passwords as $pass) {
-				$a_clients[] = [
-					'id' => $pass->term_id,
-					'text' => $pass->name,
-					'desc' => $pass->description
-				];
-			}
-		}
-
-		
-		$estimate_page = Common::get_estimate_page();
-		$estimate_page_name = ($estimate_page)?$estimate_page->post_title:'';
-		$estimate_page_url = ($estimate_page)?get_permalink($estimate_page):'';
-
-		$estimate_manage_page = Common::get_estimate_manage_page();
-		$estimate_manage_page_name = ($estimate_manage_page)?$estimate_manage_page->post_title:'';
-		$estimate_manage_page_url = ($estimate_manage_page)?get_permalink($estimate_manage_page):'';
 
 		$data = [
 			'home_url'=>esc_url(home_url()), 
 			'ajax_url'=>esc_url(admin_url('admin-ajax.php')),
-			'sitekey'=>$recaptcha_keys['sitekey'],
 			'cf_sitekey'=>fw_get_db_settings_option('cf_turnstile_key'),
 			'is_user_logged_in' => (is_user_logged_in())?1:0,
 			'preview' => (isset($_GET['preview']))?1:0,
 			'nonce' => wp_create_nonce( 'global' ),
 			'provinces' => $a_provinces,
-			'clients' => $a_clients,
-			'estimate_page_name' => $estimate_page_name,
-			'estimate_url' => $estimate_page_url,
-			'estimate_manage_page_name' => $estimate_manage_page_name,
-			'estimate_manage_url' => $estimate_manage_page_url,
 		];
 
 		wp_localize_script( 'jquery', 'theme', $data );

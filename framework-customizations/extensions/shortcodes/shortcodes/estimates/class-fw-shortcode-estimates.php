@@ -44,7 +44,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 			$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
-			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-primary" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
 
 			ob_start();
 		?>
@@ -60,12 +60,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					?>
 				</div>
 			</div>
-			
+			<?php if($estimate['value']) { ?>
 			<div class="contractor-value mb-1">
 				<span>Tổng giá trị:</span>
-				<span class="text-red fw-bold"><?php echo ($estimate['value']) ? esc_html(number_format($estimate['value'],0,'.',',')) : ''; ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
+				<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 			</div>
-			
+			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 				<?php
 				if($phone_number) {
@@ -109,10 +109,10 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
-					'value' => $estimate_value,
+					'value' => ($estimate_value!=0)?$estimate_value:'',
 					'unit' => $estimate_unit,
 					'zalo' => $estimate_zalo,
 					'attachment_id' => $estimate_attachment_id

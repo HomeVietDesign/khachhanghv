@@ -108,7 +108,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => false,
-			'menu_position'       => 5,
+			'menu_position'       => 15,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -267,6 +267,93 @@ class Custom_Types {
 		);
 		register_post_type( 'estimate', $args );
 
+		$labels = array(
+			'name'               => 'Đối tác',
+			'singular_name'      => 'Đối tác',
+			'add_new'            => 'Thêm mới Đối tác',
+			'add_new_item'       => 'Thêm mới Đối tác',
+			'edit_item'          => 'Sửa Đối tác',
+			'new_item'           => 'Đối tác mới',
+			'view_item'          => 'Xem Đối tác',
+			'search_items'       => 'Tìm Đối tác',
+			'not_found'          => 'Không có Đối tác nào',
+			'not_found_in_trash' => 'Không có Đối tác nào trong Thùng rác',
+			'parent_item_colon'  => 'Đối tác cấp trên:',
+			'menu_name'          => 'Đối tác',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 6,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'partner', $args );
+
+		$labels = array(
+			'name'               => 'Hồ sơ',
+			'singular_name'      => 'Hồ sơ',
+			'add_new'            => 'Thêm mới Hồ sơ',
+			'add_new_item'       => 'Thêm mới Hồ sơ',
+			'edit_item'          => 'Sửa Hồ sơ',
+			'new_item'           => 'Hồ sơ mới',
+			'view_item'          => 'Xem Hồ sơ',
+			'search_items'       => 'Tìm Hồ sơ',
+			'not_found'          => 'Không có Hồ sơ nào',
+			'not_found_in_trash' => 'Không có Hồ sơ nào trong Thùng rác',
+			'parent_item_colon'  => 'Hồ sơ cấp trên:',
+			'menu_name'          => 'Hồ sơ',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 6,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'document', $args );
 	}
 
 	/**
@@ -499,6 +586,58 @@ class Custom_Types {
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'estimate_cat', 'estimate', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm đối tác',
+			'singular_name'     => 'Nhóm đối tác',
+			'search_items'      => 'Tìm Nhóm đối tác',
+			'all_items'         => 'Tất cả Nhóm đối tác',
+			'edit_item'         => 'Sửa Nhóm đối tác',
+			'update_item'       => 'Cập nhật Nhóm đối tác',
+			'add_new_item'      => 'Thêm Nhóm đối tác mới',
+			'new_item_name'     => 'Nhóm đối tác mới',
+			'menu_name'         => 'Nhóm đối tác',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'partner_cat', 'partner', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm tài liệu',
+			'singular_name'     => 'Nhóm tài liệu',
+			'search_items'      => 'Tìm Nhóm tài liệu',
+			'all_items'         => 'Tất cả Nhóm tài liệu',
+			'edit_item'         => 'Sửa Nhóm tài liệu',
+			'update_item'       => 'Cập nhật Nhóm tài liệu',
+			'add_new_item'      => 'Thêm Nhóm tài liệu mới',
+			'new_item_name'     => 'Nhóm tài liệu mới',
+			'menu_name'         => 'Nhóm tài liệu',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'document_cat', 'document', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {

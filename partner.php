@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Khách hàng
+ * Template Name: Đối tác
  * 
  */
 $client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;

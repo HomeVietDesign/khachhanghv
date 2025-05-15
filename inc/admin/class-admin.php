@@ -12,6 +12,8 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-post.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-document.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-passwords.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-province.php';
@@ -20,6 +22,10 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_rating.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_class.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-partner_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-document_cat.php';
+
+		
 		//require_once THEME_DIR.'/inc/admin/class-admin-update-posts.php';
 
 		if(is_admin()) {

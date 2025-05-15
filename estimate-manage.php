@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dự toán HomeViet
+ * Template Name: Dự toán
  * 
  */
 $client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;

@@ -41,17 +41,27 @@ if( $estimate_cats && $client ) {
 						]);
 						if($estimates) {
 							foreach($estimates as $estimate_id) {
-								$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'url'=>''];
+								$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>''];
 								?>
 								<div class="col-lg-3 col-md-6 estimate-item mb-4">
-									<div class="estimate border border-dark h-100">
+									<div class="estimate estimate-<?=$estimate_id?> border border-dark h-100">
 										<div class="estimate-thumbnail position-relative">
 											<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
+											
 											<?php if(has_role('administrator')) { ?>
-											<button type="button" class="btn btn-sm btn-danger text-yellow fw-bold m-1 position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+											<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+												<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+												<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-1" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+											</div>
 											<?php } ?>
+
+											<div class="zalo-link position-absolute top-0 end-0 p-2">
+											<?php if($client_estimate['zalo']) { ?>
+												<a class="btn btn-sm btn-shadow" href="<?=esc_url($client_estimate['zalo'])?>" target="_blank">Zalo</a>
+											<?php } ?>
+											</div>
 										</div>
-										<div class="estimate-info estimate-info-<?=$estimate_id?> text-center px-1">
+										<div class="estimate-info text-center px-1">
 											<div class="estimate-title pt-3 mb-1 fs-5 text-uppercase">
 												<?php echo esc_html(get_the_title( $estimate_id )); ?>
 											</div>
