@@ -9,6 +9,9 @@ class Custom_Types {
 
 		if ( is_admin() ) {
 			add_action( 'admin_menu', [$this, '_admin_action_rename_menu'], 99 );
+
+			add_filter( 'parent_file', [$this, 'admin_menu_highlight'] );
+
 		}
 		
 		add_action( 'init', [$this, '_theme_action_register_taxonomy'], 10 );
@@ -19,6 +22,23 @@ class Custom_Types {
 		// đặt thứ tự hook là 9999 để có thể đảm bảo lần chỉnh cuối nhất
 		add_action( 'init', [$this, '_theme_action_change_object_content_labels'], 9999 );
 	
+	}
+
+	public function admin_menu_highlight($parent_file) {
+		global $pagenow, $taxonomy;
+
+		//debug_log($taxonomy);
+
+		if(($pagenow=='edit-tags.php' || $pagenow=='term.php') && $taxonomy=='passwords') {
+			$parent_file = 'edit-tags.php?taxonomy=passwords';
+		}
+
+		// if ( $pagenow == 'post.php')
+		// 	$parent_file = "post.php?post={$_REQUEST['post']}&action=edit";
+		// elseif($pagenow == 'post-new.php')
+		// 	$parent_file = "post-new.php?post_type={$_REQUEST['post_type']}";
+
+		return $parent_file;
 	}
 
 	/**
@@ -109,7 +129,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => false,
 			'menu_position'       => 15,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-media-text',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -197,7 +217,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 11,
-			'menu_icon'           => 'dashicons-edit-page',
+			'menu_icon'           => 'dashicons-groups',
 			'show_in_nav_menus'   => true,
 			'publicly_queryable'  => true, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -363,16 +383,26 @@ class Custom_Types {
 	public function _admin_action_rename_menu() {
 		global $menu, $submenu;
 
-		if ( isset( $menu[5] ) ) {
-			$menu[5][0] = 'Sản phẩm';
-		}
+		//debug_log($menu);
+
+		remove_menu_page( 'edit-comments.php' ); // ẩn menu Comments
+		remove_menu_page( 'edit.php' ); // ẩn menu Blog posts
+
+		// if ( isset( $menu[5] ) ) {
+		// 	// $menu[5][0] = 'Sản phẩm';
+		// }
+		
 		//debug_log($submenu);
+
 		if ( isset( $submenu['edit.php'] ) ) {
-			$submenu['edit.php'][5][0] = 'Xem tất cả';
-			$submenu['edit.php'][10][0] = 'Tạo Sản phẩm mới';
-			if(isset($submenu['edit.php'][16]))
-				unset($submenu['edit.php'][16]);
+			
+			// $submenu['edit.php'][5][0] = 'Xem tất cả';
+			// $submenu['edit.php'][10][0] = 'Tạo Sản phẩm mới';
+			// if(isset($submenu['edit.php'][16]))
+			// 	unset($submenu['edit.php'][16]);
 		}
+
+		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_categories', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 4 );
 	}
 
 	public function _theme_action_register_taxonomy() {
@@ -514,12 +544,12 @@ class Custom_Types {
 			'query_var'         => false,
 			'rewrite'           => false,
 			'public' => false,
+			'show_in_menu' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
 			'default_term' => ($default>0)?$default:$default_password
 			
 		);
-		
 		register_taxonomy( 'passwords', ['contractor_page'], $args );
 		
 		// our new 'format' taxonomy

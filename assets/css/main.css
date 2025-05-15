@@ -489,15 +489,7 @@ label[for="estimate_attachment"] {
 	background: #ff0;
 }
 @media (min-width: 375px) {
-	.get_designs_form {
-		font-size: 14px;
-	}
-	.order-premium-product {
-		font-size: 14px;
-	}
-	.order-product {
-		font-size: 14px;
-	}
+	
 }
 @media (min-width: 576px) {
 	
