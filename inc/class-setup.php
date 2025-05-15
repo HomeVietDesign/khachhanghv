@@ -273,7 +273,8 @@ class Setup {
 
 		add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
 
-		add_role( 'viewer', 'Theo dõi', array( 'read' => true, 'level_0' => true ) );
+		//remove_role( 'viewer' );
+		add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
 	}
 
 	public function query_post_type_for_search( $query ) {

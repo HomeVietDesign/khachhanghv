@@ -66,7 +66,9 @@ class Authentication {
 				  <input name="post_password" type="password" class="form-control" spellcheck="false">
 				  <button class="btn btn-primary" type="submit">Nhập</button>
 				</div>
+				<?php if(!is_user_logged_in()) { ?>
 				<p>Hoặc - <a href="<?php echo esc_url(wp_login_url( fw_current_url() )); ?>">Đăng nhập quản lý</a></p>
+				<?php } ?>
 			</div>
 		</form>
 		<?php
