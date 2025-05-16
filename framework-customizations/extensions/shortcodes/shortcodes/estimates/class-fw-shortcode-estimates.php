@@ -28,6 +28,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$default_estimate = [
 				'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 				'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
+				'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
 				'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
 			];
 
@@ -36,6 +37,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
+			if(empty($estimate['zalo'])) $estimate['zalo'] = $default_estimate['zalo'];
 			if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 			$phone_number = get_post_meta($contractor_id, '_phone_number', true);
@@ -76,9 +78,11 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 				if($estimate['attachment_id']) {
 					$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
+					if($attachment_url){
 					?>
 					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 					<?php
+					}
 				}
 
 				?>
@@ -100,7 +104,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		if(has_role('administrator') && check_ajax_referer( 'edit-estimate', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
-			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):'';
+			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):0;
 			$estimate_value = isset($_POST['estimate_value'])?absint(str_replace(',', '', $_POST['estimate_value'])):0;
 			$estimate_unit = isset($_POST['estimate_unit'])?sanitize_text_field($_POST['estimate_unit']):'';
 			$estimate_zalo = isset($_POST['estimate_zalo'])?sanitize_text_field($_POST['estimate_zalo']):'';
@@ -115,7 +119,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					'value' => ($estimate_value!=0)?$estimate_value:'',
 					'unit' => $estimate_unit,
 					'zalo' => $estimate_zalo,
-					'attachment_id' => $estimate_attachment_id
+					'attachment_id' => ($estimate_attachment_id!=0)?$estimate_attachment_id:''
 				];
 
 				// tải lên file dự toán
@@ -171,7 +175,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="URL nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
+					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
@@ -188,7 +192,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							<span class="input-group-text">Bấm tải lên</span>
 						</span>
 						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="estimate_attachment" name="estimate_attachment" accept="image/*,.pdf" class="form-control">
+							<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".pdf" class="form-control">
 						</div>
 					</label>
 				</div>

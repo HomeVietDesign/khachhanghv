@@ -24,8 +24,20 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 		];
 
 		if($estimate_client && $estimate_id) {
+			$default_estimate = [
+				'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
+				'unit' => fw_get_db_post_option($estimate_id,'estimate_unit'),
+				'zalo' => fw_get_db_post_option($estimate_id,'estimate_zalo'),
+				'url' => fw_get_db_post_option($estimate_id,'estimate_url')
+			];
+
 			$client_estimates = get_term_meta($estimate_client, '_estimates', true);
-			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'zalo'=>'', 'url'=>''];
+			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+
+			if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
+			if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
+			if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
+			if(empty($client_estimate['url'])) $client_estimate['url'] = $default_estimate['url'];
 
 			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
 
@@ -38,6 +50,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			<div class="estimate-value mb-1">
 				<span>Tổng giá trị:</span>
 				<span class="text-red fw-bold"><?php echo esc_html(number_format($client_estimate['value'],0,'.',',')); ?></span>
+				<span class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></span>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center estimate-url mb-3">
@@ -66,16 +79,18 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_id = isset($_POST['estimate_id'])?absint($_POST['estimate_id']):0;
 			$estimate_client_value = isset($_POST['estimate_client_value'])?absint(str_replace(',', '', $_POST['estimate_client_value'])):0;
+			$estimate_client_unit = isset($_POST['estimate_client_unit'])?sanitize_text_field($_POST['estimate_client_unit']):'';
 			$estimate_client_zalo = isset($_POST['estimate_client_zalo'])?sanitize_text_field($_POST['estimate_client_zalo']):'';
 			$estimate_client_url = isset($_POST['estimate_client_url'])?sanitize_url($_POST['estimate_client_url']):'';
 			
 			if($estimate_client && $estimate_id) {
 				$client_estimates = get_term_meta($estimate_client, '_estimates', true);
 				if(empty($client_estimates)) $client_estimates = [];
-				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>''];
+				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
 				$new_client_estimate = [
 					'value' => ($estimate_client_value!=0)?$estimate_client_value:'',
+					'unit' => $estimate_client_unit,
 					'zalo' => $estimate_client_zalo,
 					'url' => $estimate_client_url
 				];
@@ -111,10 +126,13 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 					<input type="text" id="estimate_client_value" name="estimate_client_value" placeholder="Giá trị" class="form-control text-center" value="<?php echo ($client_estimate['value'])?esc_attr(number_format(absint($client_estimate['value']),0,'.',',')):''; ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_zalo" name="estimate_client_zalo" placeholder="URL nhóm zalo" class="form-control text-center" value="<?php echo esc_attr($client_estimate['zalo']); ?>">
+					<input type="text" id="estimate_client_unit" name="estimate_client_unit" placeholder="Đơn vị" class="form-control text-center" value="<?php echo esc_attr($client_estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_url" name="estimate_client_url" placeholder="URL dự toán" class="form-control text-center" value="<?php echo ($client_estimate['url'])?esc_url($client_estimate['url']):''; ?>">
+					<input type="text" id="estimate_client_zalo" name="estimate_client_zalo" placeholder="Link nhóm zalo" class="form-control text-center" value="<?php echo esc_attr($client_estimate['zalo']); ?>">
+				</div>
+				<div class="mb-3">
+					<input type="text" id="estimate_client_url" name="estimate_client_url" placeholder="Link dự toán" class="form-control text-center" value="<?php echo ($client_estimate['url'])?esc_url($client_estimate['url']):''; ?>">
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-estimate-manage-submit">Lưu lại</button>

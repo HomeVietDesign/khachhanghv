@@ -76,7 +76,7 @@ class Admin_Estimate {
         ,   'estimate'            // Screen, empty to support all post types
         ,   'normal'      // Context
         );
-
+		/*
         add_meta_box(
             'postexcerpt2'     // Reusing just 'postexcerpt' doesn't work.
         ,   'URL dự toán'    // Title
@@ -85,6 +85,7 @@ class Admin_Estimate {
         ,   'normal'          // Context
         ,   'core'            // Priority
         );
+        */
 	}
 
 	public function postexcerpt2( $post ) {

@@ -54,6 +54,7 @@ if($contractor_cats && $client) {
 										$default_estimate = [
 											'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 											'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
+											'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
 											'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
 										];
 
@@ -63,6 +64,7 @@ if($contractor_cats && $client) {
 										
 										if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 										if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
+										if(empty($estimate['zalo'])) $estimate['zalo'] = $default_estimate['zalo'];
 										if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 										$phone_number = get_post_meta($contractor_id, '_phone_number', true);
@@ -100,9 +102,11 @@ if($contractor_cats && $client) {
 															?>
 														</div>
 													</div>
-													<?php if($estimate['value']!='') { ?>													<div class="contractor-value mb-1">
+													<?php if($estimate['value']!='') { ?>
+													<div class="contractor-value mb-1">
 														<span>Tổng giá trị: </span>
-														<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
+														<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span>
+														<span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 													</div>
 													<?php } ?>
 													<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
@@ -115,9 +119,11 @@ if($contractor_cats && $client) {
 
 														if($estimate['attachment_id']) {
 															$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
+															if($attachment_url) {
 															?>
 															<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 															<?php
+															}
 														}
 														?>
 													</div>

@@ -41,7 +41,20 @@ if( $estimate_cats && $client ) {
 						]);
 						if($estimates) {
 							foreach($estimates as $estimate_id) {
+								$default_estimate = [
+									'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
+									'unit' => fw_get_db_post_option($estimate_id,'estimate_unit'),
+									'zalo' => fw_get_db_post_option($estimate_id,'estimate_zalo'),
+									'url' => fw_get_db_post_option($estimate_id,'estimate_url')
+								];
+
 								$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>''];
+
+								if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
+								if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
+								if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
+								if(empty($client_estimate['url'])) $client_estimate['url'] = $default_estimate['url'];
+
 								?>
 								<div class="col-lg-3 col-md-6 estimate-item mb-4">
 									<div class="estimate estimate-<?=$estimate_id?> border border-dark h-100">
@@ -69,6 +82,7 @@ if( $estimate_cats && $client ) {
 											<div class="estimate-value mb-1">
 												<span>Tổng giá trị:</span>
 												<span class="text-red fw-bold"><?php echo esc_html(number_format($client_estimate['value'],0,'.',',')); ?></span>
+												<span class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></span>
 											</div>
 											<?php } ?>
 											<div class="d-flex flex-wrap justify-content-center estimate-url mb-3">

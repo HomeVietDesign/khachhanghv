@@ -280,7 +280,7 @@ class Custom_Types {
 				'title',
 				'thumbnail',
 				//'editor',
-				'excerpt',
+				//'excerpt',
 				//'revisions',
 				//'page-attributes',
 			),

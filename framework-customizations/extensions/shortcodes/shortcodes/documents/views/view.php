@@ -41,11 +41,21 @@ if($document_cats && $client) {
 					]);
 					if($documents) {
 						foreach($documents as $document_id) {
+							$default_attachment = fw_get_db_post_option($document_id,'document_attachment');
+							$default_data = [
+								'value' => fw_get_db_post_option($document_id,'document_value'),
+								'unit' => fw_get_db_post_option($document_id,'document_unit'),
+								'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
+								'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+							];
 
 							$data = get_post_meta($document_id, '_data', true);
 							$document_data = isset($data[$client->term_id])?$data[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
-
-							$phone_number = get_post_field( 'post_excerpt', $document_id );
+							
+							if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
+							if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
+							if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
+							if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 							
 							?>
 							<div class="col-lg-3 col-md-6 document-item mb-4">
@@ -76,17 +86,13 @@ if($document_cats && $client) {
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center document-links mb-3">
 											<?php
-											if($phone_number) {
-												?>
-												<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
-												<?php
-											}
-
 											if($document_data['attachment_id']) {
 												$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
+												if($attachment_url) {
 												?>
 												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 												<?php
+												}
 											}
 											?>
 										</div>

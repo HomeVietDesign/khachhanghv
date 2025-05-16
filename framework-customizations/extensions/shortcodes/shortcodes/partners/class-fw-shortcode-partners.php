@@ -24,9 +24,21 @@ class FW_Shortcode_Partners extends FW_Shortcode
 		];
 		
 		if($client && $partner_id) {
+			$default_attachment = fw_get_db_post_option($partner_id,'estimate_attachment');
+			$default_data = [
+				'value' => fw_get_db_post_option($partner_id,'estimate_value'),
+				'unit' => fw_get_db_post_option($partner_id,'estimate_unit'),
+				'zalo' => fw_get_db_post_option($partner_id,'estimate_zalo'),
+				'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+			];
 
 			$data = get_post_meta($partner_id, '_data', true);
 			$partner_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+
+			if(empty($partner_data['value'])) $partner_data['value'] = $default_data['value'];
+			if(empty($partner_data['unit'])) $partner_data['unit'] = $default_data['unit'];
+			if(empty($partner_data['zalo'])) $partner_data['zalo'] = $default_data['zalo'];
+			if(empty($partner_data['attachment_id'])) $partner_data['attachment_id'] = $default_data['attachment_id'];
 
 			$phone_number = get_post_field( 'post_excerpt', $partner_id );
 
@@ -51,11 +63,13 @@ class FW_Shortcode_Partners extends FW_Shortcode
 					<?php
 				}
 
-				if($partner_data['attachment_id']) {
+				if($partner_data['attachment_id']>0) {
 					$attachment_url = wp_get_attachment_url($partner_data['attachment_id']);
+					if($attachment_url) {
 					?>
 					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 					<?php
+					}
 				}
 				?>
 			</div>
@@ -164,7 +178,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 							<span class="input-group-text">Bấm tải lên</span>
 						</span>
 						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="partner_attachment" name="partner_attachment" accept="image/*,.pdf" class="form-control">
+							<input type="file" id="partner_attachment" name="partner_attachment" accept=".pdf" class="form-control">
 						</div>
 					</label>
 				</div>

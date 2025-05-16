@@ -24,11 +24,21 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		];
 		
 		if($client && $document_id) {
+			$default_attachment = fw_get_db_post_option($document_id,'document_attachment');
+			$default_data = [
+				'value' => fw_get_db_post_option($document_id,'document_value'),
+				'unit' => fw_get_db_post_option($document_id,'document_unit'),
+				'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
+				'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+			];
 
 			$data = get_post_meta($document_id, '_data', true);
 			$document_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
-			$phone_number = get_post_field( 'post_excerpt', $document_id );
+			if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
+			if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
+			if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
+			if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
 
@@ -45,17 +55,13 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center document-links mb-3">
 				<?php
-				if($phone_number) {
-					?>
-					<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
-					<?php
-				}
-
 				if($document_data['attachment_id']) {
 					$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
+					if($attachment_url) {
 					?>
 					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 					<?php
+					}
 				}
 				?>
 			</div>
@@ -164,7 +170,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 							<span class="input-group-text">Bấm tải lên</span>
 						</span>
 						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="document_attachment" name="document_attachment" accept="image/*,.pdf" class="form-control">
+							<input type="file" id="document_attachment" name="document_attachment" accept=".pdf,.rar,.zip" class="form-control">
 						</div>
 					</label>
 				</div>

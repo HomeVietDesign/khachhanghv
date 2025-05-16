@@ -41,9 +41,21 @@ if($partner_cats && $client) {
 					]);
 					if($partners) {
 						foreach($partners as $partner_id) {
+							$default_attachment = fw_get_db_post_option($partner_id,'estimate_attachment');
+							$default_data = [
+								'value' => fw_get_db_post_option($partner_id,'estimate_value'),
+								'unit' => fw_get_db_post_option($partner_id,'estimate_unit'),
+								'zalo' => fw_get_db_post_option($partner_id,'estimate_zalo'),
+								'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+							];
 
 							$data = get_post_meta($partner_id, '_data', true);
 							$partner_data = isset($data[$client->term_id])?$data[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+
+							if(empty($partner_data['value'])) $partner_data['value'] = $default_data['value'];
+							if(empty($partner_data['unit'])) $partner_data['unit'] = $default_data['unit'];
+							if(empty($partner_data['zalo'])) $partner_data['zalo'] = $default_data['zalo'];
+							if(empty($partner_data['attachment_id'])) $partner_data['attachment_id'] = $default_data['attachment_id'];
 
 							$phone_number = get_post_field( 'post_excerpt', $partner_id );
 							
@@ -71,7 +83,8 @@ if($partner_cats && $client) {
 										<?php if($partner_data['value']!='') { ?>
 										<div class="partner-value mb-1">
 											<span>Tổng giá trị: </span>
-											<span class="text-red fw-bold"><?php echo  esc_html(number_format($partner_data['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
+											<span class="text-red fw-bold"><?php echo  esc_html(number_format($partner_data['value'],0,'.',',')); ?></span>
+											<span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
 										</div>
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center partner-links mb-3">
@@ -82,11 +95,13 @@ if($partner_cats && $client) {
 												<?php
 											}
 
-											if($partner_data['attachment_id']) {
+											if($partner_data['attachment_id']>0) {
 												$attachment_url = wp_get_attachment_url($partner_data['attachment_id']);
+												if($attachment_url) {
 												?>
 												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
 												<?php
+												}
 											}
 											?>
 										</div>

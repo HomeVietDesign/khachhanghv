@@ -21,6 +21,10 @@ $options = array(
 				'label' => 'Đơn vị',
 				'type' => 'text'
 			),
+			'estimate_zalo' => array(
+				'label' => 'Link nhóm zalo',
+				'type' => 'text'
+			),
 			'estimate_attachment' => array(
 				'label' => 'File pdf dự toán',
 				'type' => 'upload',
