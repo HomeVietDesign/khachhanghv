@@ -113,7 +113,6 @@ class Assets {
 			}
 		}
 
-
 		$data = [
 			'home_url'=>esc_url(home_url()), 
 			'ajax_url'=>esc_url(admin_url('admin-ajax.php')),

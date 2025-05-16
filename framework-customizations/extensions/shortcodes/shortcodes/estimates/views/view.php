@@ -60,7 +60,6 @@ if($contractor_cats && $client) {
 
 										$estimates = get_post_meta($contractor_id, '_estimates', true);
 										$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
-
 										
 										if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 										if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
