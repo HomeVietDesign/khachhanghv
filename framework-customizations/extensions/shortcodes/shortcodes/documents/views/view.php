@@ -70,7 +70,7 @@ if($document_cats && $client) {
 										<?php } ?>
 										<div class="zalo-link position-absolute top-0 end-0 p-2">
 										<?php if($document_data['zalo']) { ?>
-											<a class="btn btn-sm btn-shadow" href="<?=esc_url($document_data['zalo'])?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($document_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 									</div>
@@ -81,7 +81,7 @@ if($document_cats && $client) {
 										<?php if($document_data['value']!='') { ?>
 										<div class="document-value mb-1">
 											<span>Tổng giá trị: </span>
-											<span class="text-red fw-bold"><?php echo esc_html(number_format($document_data['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($document_data['unit']); ?></span>
+											<span class="text-red fw-bold"><?php echo esc_html($document_data['value']); ?></span><span class="text-red"> <?php echo esc_html($document_data['unit']); ?></span>
 										</div>
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center document-links mb-3">

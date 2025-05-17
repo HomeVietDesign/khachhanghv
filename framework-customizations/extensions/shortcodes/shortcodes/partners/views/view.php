@@ -72,7 +72,7 @@ if($partner_cats && $client) {
 										<?php } ?>
 										<div class="zalo-link position-absolute top-0 end-0 p-2">
 										<?php if($partner_data['zalo']) { ?>
-											<a class="btn btn-sm btn-shadow" href="<?=esc_url($partner_data['zalo'])?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($partner_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 									</div>
@@ -83,7 +83,7 @@ if($partner_cats && $client) {
 										<?php if($partner_data['value']!='') { ?>
 										<div class="partner-value mb-1">
 											<span>Tổng giá trị: </span>
-											<span class="text-red fw-bold"><?php echo  esc_html(number_format($partner_data['value'],0,'.',',')); ?></span>
+											<span class="text-red fw-bold"><?php echo esc_html($partner_data['value']); ?></span>
 											<span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
 										</div>
 										<?php } ?>

@@ -39,7 +39,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
 			if(empty($client_estimate['url'])) $client_estimate['url'] = $default_estimate['url'];
 
-			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
 
 			ob_start();
 		?>
@@ -49,7 +49,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			<?php if($client_estimate['value']) { ?>
 			<div class="estimate-value mb-1">
 				<span>Tổng giá trị:</span>
-				<span class="text-red fw-bold"><?php echo esc_html(number_format($client_estimate['value'],0,'.',',')); ?></span>
+				<span class="text-red fw-bold"><?php echo esc_html($client_estimate['value']); ?></span>
 				<span class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></span>
 			</div>
 			<?php } ?>
@@ -78,7 +78,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 		if(has_role('administrator') && check_ajax_referer( 'edit-estimate-manage', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_id = isset($_POST['estimate_id'])?absint($_POST['estimate_id']):0;
-			$estimate_client_value = isset($_POST['estimate_client_value'])?absint(str_replace(',', '', $_POST['estimate_client_value'])):0;
+			$estimate_client_value = isset($_POST['estimate_client_value'])?sanitize_text_field($_POST['estimate_client_value']):'';
 			$estimate_client_unit = isset($_POST['estimate_client_unit'])?sanitize_text_field($_POST['estimate_client_unit']):'';
 			$estimate_client_zalo = isset($_POST['estimate_client_zalo'])?sanitize_text_field($_POST['estimate_client_zalo']):'';
 			$estimate_client_url = isset($_POST['estimate_client_url'])?sanitize_url($_POST['estimate_client_url']):'';
@@ -89,7 +89,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
 				$new_client_estimate = [
-					'value' => ($estimate_client_value!=0)?$estimate_client_value:'',
+					'value' => $estimate_client_value,
 					'unit' => $estimate_client_unit,
 					'zalo' => $estimate_client_zalo,
 					'url' => $estimate_client_url
@@ -123,7 +123,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate-manage', 'nonce' ); ?>
 				<div id="edit-estimate-manage-response"></div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_value" name="estimate_client_value" placeholder="Giá trị" class="form-control text-center" value="<?php echo ($client_estimate['value'])?esc_attr(number_format(absint($client_estimate['value']),0,'.',',')):''; ?>">
+					<input type="text" id="estimate_client_value" name="estimate_client_value" placeholder="Giá trị" class="form-control text-center" value="<?php echo esc_attr($client_estimate['value']); ?>">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_client_unit" name="estimate_client_unit" placeholder="Đơn vị" class="form-control text-center" value="<?php echo esc_attr($client_estimate['unit']); ?>">

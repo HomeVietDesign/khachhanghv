@@ -84,7 +84,7 @@ if($contractor_cats && $client) {
 													<?php } ?>
 													<div class="zalo-link position-absolute top-0 end-0 p-2">
 													<?php if($estimate['zalo']) { ?>
-														<a class="btn btn-sm btn-shadow" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
+														<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 													<?php } ?>
 													</div>
 												</div>
@@ -104,7 +104,7 @@ if($contractor_cats && $client) {
 													<?php if($estimate['value']!='') { ?>
 													<div class="contractor-value mb-1">
 														<span>Tổng giá trị: </span>
-														<span class="text-red fw-bold"><?php echo  esc_html(number_format($estimate['value'],0,'.',',')); ?></span>
+														<span class="text-red fw-bold"><?php echo  esc_html($estimate['value']); ?></span>
 														<span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
 													</div>
 													<?php } ?>

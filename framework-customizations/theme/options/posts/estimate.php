@@ -15,7 +15,7 @@ $options = array(
         'options' => array(
         	'estimate_value' => array(
 				'label' => 'Giá trị',
-				'type' => 'numeric'
+				'type' => 'text'
 			),
 			'estimate_unit' => array(
 				'label' => 'Đơn vị',

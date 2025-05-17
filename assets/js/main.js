@@ -407,7 +407,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					$body.find('#estimate_value').inputNumber({'negative':false});
+					//$body.find('#estimate_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -509,7 +509,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					$body.find('#estimate_client_value').inputNumber({'negative':false});
+					//$body.find('#estimate_client_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -596,7 +596,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					$body.find('#partner_value').inputNumber({'negative':false});
+					//$body.find('#partner_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -698,7 +698,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					$body.find('#document_value').inputNumber({'negative':false});
+					//$body.find('#document_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');

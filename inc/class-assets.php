@@ -89,7 +89,7 @@ class Assets {
 			'imagesloaded',
 			'isotope',
 			'select2',
-			'jquery-input-number',
+			//'jquery-input-number',
 			//'lodash',
 		];
 		if(is_single()) {

@@ -15,7 +15,7 @@ $options = array(
         'options' => array(
         	'document_value' => array(
 				'label' => 'Giá trị',
-				'type' => 'numeric'
+				'type' => 'text'
 			),
 			'document_unit' => array(
 				'label' => 'Đơn vị',

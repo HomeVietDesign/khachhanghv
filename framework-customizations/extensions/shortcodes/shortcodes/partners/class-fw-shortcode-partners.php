@@ -42,7 +42,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 
 			$phone_number = get_post_field( 'post_excerpt', $partner_id );
 
-			$response['zalo'] = ($partner_data['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($partner_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['zalo'] = ($partner_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($partner_data['zalo']).'" target="_blank">Zalo</a>':'';
 
 			ob_start();
 		?>
@@ -52,7 +52,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 			<?php if($partner_data['value']!='') { ?>
 			<div class="partner-value mb-1">
 				<span>Tổng giá trị: </span>
-				<span class="text-red fw-bold"><?php echo  esc_html(number_format($partner_data['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
+				<span class="text-red fw-bold"><?php echo esc_html($partner_data['value']); ?></span><span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center partner-links mb-3">
@@ -91,7 +91,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 			$partner_client = isset($_POST['partner_client'])?absint($_POST['partner_client']):0;
 			$partner_id = isset($_POST['partner_id'])?absint($_POST['partner_id']):0;
 			$partner_attachment_id = isset($_POST['partner_attachment_id'])?absint($_POST['partner_attachment_id']):'';
-			$partner_value = isset($_POST['partner_value'])?absint(str_replace(',', '', $_POST['partner_value'])):0;
+			$partner_value = isset($_POST['partner_value'])?sanitize_text_field($_POST['partner_value']):'';
 			$partner_unit = isset($_POST['partner_unit'])?sanitize_text_field($_POST['partner_unit']):'';
 			$partner_zalo = isset($_POST['partner_zalo'])?sanitize_text_field($_POST['partner_zalo']):'';
 			$partner_attachment = isset($_FILES['partner_attachment']) ? $_FILES['partner_attachment'] : null;
@@ -102,7 +102,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 				$partner_data = isset($data[$partner_client])?$data[$partner_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 				$new_partner_data = [
-					'value' => ($partner_value!=0)?$partner_value:'',
+					'value' => $partner_value,
 					'unit' => $partner_unit,
 					'zalo' => $partner_zalo,
 					'attachment_id' => $partner_attachment_id
@@ -155,7 +155,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-partner', 'nonce' ); ?>
 				<div id="edit-partner-response"></div>
 				<div class="mb-3">
-					<input type="text" id="partner_value" name="partner_value" placeholder="Giá trị" class="form-control" value="<?php echo ($partner_data['value'])?esc_attr(number_format(absint($partner_data['value']),0,'.',',')):''; ?>">
+					<input type="text" id="partner_value" name="partner_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($partner_data['value']); ?>">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="partner_unit" name="partner_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($partner_data['unit']); ?>">

@@ -40,7 +40,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
 			if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 
-			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
 
 			ob_start();
 		?>
@@ -50,7 +50,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			<?php if($document_data['value']!='') { ?>
 			<div class="document-value mb-1">
 				<span>Tổng giá trị: </span>
-				<span class="text-red fw-bold"><?php echo esc_html(number_format($document_data['value'],0,'.',',')); ?></span><span class="text-red"> <?php echo esc_html($document_data['unit']); ?></span>
+				<span class="text-red fw-bold"><?php echo esc_html($document_data['value']); ?></span><span class="text-red"> <?php echo esc_html($document_data['unit']); ?></span>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center document-links mb-3">
@@ -83,7 +83,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_client = isset($_POST['document_client'])?absint($_POST['document_client']):0;
 			$document_id = isset($_POST['document_id'])?absint($_POST['document_id']):0;
 			$document_attachment_id = isset($_POST['document_attachment_id'])?absint($_POST['document_attachment_id']):'';
-			$document_value = isset($_POST['document_value'])?absint(str_replace(',', '', $_POST['document_value'])):0;
+			$document_value = isset($_POST['document_value'])?sanitize_text_field($_POST['document_value']):'';
 			$document_unit = isset($_POST['document_unit'])?sanitize_text_field($_POST['document_unit']):'';
 			$document_zalo = isset($_POST['document_zalo'])?sanitize_text_field($_POST['document_zalo']):'';
 			$document_attachment = isset($_FILES['document_attachment']) ? $_FILES['document_attachment'] : null;
@@ -94,7 +94,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				$document_data = isset($data[$document_client])?$data[$document_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 				$new_document_data = [
-					'value' => ($document_value!=0)?$document_value:'',
+					'value' => $document_value,
 					'unit' => $document_unit,
 					'zalo' => $document_zalo,
 					'attachment_id' => $document_attachment_id
@@ -147,7 +147,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-document', 'nonce' ); ?>
 				<div id="edit-document-response"></div>
 				<div class="mb-3">
-					<input type="text" id="document_value" name="document_value" placeholder="Giá trị" class="form-control" value="<?php echo ($document_data['value'])?esc_attr(number_format(absint($document_data['value']),0,'.',',')):''; ?>">
+					<input type="text" id="document_value" name="document_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($document_data['value']); ?>">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="document_unit" name="document_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($document_data['unit']); ?>">
