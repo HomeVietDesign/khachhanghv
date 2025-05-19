@@ -12,7 +12,7 @@ class Query {
 		//add_filter( 'posts_request', [$this, 'debug_request'], 10, 2 );
 
 		add_filter( 'posts_clauses', [$this, 'custom_fields_search'], 10, 2 );
-		add_filter( 'posts_clauses', [$this, 'post_name_search'], 10, 2 );
+		//add_filter( 'posts_clauses', [$this, 'post_name_search'], 10, 2 );
 
 	}
 

@@ -11,7 +11,6 @@ class Assets {
 
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 50);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 50);
-		//add_action('wp_enqueue_scripts', [$this, 'recaptcha_script'], 21);
 
 	}
 
@@ -30,8 +29,6 @@ class Assets {
 
 		wp_dequeue_style( 'font-awesome' );
 
-		//wp_register_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Arizonia&family=Fahkwang:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=Marmelad&family=Mea+Culpa&family=Water+Brush&display=swap' );
-		
 		wp_register_style( 'bootstrap', THEME_URI.'/libs/bootstrap/css/bootstrap.min.css', [], '5.1.3' );
 
 		wp_register_style( 'owlcarousel', THEME_URI.'/libs/owlcarousel/assets/owl.carousel.min.css', [], '2.3.4' );
@@ -42,25 +39,7 @@ class Assets {
 			$deps[] = 'owlcarousel';
 		}
 
-		wp_enqueue_style( 'TranSon', THEME_URI.'/assets/css/main.css', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/css/main.css')) );
-	}
-
-	public static function recaptcha_script() {
-		$recaptcha_keys = Common::get_recaptcha_keys();
-
-		if(!$recaptcha_keys['ctf7'] && $recaptcha_keys['sitekey']!='' && !wp_script_is('google-recaptcha', 'registered')) {
-			wp_enqueue_script( 'google-recaptcha',
-				add_query_arg(
-					[ 'render' => $recaptcha_keys['sitekey'] ],
-					'https://www.google.com/recaptcha/api.js'
-				),
-				[],
-				'3.0',
-				true
-			);
-		}
-
-
+		wp_enqueue_style( 'khhv', THEME_URI.'/assets/css/main.css', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/css/main.css')) );
 	}
 
 	public static function enqueue_scripts() {
@@ -73,8 +52,6 @@ class Assets {
 	    wp_dequeue_style( 'wc-block-style' ); // Remove WooCommerce block CSS
 
 	    //wp_enqueue_script('lodash');
-
-		//$recaptcha_keys = Common::get_recaptcha_keys();
 
 		wp_register_script( 'bootstrap', THEME_URI.'/libs/bootstrap/js/bootstrap.bundle.min.js', ['jquery'], '5.1.3', true);
 
@@ -96,7 +73,7 @@ class Assets {
 			$deps[] = 'owlcarousel';
 		}
 	
-		wp_enqueue_script( 'TranSon', THEME_URI.'/assets/js/main.js', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/js/main.js')), true);
+		wp_enqueue_script( 'khhv', THEME_URI.'/assets/js/main.js', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/js/main.js')), true);
 
 		$provinces = get_terms([
 			'taxonomy' => 'province',

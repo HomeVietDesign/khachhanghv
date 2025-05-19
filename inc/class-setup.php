@@ -25,21 +25,9 @@ class Setup {
 		add_action( 'wp_loaded', [$this, 'wp_loaded'], 10 );
 		add_action( 'admin_init', [$this, 'ajax_set_global_view'], 10 );
 		add_action( 'template_redirect', [$this, 'set_global_view'], 5 );
-
-		if(has_role('administrator')) {
-			//add_action( 'template_redirect', [$this, 'redirect_first_province'], 0 );
-		}
 		
-		if(!is_admin()) {
-			//add_filter( 'wp_headers', [$this, 'wp_headers'], 10, 2 );
-		}
 	}
 
-	public function wp_headers( $headers, $wp ) {
-		$headers['x-powered-by'] = 'X88';
-
-		return $headers;
-	}
 
 	public function fix_rar_mime_type($mime_types) {
 		if(isset($mime_types['rar'])) {
@@ -187,16 +175,7 @@ class Setup {
 		return $post_link;
 	}
 
-	public function redirect_first_province() {
-		if(is_singular( 'contractor_page' )) {
-			global $current_province, $default_province;
-			if(!$current_province && $default_province) {
-				wp_safe_redirect( get_permalink() );
-				exit;
-			}
-		}
-	}
-	
+
 	public function after_setup_theme() {
 		global $popup;
 		$popup = isset($_REQUEST['popup']) ? true : false;
@@ -271,7 +250,7 @@ class Setup {
 
 		add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
-		add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
+		//add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
 
 		//remove_role( 'viewer' );
 		add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );

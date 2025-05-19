@@ -65,7 +65,8 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			<?php if($estimate['value']) { ?>
 			<div class="contractor-value mb-1">
 				<span>Tổng giá trị:</span>
-				<span class="text-red fw-bold"><?php echo  esc_html($estimate['value']); ?></span><span class="text-red"> <?php echo esc_html($estimate['unit']); ?></span>
+				<span class="text-red fw-bold"><?php echo  esc_html($estimate['value']); ?></span>
+				<div class="text-red"><?php echo esc_html($estimate['unit']); ?></div>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
@@ -172,7 +173,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">

@@ -12,11 +12,11 @@ class Head {
 
 
 	public function noindex() {
-		if(is_singular( 'contractor' ) || is_singular( 'contractor_page' ) || is_tax('contractor_cat')) {
+		//if(is_singular( 'contractor' ) || is_singular( 'contractor_page' ) || is_tax('contractor_cat')) {
 		?>
 		<meta name="robots" content="noindex, nofollow" />
 		<?php
-		}
+		//}
 	}
 
 	public static function head_scripts() {

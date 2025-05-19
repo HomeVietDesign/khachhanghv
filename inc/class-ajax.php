@@ -6,8 +6,6 @@ class Ajax {
 	private static $instance = null;
 
 	private function __construct() {
-		add_action('wp_ajax_posts_masonry_loadmore', [$this, 'posts_masonry_loadmore']);
-		add_action('wp_ajax_nopriv_posts_masonry_loadmore', [$this, 'posts_masonry_loadmore']);
 
 		add_action('wp_ajax_url_delete_cache', [$this, 'ajax_url_delete_cache']);
 		add_action('wp_ajax_nopriv_url_delete_cache', [$this, 'ajax_url_delete_cache']);
@@ -55,59 +53,6 @@ class Ajax {
 		$url = isset($_REQUEST['url']) ? $_REQUEST['url'] : '';
 		if($url) wp_remote_request($url, ['method'=>'PURGE']);
 		exit;
-	}
-
-	public function posts_masonry_loadmore() {
-		$cat = isset($_REQUEST['cat']) ? absint($_REQUEST['cat']) : 0;
-		$location = isset($_REQUEST['local']) ? absint($_REQUEST['local']) : 0;
-		$catexc = isset($_REQUEST['catexc']) ? array_map('absint', $_REQUEST['catexc']) : [];
-		$page = isset($_REQUEST['page']) ? absint($_REQUEST['page']) : 0;
-		$per = isset($_REQUEST['per']) ? absint($_REQUEST['per']) : 12;
-		$ex = isset($_REQUEST['ex']) ? absint($_REQUEST['ex']) : 0;
-
-		$args = [
-			'post_type' => 'post',
-			'posts_per_page' => $per,
-			'paged' => $page,
-			'post_status' => 'publish'
-		];
-
-		if($cat) {
-			$args['cat'] = $cat;
-		}
-
-		if($location) {
-			$args['tax_query'] = [
-				'location' => [
-					'taxonomy' => 'location',
-					'field' => 'term_id',
-					'terms' => $location
-				]
-			];
-		}
-
-		if($catexc) {
-			$args['category__not_in'] = $catexc;
-		}
-
-		if($ex) {
-			$args['post__not_in'] = [$ex];
-		}
-
-		//debug_log($args);
-
-		$query = new \WP_Query($args);
-
-		//debug_log($query->request);
-
-		if($query->have_posts()) {
-			while($query->have_posts()) {
-				$query->the_post();
-				get_template_part('post', 'loop');
-			}
-		}
-		wp_reset_postdata();
-		die;
 	}
 
 	public static function instance() {

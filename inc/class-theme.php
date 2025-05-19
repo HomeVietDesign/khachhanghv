@@ -13,8 +13,6 @@ class Theme {
 
 		include_once THEME_DIR.'/inc/class-custom-types.php';
 		//include_once THEME_DIR.'/inc/class-background-process.php';
-		//include_once THEME_DIR.'/inc/class-customer.php';
-		//include_once THEME_DIR.'/inc/class-order.php';
 
 		if(class_exists('\\FileBird\\Plugin')) {
 			include_once THEME_DIR.'/inc/filebird/class-filebird.php';

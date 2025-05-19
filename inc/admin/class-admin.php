@@ -7,9 +7,9 @@ class Admin {
 
 	private function __construct() {
 
-		require_once THEME_DIR.'/inc/simplehtmldom/simple_html_dom.php';
-		require_once THEME_DIR.'/inc/admin/class-select-post-export.php';
-		require_once THEME_DIR.'/inc/admin/class-admin-post.php';
+		// require_once THEME_DIR.'/inc/simplehtmldom/simple_html_dom.php';
+		// require_once THEME_DIR.'/inc/admin/class-select-post-export.php';
+
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-partner.php';

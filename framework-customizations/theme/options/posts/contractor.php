@@ -18,7 +18,7 @@ $options = array(
 				'type' => 'text'
 			),
 			'estimate_unit' => array(
-				'label' => 'Đơn vị',
+				'label' => 'Ghi chú',
 				'type' => 'text'
 			),
 			'estimate_zalo' => array(
