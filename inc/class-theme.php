@@ -18,18 +18,6 @@ class Theme {
 			include_once THEME_DIR.'/inc/filebird/class-filebird.php';
 		}
 
-		if(class_exists('\\FacebookPixelPlugin\\FacebookForWordpress')) {
-			include_once THEME_DIR.'/inc/official-facebook-pixel/class-official-facebook-pixel.php';
-		}
-
-		if(class_exists('WPCF7_ContactForm')) {
-			include_once THEME_DIR.'/inc/wpcf7/class-wpcf7.php';
-		}
-
-		if(class_exists('WP_Statistics')) {
-			include_once THEME_DIR.'/inc/wp-statistics/class-wp-statistics.php';
-		}
-
 		include_once THEME_DIR.'/inc/class-authentication.php';
 		
 		if(unyson_exists()) {

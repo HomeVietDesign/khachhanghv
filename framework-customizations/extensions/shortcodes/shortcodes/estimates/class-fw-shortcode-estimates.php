@@ -71,7 +71,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 				<?php
-				if($phone_number) {
+				if($phone_number && client_can_view()) {
 					?>
 					<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
 					<?php

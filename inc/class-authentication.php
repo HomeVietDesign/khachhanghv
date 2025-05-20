@@ -22,7 +22,7 @@ class Authentication {
 
 		$post = get_post( $post );
 		
-
+		$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 
 		if($post->post_type=="contractor_page") {
 			$required = true;
@@ -33,13 +33,13 @@ class Authentication {
 		} elseif(is_page_template( 'estimate.php' )) {
 			$required = true;
 
-			if( has_role('administrator') || has_role('viewer') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+			if( has_role('administrator') || has_role('viewer') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
 				$required = false;
 			}
 		} elseif ( is_page_template( 'estimate-manage.php' ) || is_page_template( 'partner.php' ) || is_page_template( 'document.php' ) ) {
 			$required = true;
 
-			if( has_role('administrator') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+			if( has_role('administrator') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
 				$required = false;
 			}
 		}
