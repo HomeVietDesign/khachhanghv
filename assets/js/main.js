@@ -635,6 +635,97 @@ window.addEventListener('DOMContentLoaded', function(){
 			$input.closest('[for="document_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
+		function getPageNumbers(currentPage, totalPages) {
+			const pages = [];
+
+			// Luôn có trang đầu tiên
+			pages.push(1);
+
+			// Tính phạm vi trang giữa
+			let start = Math.max(2, currentPage - 2);
+			let end = Math.min(totalPages - 1, currentPage + 2);
+
+			if (start > 2) {
+				pages.push("...");
+			}
+
+			for (let i = start; i <= end; i++) {
+				pages.push(i);
+			}
+
+			if (end < totalPages - 1) {
+				pages.push("...");
+			}
+
+			// Luôn có trang cuối
+			if (totalPages > 1) {
+				pages.push(totalPages);
+			}
+
+			return pages;
+		}
+
+		function renderPagination($paginationLink, currentPage, totalPages) {
+			$paginationLink.html('');
+			const pages = getPageNumbers(currentPage, totalPages);
+			pages.forEach(p => {
+				const $btn = $('<button type="button" class="btn btn-sm btn-secondary m-1"></button>');
+				$btn.text(p);
+				if (p == currentPage) {
+					$btn.css('font-weight', 'bold');
+					$btn.prop('disabled', true);
+				}
+				if (p == "...") {
+					$btn.prop('disabled', true);
+				}
+				$paginationLink.append($btn);
+			});
+		}
+
+		$('.fw-shortcode-estimates section.accordion-item').each(function(index, container){
+			let $container = $(container),
+				$paginationLink = $container.find('.pagination-link'),
+				ids = $paginationLink.data('ids'),
+				per = $paginationLink.data('per'),
+				totalPages = $paginationLink.data('total');
+			if(per>0 && totalPages>0 && per<ids.length) {
+				renderPagination($paginationLink, 1, totalPages);
+			}
+		});
+
+		function paginate(array, pageSize, pageNumber) {
+			// pageNumber bắt đầu từ 1
+			return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+		}
+
+		$(document).on('click', '.fw-shortcode-estimates section.accordion-item .pagination-link button', function(e){
+			let $this = $(this),
+				$paginationLink = $this.closest('.pagination-link'),
+				$container = $paginationLink.closest('section.accordion-item'),
+				$items = $container.find('.items'),
+				ids = $paginationLink.data('ids'),
+				per = $paginationLink.data('per'),
+				client = $paginationLink.data('client'),
+				totalPages = $paginationLink.data('total'),
+				p = parseInt($this.text());
+
+			const items = paginate(ids, per, p);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {ids: items, action: 'estimate_paginate', client: client},
+				beforeSend: function() {
+
+				},
+				success: function(response) {
+					$items.html(response);
+				}
+			});
+
+			renderPagination($paginationLink, p, totalPages);
+		});
+
 	});// jQuery
 	
 

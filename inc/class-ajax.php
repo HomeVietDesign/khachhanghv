@@ -15,6 +15,21 @@ class Ajax {
 
 		// add_action('wp_ajax_statistic', [$this, 'ajax_statistic']);
 		// add_action('wp_ajax_nopriv_statistic', [$this, 'ajax_statistic']);
+
+		add_action('wp_ajax_estimate_paginate', [$this, 'ajax_estimate_paginate']);
+		add_action('wp_ajax_nopriv_estimate_paginate', [$this, 'ajax_estimate_paginate']);
+	}
+
+	public function ajax_estimate_paginate() {
+		global $current_password;
+		$contractors = $_GET['ids'];
+		$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
+		if( has_role('administrator') || has_role('viewer') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+			foreach($contractors as $contractor_id) {
+				\FW_Shortcode_Estimates::display_contractor($contractor_id, $client);
+			}
+		}
+		exit;
 	}
 
 	public function ajax_statistic() {
