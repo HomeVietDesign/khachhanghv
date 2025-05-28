@@ -30,7 +30,7 @@ class Ajax {
 		$cat = isset($_POST['cat']) ? absint($_POST['cat']) : 0;
 		$checked = isset($_POST['checked']) ? absint($_POST['checked']) : 0;
 
-		if($current_client && $cat) {
+		if($current_client && $cat && check_ajax_referer( 'global', 'nonce', false )) {
 			$contractor_cat_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_cat_hide', []);
 			if(empty($contractor_cat_hide)) {
 				$contractor_cat_hide = [];

@@ -98,7 +98,7 @@ class Header {
 	}
 
 	public static function primary_menu() {
-		global $current_password;
+		global $current_password, $current_client;
 
 		$object = get_queried_object();
 		$display_menu = 'yes';
@@ -118,12 +118,19 @@ class Header {
 			$estimate_page = Common::get_custom_page('estimate.php');
 			if($estimate_page) {
 				$estimate_page_url = get_permalink($estimate_page);
-				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+				$this_template = is_page_template('estimate.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
 				$menu_html .= '<a href="#">'.esc_html($estimate_page->post_title).'</a>';
 				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 				$menu_html .= '<ul class="sub-menu position-absolute">';
 				foreach ($passwords as $key => $value) {
-					$menu_html .= '<li class="menu-item">';
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
 					$menu_html .= '<a href="'.esc_url($estimate_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
 					$menu_html .= '</li>';
 				}
@@ -135,12 +142,19 @@ class Header {
 				$estimate_manage_page = Common::get_custom_page('estimate-manage.php');
 				if($estimate_manage_page) {
 					$estimate_manage_page_url = get_permalink($estimate_manage_page);
-					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$this_template = is_page_template('estimate-manage.php') ? true : false;
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+					if($this_template) {
+						$menu_html .= ' current-menu-ancestor current-menu-parent';
+					}
+					$menu_html .= '">';
 					$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
 					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
-						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<li class="menu-item';
+						$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+						$menu_html .= '">';
 						$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
 						$menu_html .= '</li>';
 					}
@@ -151,12 +165,19 @@ class Header {
 				$partner_page = Common::get_custom_page('partner.php');
 				if($partner_page) {
 					$partner_page_url = get_permalink($partner_page);
-					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$this_template = is_page_template('partner.php') ? true : false;
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+					if($this_template) {
+						$menu_html .= ' current-menu-ancestor current-menu-parent';
+					}
+					$menu_html .= '">';
 					$menu_html .= '<a href="#">'.esc_html($partner_page->post_title).'</a>';
 					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
-						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<li class="menu-item';
+						$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+						$menu_html .= '">';
 						$menu_html .= '<a href="'.esc_url($partner_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
 						$menu_html .= '</li>';
 					}
@@ -167,12 +188,19 @@ class Header {
 				$document_page = Common::get_custom_page('document.php');
 				if($document_page) {
 					$document_page_url = get_permalink($document_page);
-					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
+					$this_template = is_page_template('document.php') ? true : false;
+					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+					if($this_template) {
+						$menu_html .= ' current-menu-ancestor current-menu-parent';
+					}
+					$menu_html .= '">';
 					$menu_html .= '<a href="#">'.esc_html($document_page->post_title).'</a>';
 					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
-						$menu_html .= '<li class="menu-item">';
+						$menu_html .= '<li class="menu-item';
+						$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+						$menu_html .= '">';
 						$menu_html .= '<a href="'.esc_url($document_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
 						$menu_html .= '</li>';
 					}

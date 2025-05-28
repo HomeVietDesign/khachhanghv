@@ -22,7 +22,7 @@ while (have_posts()) {
 				?>
 				<div class="contractor-cat-hide position-absolute top-50 end-0 translate-middle-y">
 					<div class="dropdown lh-1">
-						<button class="btn btn-sm btn-warning me-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false"><span class="dashicons dashicons-visibility"></span></button>
+						<button class="btn btn-sm btn-warning me-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><span class="dashicons dashicons-visibility"></span></button>
 						<ul class="dropdown-menu dropdown-menu-dark">
 							<?php if($contractor_cats) {
 								foreach ($contractor_cats as $id => $name) {
