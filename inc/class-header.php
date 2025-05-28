@@ -120,7 +120,7 @@ class Header {
 				$estimate_page_url = get_permalink($estimate_page);
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
 				$menu_html .= '<a href="#">'.esc_html($estimate_page->post_title).'</a>';
-				$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 				$menu_html .= '<ul class="sub-menu position-absolute">';
 				foreach ($passwords as $key => $value) {
 					$menu_html .= '<li class="menu-item">';
@@ -137,7 +137,7 @@ class Header {
 					$estimate_manage_page_url = get_permalink($estimate_manage_page);
 					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
 					$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
-					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
 						$menu_html .= '<li class="menu-item">';
@@ -153,7 +153,7 @@ class Header {
 					$partner_page_url = get_permalink($partner_page);
 					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
 					$menu_html .= '<a href="#">'.esc_html($partner_page->post_title).'</a>';
-					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
 						$menu_html .= '<li class="menu-item">';
@@ -169,7 +169,7 @@ class Header {
 					$document_page_url = get_permalink($document_page);
 					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center">';
 					$menu_html .= '<a href="#">'.esc_html($document_page->post_title).'</a>';
-					$menu_html .= '<a href="#" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 					$menu_html .= '<ul class="sub-menu position-absolute">';
 					foreach ($passwords as $key => $value) {
 						$menu_html .= '<li class="menu-item">';

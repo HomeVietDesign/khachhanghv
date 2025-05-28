@@ -15,7 +15,8 @@ $options = array(
         'options' => array(
         	'estimate_value' => array(
 				'label' => 'Giá trị',
-				'type' => 'text'
+				'type' => 'text',
+				'value' => ''
 			),
 			'estimate_unit' => array(
 				'label' => 'Ghi chú',

@@ -118,13 +118,13 @@ window.addEventListener('DOMContentLoaded', function(){
 			e.preventDefault();
 			return false;
 		});
-	
+		
 		// xử lý sub menu
 		$('#main-nav a.toggle-sub-menu').on('click', function(e){
 			e.preventDefault();
 			e.stopPropagation();
 			let $this = $(this);
-			
+			console.log($this);
 			$this.parent('li').siblings().find('ul.sub-menu').removeClass('open');
 
 			let sub = $this.next('ul.sub-menu');
@@ -132,6 +132,7 @@ window.addEventListener('DOMContentLoaded', function(){
 			sub.toggleClass('open');
 
 		});
+		
 
 		$('body').on('click', function(e){
 			$('#main-nav ul.sub-menu').removeClass('open');
@@ -267,7 +268,6 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					//$body.find('#estimate_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -338,10 +338,21 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('#estimate_attachment_id').val('');
 			$this.remove();
 		});
-
 		$(document).on('input', '#estimate_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		$(document).on('click', '#estimate_remove_drawing', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#estimate_drawing_id').val('');
+			$this.remove();
+		});
+		$(document).on('input', '#estimate_drawing', function() {
+			let $input = $(this);
+			$input.closest('[for="estimate_drawing"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
 		// estimate manage
@@ -724,6 +735,34 @@ window.addEventListener('DOMContentLoaded', function(){
 			});
 
 			renderPagination($paginationLink, p, totalPages);
+		});
+
+		$('.contractor-cat-hide-toggle').on('change', function(e){
+			let $this = $(this),
+				cat = $this.val(),
+				client = $this.data('client'),
+				checked = $this.prop('checked')?1:0,
+				$section = $('.contractor-cat-section-'+cat);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {cat: cat, checked: checked, nonce: theme.nonce, action: 'contractor_cat_hide_toggle', client: client},
+				beforeSend: function() {
+
+				},
+				success: function(response) {
+					if(response) {
+						if(checked==1) {
+							$section.removeClass('hidden');
+						} else {
+							$section.addClass('hidden');
+						}
+					}
+				}
+			});
+			
 		});
 
 	});// jQuery

@@ -16,6 +16,9 @@ a {
 a:focus {
 	outline: none;
 }
+a[href="#"] {
+	cursor: default;
+}
 /* Make sure embeds and iframes fit their containers. */
 embed,
 iframe,
@@ -470,6 +473,18 @@ video {
 	top: var(--site-header--height);
 	z-index: 9;
 	background: #1c1c1c;
+	font-size: 28px;
+	font-weight: 600;
+}
+.contractor-cat-hide .dropdown-toggle::after {
+	display: none;
+}
+.contractor-cat-hide .form-check-input {
+	/*margin-top: 0;*/
+}
+.contractor-cat-hide .form-check {
+	min-height: 0;
+	line-height: 1.5;
 }
 label[for="document_attachment"],
 label[for="partner_attachment"],

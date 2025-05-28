@@ -7,6 +7,10 @@
  * @var array $options Fill this array with options to generate framework settings form in backend
  */
 
+$default_contractor_cat = get_option( 'default_term_contractor_cat', -1 );
+$contractor_cats = get_terms(['taxonomy' => 'contractor_cat', 'fields' => 'id=>name','parent'=>0,'exclude' => [$default_contractor_cat]]);
+if(empty($contractor_cats)) $contractor_cats = [];
+
 $options = array(
 	'province' => array(
 		'label' => 'Tỉnh thành',
@@ -19,6 +23,19 @@ $options = array(
 			'type' => 'term-meta',
 			'term-meta' => 'province',
 		),
+	),
+	'contractor_cat_hide' => array(
+		'label' => 'Hạng mục ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		// 'population' => 'taxonomy',
+		// 'source' => '',
+		'choices' => $contractor_cats,
+		'limit' => 100,
+		// 'fw-storage' => array(
+		// 	'type' => 'term-meta',
+		// 	'term-meta' => 'province',
+		// ),
 	),
 	
 );

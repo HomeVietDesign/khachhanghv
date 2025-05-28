@@ -82,14 +82,14 @@ if( $estimate_cats && $client ) {
 											<div class="estimate-value mb-1">
 												<span>Tổng giá trị:</span>
 												<span class="text-red fw-bold"><?php echo esc_html($client_estimate['value']); ?></span>
-												<span class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></span>
+												<div class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></div>
 											</div>
 											<?php } ?>
 											<div class="d-flex flex-wrap justify-content-center estimate-url mb-3">
 												<?php
 												if($client_estimate['url']) {
 													?>
-													<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($client_estimate['url'])?>" target="_blank">Dự toán</a>
+													<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($client_estimate['url'])?>" target="_blank">Xem chi tiết</a>
 													<?php
 												}
 												?>

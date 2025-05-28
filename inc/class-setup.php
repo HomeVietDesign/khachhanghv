@@ -23,8 +23,8 @@ class Setup {
 		add_filter( 'mime_types', [$this, 'fix_rar_mime_type'] );
 
 		add_action( 'wp_loaded', [$this, 'wp_loaded'], 10 );
-		add_action( 'admin_init', [$this, 'ajax_set_global_view'], 10 );
-		add_action( 'template_redirect', [$this, 'set_global_view'], 5 );
+		add_action( 'admin_init', [$this, 'ajax_set_global_vars'], 10 );
+		add_action( 'template_redirect', [$this, 'set_global_vars'], 5 );
 		
 	}
 
@@ -98,7 +98,7 @@ class Setup {
 		return array_merge( $size_names, $new_sizes );
 	}
 
-	public function set_global_view() {
+	public function set_global_vars() {
 		global $view;
 		$view_id = isset($_REQUEST['view'])?absint($_REQUEST['view']):((is_singular()||is_page())?get_the_ID():0);
 		if($view_id) {
@@ -106,7 +106,7 @@ class Setup {
 		}
 	}
 
-	public function ajax_set_global_view() {
+	public function ajax_set_global_vars() {
 		if(defined('DOING_AJAX') && DOING_AJAX) {
 			global $view;
 			
@@ -118,7 +118,7 @@ class Setup {
 	}
 
 	public function wp_loaded() {
-		global $current_password, $current_password_province, $current_province;
+		global $current_password, $current_password_province, $current_province, $current_client;
 
 		$current_password = null;
 		if(isset($_COOKIE[ 'wp-postpass_' . COOKIEHASH ])) {
@@ -161,6 +161,7 @@ class Setup {
 			add_filter('post_type_link', [$this, 'contractor_page_link'], 10, 2);
 		}
 
+		$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
 	}
 
 	public function contractor_page_link($post_link, $post) {

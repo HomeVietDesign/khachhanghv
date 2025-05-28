@@ -462,6 +462,7 @@ class Custom_Types {
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
 		);
+		//update_option( 'default_term_contractor_cat', 1937 );
 		register_taxonomy( 'contractor_cat', 'contractor', $args ); // our new 'format' taxonomy
 
 		// Add new taxonomy, make it hierarchical (like categories)

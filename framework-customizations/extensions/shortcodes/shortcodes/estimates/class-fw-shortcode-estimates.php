@@ -12,10 +12,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 	}
 
 	public function ajax_get_estimate_info() {
-		global $current_password;
+		global $current_password, $current_client;
 		$default_term_password = get_option( 'default_term_passwords', -1 );
 
-		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
 		$response = [
@@ -23,17 +22,18 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			'zalo' => ''
 		];
 		
-		if($client && $contractor_id) {
+		if($current_client && $contractor_id) {
 			$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
 			$default_estimate = [
 				'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 				'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
 				'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
+				//'drawing_id' => ($default_estimate_drawing) ? $default_estimate_drawing['drawing_id']:'',
 				'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
 			];
 
 			$estimates = get_post_meta($contractor_id, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$current_client])?$estimates[$current_client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'drawing_id'=>'', 'attachment_id'=>''];
 
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -86,6 +86,15 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					}
 				}
 
+				if($estimate['drawing_id']) {
+					$drawing_url = wp_get_attachment_url($estimate['drawing_id']);
+					if($drawing_url){
+					?>
+					<a class="btn btn-sm btn-success my-1 mx-2" href="<?=esc_url($drawing_url)?>" target="_blank">Bản vẽ</a>
+					<?php
+					}
+				}
+
 				?>
 			</div>
 		<?php
@@ -105,21 +114,24 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		if(has_role('administrator') && check_ajax_referer( 'edit-estimate', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
+			$estimate_drawing_id = isset($_POST['estimate_drawing_id'])?absint($_POST['estimate_drawing_id']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):0;
 			$estimate_value = isset($_POST['estimate_value'])?sanitize_text_field($_POST['estimate_value']):'';
 			$estimate_unit = isset($_POST['estimate_unit'])?sanitize_text_field($_POST['estimate_unit']):'';
 			$estimate_zalo = isset($_POST['estimate_zalo'])?sanitize_text_field($_POST['estimate_zalo']):'';
+			$estimate_drawing = isset($_FILES['estimate_drawing']) ? $_FILES['estimate_drawing'] : null;
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'drawing_id'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
 					'value' => $estimate_value,
 					'unit' => $estimate_unit,
 					'zalo' => $estimate_zalo,
+					'drawing_id' => ($estimate_drawing_id!=0)?$estimate_drawing_id:'',
 					'attachment_id' => ($estimate_attachment_id!=0)?$estimate_attachment_id:''
 				];
 
@@ -128,6 +140,17 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
 					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
 					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+				}
+
+				$estimate_drawing_upload = media_handle_upload( 'estimate_drawing', $estimate_contractor );
+
+				if ($estimate_drawing['error']==0 && $estimate_drawing_upload && ! is_array( $estimate_drawing_upload ) ) {
+					$new_estimate['drawing_id'] = $estimate_drawing_upload;
+					if($estimate_drawing_id) wp_delete_attachment($estimate_drawing_id, true);
+				}
+
+				if($new_estimate['drawing_id']=='' || $new_estimate['drawing_id']==0) {
+					if($estimate['drawing_id']) wp_delete_attachment($estimate['drawing_id'], true);
 				}
 
 				$estimate_attachment_upload = media_handle_upload( 'estimate_attachment', $estimate_contractor );
@@ -160,9 +183,10 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		if($client && $contractor) {
 			$estimates = get_post_meta($contractor, '_estimates', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'drawing_id'=>'', 'attachment_id'=>''];
 
 			$attachment_url = ($estimate['attachment_id'])?wp_get_attachment_url($estimate['attachment_id']):'';
+			$drawing_url = ($estimate['drawing_id'])?wp_get_attachment_url($estimate['drawing_id']):'';
 			?>
 			<form id="frm-edit-estimate" method="POST" action="" enctype="multipart/form-data">
 				<input type="hidden" id="estimate_client" name="estimate_client" value="<?=$client?>">
@@ -177,6 +201,25 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
+				</div>
+				<div class="mb-3">
+					<div class="form-label mb-1">File bản vẽ</div>
+					<input type="hidden" id="estimate_drawing_id" name="estimate_drawing_id" value="<?=esc_attr($estimate['drawing_id'])?>">
+					<?php if($drawing_url) { ?>
+					<div class="mb-2">
+						<span class="overflow-hidden"><?=esc_html(basename($drawing_url))?></span>
+						<button class="btn btn-sm btn-danger" id="estimate_remove_drawing">Xóa file</button>
+					</div>
+					<?php } ?>
+					<label class="d-block" for="estimate_drawing">
+						<span class="input-group">
+							<span class="form-control overflow-hidden"></span>
+							<span class="input-group-text">Bấm tải lên</span>
+						</span>
+						<div style="width: 0;height: 0;overflow: hidden;">
+							<input type="file" id="estimate_drawing" name="estimate_drawing" accept=".pdf" class="form-control">
+						</div>
+					</label>
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
@@ -233,7 +276,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		];
 
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'drawing_id'=>'', 'attachment_id'=>''];
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -249,7 +292,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		<div class="col-lg-3 col-md-6 estimate-item mb-4">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
-					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>" target="_blank"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
+					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>"<?php echo ($external_url!='#')?' target="_blank"':''; ?>><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 					<?php if(has_role('administrator')) { ?>
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
@@ -295,6 +338,15 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							if($attachment_url) {
 							?>
 							<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
+							<?php
+							}
+						}
+
+						if(isset($estimate['drawing_id']) && $estimate['drawing_id']) {
+							$drawing_url = wp_get_attachment_url($estimate['drawing_id']);
+							if($drawing_url) {
+							?>
+							<a class="btn btn-sm btn-success my-1 mx-2" href="<?=esc_url($drawing_url)?>" target="_blank">Bản vẽ</a>
 							<?php
 							}
 						}
