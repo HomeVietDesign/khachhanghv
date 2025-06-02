@@ -45,7 +45,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			ob_start();
 		?>
 			<div class="document-title pt-3 mb-1 fs-5">
-				<span class="d-block text-truncate text-uppercase" title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><?php echo esc_html(get_the_title( $document_id )); ?></span>
+				<span class="d-block text-uppercase" title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><?php echo esc_html(get_the_title( $document_id )); ?></span>
 			</div>
 			<?php if($document_data['value']!='') { ?>
 			<div class="document-value mb-1">

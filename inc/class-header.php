@@ -115,6 +115,7 @@ class Header {
 		$menu_html = '';
 
 		if($passwords) {
+		//if($passwords && !(is_singular('contractor_page') || is_home() || is_front_page())) {
 			$estimate_page = Common::get_custom_page('estimate.php');
 			if($estimate_page) {
 				$estimate_page_url = get_permalink($estimate_page);
@@ -132,6 +133,29 @@ class Header {
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
 					$menu_html .= '<a href="'.esc_url($estimate_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
+
+			$estimate_customer_page = Common::get_custom_page('estimate-customer.php');
+			if($estimate_customer_page) {
+				$estimate_customer_page_url = get_permalink($estimate_customer_page);
+				$this_template = is_page_template('estimate-customer.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($estimate_customer_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($estimate_customer_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
@@ -212,9 +236,23 @@ class Header {
 		}
 
 		if( is_singular( 'contractor' ) || is_singular( 'contractor_page' ) ) {
-			$contractor_menu = self::contractor_menu($menu_html);
-
+			$estimates_page = Common::get_custom_page('estimates.php');
+			$estimates_menu = '';
+			if($estimates_page) {
+				$estimates_page_url = get_permalink($estimates_page);
+					$this_template = is_page_template('estimates.php') ? true : false;
+					$estimates_menu .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+					if($this_template) {
+						$estimates_menu .= ' current-menu-ancestor current-menu-parent';
+					}
+					$estimates_menu .= '">';
+					$estimates_menu .= '<a href="'.esc_url($estimates_page_url).'">'.esc_html($estimates_page->post_title).'</a>';
+					$estimates_menu .= '</li>';
+			}
+			
+			$contractor_menu = self::contractor_menu(($estimates_menu!='')?$estimates_menu:$menu_html);
 			echo $contractor_menu;
+
 			return;
 		} elseif(is_page() || is_single()) {
 			$display_menu = fw_get_db_post_option($object->ID, 'display_menu', 'yes');

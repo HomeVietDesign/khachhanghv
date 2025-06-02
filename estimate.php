@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Khách hàng
+ * Template Name: Dự toán nhà thầu
  * 
  */
 global $current_client;

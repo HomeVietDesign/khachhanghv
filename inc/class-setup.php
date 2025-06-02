@@ -108,12 +108,14 @@ class Setup {
 
 	public function ajax_set_global_vars() {
 		if(defined('DOING_AJAX') && DOING_AJAX) {
-			global $view;
+			global $view, $current_client;
 			
 			$view_id = isset($_REQUEST['view'])?absint($_REQUEST['view']):0;
 			if($view_id) {
 				$view = get_post($view_id);
 			}
+
+			$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
 		}
 	}
 

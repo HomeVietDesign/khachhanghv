@@ -491,6 +491,7 @@ label[for="partner_attachment"],
 label[for="estimate_attachment"] {
 	cursor: pointer;
 }
+#edit-estimate-customer.modal,
 #edit-document.modal,
 #edit-partner.modal,
 #edit-estimate.modal {

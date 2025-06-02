@@ -30,7 +30,7 @@ class Authentication {
 			if($current_password || has_role('administrator') || has_role('viewer')) {
 				$required = false;
 			}
-		} elseif(is_page_template( 'estimate.php' )) {
+		} elseif(is_page_template( 'estimates.php' ) || is_page_template( 'estimate.php' ) || is_page_template( 'estimate-customer.php' )) {
 			$required = true;
 
 			if( has_role('administrator') || has_role('viewer') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {

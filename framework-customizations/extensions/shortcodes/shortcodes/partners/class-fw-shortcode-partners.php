@@ -47,7 +47,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 			ob_start();
 		?>
 			<div class="partner-title pt-3 mb-1 fs-5">
-				<span class="d-block text-truncate" title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><?php echo esc_html(get_the_title( $partner_id )); ?></span>
+				<span class="d-block" title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><?php echo esc_html(get_the_title( $partner_id )); ?></span>
 			</div>
 			<?php if($partner_data['value']!='') { ?>
 			<div class="partner-value mb-1">

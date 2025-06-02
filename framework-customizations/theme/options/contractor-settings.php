@@ -28,7 +28,17 @@ $options = array(
 					'wp-option' => 'contractor_rating_top',
 				),
 			],
-			
+			'contractor_rating_customer' => [
+				'type'  => 'multi-select',
+				'population' => 'taxonomy',
+				'source' => 'contractor_rating',
+				'limit' => 1,
+				'label' => 'Nhóm gửi khách hàng',
+				'fw-storage' => array(
+					'type' => 'wp-option',
+					'wp-option' => 'contractor_rating_customer',
+				),
+			],
 		),
 	),
 );

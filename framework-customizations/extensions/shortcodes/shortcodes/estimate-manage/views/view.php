@@ -75,7 +75,7 @@ if( $estimate_cats && $client ) {
 											</div>
 										</div>
 										<div class="estimate-info text-center px-1">
-											<div class="estimate-title pt-3 mb-1 fs-5 text-uppercase">
+											<div class="estimate-title pt-3 mb-1 fs-5">
 												<?php echo esc_html(get_the_title( $estimate_id )); ?>
 											</div>
 											<?php if($client_estimate['value']) { ?>
