@@ -26,7 +26,7 @@ $options = array(
 				'type' => 'text'
 			),
 			'estimate_url' => array(
-				'label' => 'Link dự toán',
+				'label' => 'Link dự toán gốc',
 				'type' => 'text'
 			),
 		),

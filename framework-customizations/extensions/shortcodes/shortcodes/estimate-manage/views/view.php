@@ -5,16 +5,16 @@
 /**
  * @var array $atts
  */
-global $current_password;
+global $current_password, $current_client;
 $default_term_password = get_option( 'default_term_passwords', -1 );
 
-$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
+//$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 
 $estimate_cat = isset($atts['estimate_cat']) ? get_term_by( 'term_id', $atts['estimate_cat'][0], 'estimate_cat' ) : null;
 
-if( $estimate_cat instanceof \WP_Term && $client ) {
+if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
-	$client_estimates = get_term_meta($client->term_id, '_estimates', true);
+	$client_estimates = get_term_meta($current_client->term_id, '_estimates', true);
 	?>
 	<div class="fw-shortcode-estimate-manage">
 		<section class="mb-3">
@@ -39,26 +39,38 @@ if( $estimate_cat instanceof \WP_Term && $client ) {
 						'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
 						'unit' => fw_get_db_post_option($estimate_id,'estimate_unit'),
 						'zalo' => fw_get_db_post_option($estimate_id,'estimate_zalo'),
-						'url' => fw_get_db_post_option($estimate_id,'estimate_url')
 					];
 
-					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>''];
+					$default_url = fw_get_db_post_option($estimate_id,'estimate_url');
+
+					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
 
 					if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 					if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
 					if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
-					if(empty($client_estimate['url'])) $client_estimate['url'] = $default_estimate['url'];
 
 					?>
 					<div class="col-lg-3 col-md-6 estimate-item mb-4">
 						<div class="estimate estimate-<?=$estimate_id?> border border-dark h-100">
 							<div class="estimate-thumbnail position-relative">
+								<div class="file-download position-absolute top-0 start-0 p-1 z-3">
+								<?php
+								if(isset($client_estimate['file_id']) && $client_estimate['file_id']!='') {
+									$attachment_url = wp_get_attachment_url($client_estimate['file_id']);
+									if($attachment_url) {
+									?>
+									<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+									<?php
+									}
+								}
+								?>
+								</div>
 								<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
 								
 								<?php if(has_role('administrator')) { ?>
 								<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 									<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-									<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-1" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+									<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-1" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$current_client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
 								</div>
 								<?php } ?>
 
@@ -67,6 +79,9 @@ if( $estimate_cat instanceof \WP_Term && $client ) {
 									<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($client_estimate['zalo'])?>" target="_blank">Zalo</a>
 								<?php } ?>
 								</div>
+								<?php if($default_url) { ?>
+									<a class="btn btn-sm btn-primary btn-shadow fw-bold position-absolute start-0 bottom-0 m-1 z-3" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
+								<?php } ?>
 							</div>
 							<div class="estimate-info text-center px-1">
 								<div class="estimate-title pt-3 mb-1 fs-5">

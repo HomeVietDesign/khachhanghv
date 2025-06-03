@@ -494,6 +494,7 @@ label[for="estimate_attachment"] {
 #edit-estimate-customer.modal,
 #edit-document.modal,
 #edit-partner.modal,
+#edit-estimate-manage.modal,
 #edit-estimate.modal {
 	color: #333;
 }

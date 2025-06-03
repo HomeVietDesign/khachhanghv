@@ -20,7 +20,8 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 
 		$response = [
 			'info' => '',
-			'zalo' => ''
+			'zalo' => '',
+			'file' => ''
 		];
 
 		if($estimate_client && $estimate_id) {
@@ -28,18 +29,17 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
 				'unit' => fw_get_db_post_option($estimate_id,'estimate_unit'),
 				'zalo' => fw_get_db_post_option($estimate_id,'estimate_zalo'),
-				'url' => fw_get_db_post_option($estimate_id,'estimate_url')
 			];
 
 			$client_estimates = get_term_meta($estimate_client, '_estimates', true);
-			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
 
 			if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 			if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
 			if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
-			if(empty($client_estimate['url'])) $client_estimate['url'] = $default_estimate['url'];
 
 			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['file'] = ($client_estimate['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($client_estimate['file_id'])).'" target="_blank">Tải</a>':'';
 
 			ob_start();
 		?>
@@ -75,6 +75,10 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			'data' => []
 		];
 
+		// debug_log($_POST);
+		// debug_log($_FILES);
+		// wp_send_json( $response );
+
 		if(has_role('administrator') && check_ajax_referer( 'edit-estimate-manage', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_id = isset($_POST['estimate_id'])?absint($_POST['estimate_id']):0;
@@ -82,18 +86,41 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			$estimate_client_unit = isset($_POST['estimate_client_unit'])?sanitize_text_field($_POST['estimate_client_unit']):'';
 			$estimate_client_zalo = isset($_POST['estimate_client_zalo'])?sanitize_text_field($_POST['estimate_client_zalo']):'';
 			$estimate_client_url = isset($_POST['estimate_client_url'])?sanitize_url($_POST['estimate_client_url']):'';
+			$estimate_file_id = isset($_POST['estimate_file_id'])?absint($_POST['estimate_file_id']):0;
+			$estimate_file = isset($_FILES['estimate_file']) ? $_FILES['estimate_file'] : null;
 			
 			if($estimate_client && $estimate_id) {
 				$client_estimates = get_term_meta($estimate_client, '_estimates', true);
 				if(empty($client_estimates)) $client_estimates = [];
-				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
 
 				$new_client_estimate = [
 					'value' => $estimate_client_value,
 					'unit' => $estimate_client_unit,
 					'zalo' => $estimate_client_zalo,
-					'url' => $estimate_client_url
+					'url' => $estimate_client_url,
+					'file_id' => ($estimate_file_id!=0)?$estimate_file_id:''
 				];
+
+				// tải lên file dự toán
+				if ( ! function_exists( 'media_handle_upload' ) ) {
+					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+				}
+
+				$estimate_file_upload = media_handle_upload( 'estimate_file', 0 );
+
+				//debug_log($estimate_file_upload);
+
+				if ($estimate_file['error']==0 && $estimate_file_upload && ! is_array( $estimate_file_upload ) ) {
+					$new_client_estimate['file_id'] = $estimate_file_upload;
+					if($estimate_file_id) wp_delete_attachment($estimate_file_id, true);
+				}
+
+				if($new_client_estimate['file_id']=='' || $new_client_estimate['file_id']==0) {
+					if($client_estimate['file_id']) wp_delete_attachment($client_estimate['file_id'], true);
+				}
 
 				$client_estimates[$estimate_id] = $new_client_estimate;
 
@@ -114,10 +141,11 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 
 		if($client && $estimate) {
 			$client_estimates = get_term_meta($client, '_estimates', true);
-			$client_estimate = isset($client_estimates[$estimate])?$client_estimates[$estimate]:['value'=>'', 'zalo'=>'', 'url'=>''];
+			$client_estimate = isset($client_estimates[$estimate])?$client_estimates[$estimate]:['value'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
 
+			$file_url = (isset($client_estimate['file_id']) && $client_estimate['file_id']!='')?wp_get_attachment_url($client_estimate['file_id']):'';
 			?>
-			<form id="frm-edit-estimate-manage" method="POST" action="">
+			<form id="frm-edit-estimate-manage" method="POST" action="" enctype="multipart/form-data">
 				<input type="hidden" id="estimate_client" name="estimate_client" value="<?=$client?>">
 				<input type="hidden" id="estimate_id" name="estimate_id" value="<?=$estimate?>">
 				<?php wp_nonce_field( 'edit-estimate-manage', 'nonce' ); ?>
@@ -133,6 +161,25 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_client_url" name="estimate_client_url" placeholder="Link dự toán" class="form-control text-center" value="<?php echo ($client_estimate['url'])?esc_url($client_estimate['url']):''; ?>">
+				</div>
+				<div class="mb-3">
+					<div class="form-label mb-1">File dự toán</div>
+					<input type="hidden" id="estimate_file_id" name="estimate_file_id" value="<?=esc_attr($client_estimate['file_id'])?>">
+					<?php if($file_url) { ?>
+					<div class="mb-2">
+						<span class="overflow-hidden"><?=esc_html(basename($file_url))?></span>
+						<button class="btn btn-sm btn-danger" id="estimate_remove_file">Xóa file</button>
+					</div>
+					<?php } ?>
+					<label class="d-block" for="estimate_file">
+						<span class="input-group">
+							<span class="form-control overflow-hidden"></span>
+							<span class="input-group-text">Bấm tải lên</span>
+						</span>
+						<div style="width: 0;height: 0;overflow: hidden;">
+							<input type="file" id="estimate_file" name="estimate_file" accept=".xls,.xlsx" class="form-control">
+						</div>
+					</label>
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-estimate-manage-submit">Lưu lại</button>

@@ -465,7 +465,6 @@ window.addEventListener('DOMContentLoaded', function(){
 				},
 				success: function(response) {
 					$body.html(response);
-					//$body.find('#estimate_client_value').inputNumber({'negative':false});
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -495,7 +494,9 @@ window.addEventListener('DOMContentLoaded', function(){
 			$.ajax({
 				url: theme.ajax_url+'?action=update_estimate_manage',
 				type: 'POST',
-				data: $form.serialize(),
+				processData: false,
+				contentType: false,
+				data: formData,
 				dataType: 'json',
 				cache: false,
 				beforeSend: function() {
@@ -512,6 +513,7 @@ window.addEventListener('DOMContentLoaded', function(){
 							success: function(response) {
 								$('.estimate-'+formData.get('estimate_id')+' .estimate-info').html(response['info']);
 								$('.estimate-'+formData.get('estimate_id')+' .zalo-link').html(response['zalo']);
+								$('.estimate-'+formData.get('estimate_id')+' .file-download').html(response['file']);
 								$('#edit-estimate-manage .btn-close').trigger('click');
 							}
 						});
@@ -525,6 +527,18 @@ window.addEventListener('DOMContentLoaded', function(){
 					$button.prop('disabled', false);
 				}
 			});
+		});
+
+		$(document).on('click', '#estimate_remove_file', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$this.prev('span').html('');
+			$('#estimate_file_id').val('');
+			$this.remove();
+		});
+		$(document).on('input', '#estimate_file', function() {
+			let $input = $(this);
+			$input.closest('[for="estimate_file"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
 		// edit partner

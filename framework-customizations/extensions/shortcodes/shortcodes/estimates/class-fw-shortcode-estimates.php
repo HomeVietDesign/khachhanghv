@@ -174,7 +174,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 			$attachment_url = (isset($estimate['attachment_id']) && $estimate['attachment_id']!='')?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
-			<form id="frm-edit-estimate" method="POST" action="">
+			<form id="frm-edit-estimate" method="POST" action="" >
 				<input type="hidden" id="estimate_client" name="estimate_client" value="<?=$client?>">
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
