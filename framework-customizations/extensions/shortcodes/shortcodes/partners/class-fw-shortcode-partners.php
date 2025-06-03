@@ -52,7 +52,12 @@ class FW_Shortcode_Partners extends FW_Shortcode
 			<?php if($partner_data['value']!='') { ?>
 			<div class="partner-value mb-1">
 				<span>Tổng giá trị: </span>
-				<span class="text-red fw-bold"><?php echo esc_html($partner_data['value']); ?></span><span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
+				<span class="text-red fw-bold"><?php echo esc_html($partner_data['value']); ?></span>
+			</div>
+			<?php } ?>
+			<?php if($partner_data['unit']!='') { ?>
+			<div class="partner-unit mb-1">
+				<span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center partner-links mb-3">

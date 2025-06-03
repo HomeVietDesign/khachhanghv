@@ -75,13 +75,20 @@ if($document_cats && $client) {
 										</div>
 									</div>
 									<div class="document-info text-center px-1">
-										<div class="document-title pt-3 mb-1 fs-5">
-											<span class="d-block text-uppercase" title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><?php echo esc_html(get_the_title( $document_id )); ?></span>
+										<div class="document-title pt-3 mb-1 fs-5 text-green text-uppercase">
+											<?php echo esc_html(get_the_title( $document_id )); ?>
 										</div>
-										<?php if($document_data['value']!='') { ?>
+										<?php if($document_data['value']!='' || $document_data['unit']!='') { ?>
 										<div class="document-value mb-1">
-											<span>Tổng giá trị: </span>
-											<span class="text-red fw-bold"><?php echo esc_html($document_data['value']); ?></span><span class="text-red"> <?php echo esc_html($document_data['unit']); ?></span>
+											<?php if($document_data['value']!='') { ?>
+											<div>
+												<span>Tổng giá trị: </span>
+												<span class="text-red fw-bold"><?php echo esc_html($document_data['value']); ?></span>
+											</div>
+											<?php } ?>
+											<?php if($document_data['unit']!='') { ?>
+											<div class="text-red"><?php echo esc_html($document_data['unit']); ?></div>
+											<?php } ?>
 										</div>
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center document-links mb-3">

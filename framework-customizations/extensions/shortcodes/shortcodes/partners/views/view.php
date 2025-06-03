@@ -84,6 +84,10 @@ if($partner_cats && $client) {
 										<div class="partner-value mb-1">
 											<span>Tổng giá trị: </span>
 											<span class="text-red fw-bold"><?php echo esc_html($partner_data['value']); ?></span>
+										</div>
+										<?php } ?>
+										<?php if($partner_data['unit']!='') { ?>
+										<div class="partner-unit mb-1">
 											<span class="text-red"> <?php echo esc_html($partner_data['unit']); ?></span>
 										</div>
 										<?php } ?>

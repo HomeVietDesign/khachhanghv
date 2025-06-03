@@ -32,7 +32,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			];
 
 			$client_estimates = get_term_meta($estimate_client, '_estimates', true);
-			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
+			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 			if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 			if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
@@ -40,17 +40,23 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 
 			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['file'] = ($client_estimate['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($client_estimate['file_id'])).'" target="_blank">Tải</a>':'';
+			$response['quote'] = (isset($client_estimate['quote']) && $client_estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
+
 
 			ob_start();
 		?>
-			<div class="estimate-title pt-3 mb-1 fs-5 text-uppercase">
+			<div class="estimate-title pt-3 mb-1 fs-5 text-green">
 				<?php echo esc_html(get_the_title( $estimate_id )); ?>
 			</div>
 			<?php if($client_estimate['value']) { ?>
 			<div class="estimate-value mb-1">
 				<span>Tổng giá trị:</span>
 				<span class="text-red fw-bold"><?php echo esc_html($client_estimate['value']); ?></span>
-				<div class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></div>
+			</div>
+			<?php } ?>
+			<?php if($client_estimate['unit']) { ?>
+			<div class="estimate-unit mb-1">
+				<div class="text-red"><?php echo esc_html($client_estimate['unit']); ?></div>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center estimate-url mb-3">
@@ -88,18 +94,21 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			$estimate_client_url = isset($_POST['estimate_client_url'])?sanitize_url($_POST['estimate_client_url']):'';
 			$estimate_file_id = isset($_POST['estimate_file_id'])?absint($_POST['estimate_file_id']):0;
 			$estimate_file = isset($_FILES['estimate_file']) ? $_FILES['estimate_file'] : null;
+
+			$estimate_client_quote = isset($_POST['estimate_client_quote']) ? $_POST['estimate_client_quote'] : '';
 			
 			if($estimate_client && $estimate_id) {
 				$client_estimates = get_term_meta($estimate_client, '_estimates', true);
 				if(empty($client_estimates)) $client_estimates = [];
-				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
+				$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 				$new_client_estimate = [
 					'value' => $estimate_client_value,
 					'unit' => $estimate_client_unit,
 					'zalo' => $estimate_client_zalo,
 					'url' => $estimate_client_url,
-					'file_id' => ($estimate_file_id!=0)?$estimate_file_id:''
+					'file_id' => ($estimate_file_id!=0)?$estimate_file_id:'',
+					'quote' => $estimate_client_quote,
 				];
 
 				// tải lên file dự toán
@@ -151,16 +160,16 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate-manage', 'nonce' ); ?>
 				<div id="edit-estimate-manage-response"></div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_value" name="estimate_client_value" placeholder="Giá trị" class="form-control text-center" value="<?php echo esc_attr($client_estimate['value']); ?>">
+					<input type="text" id="estimate_client_value" name="estimate_client_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($client_estimate['value']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_unit" name="estimate_client_unit" placeholder="Ghi chú" class="form-control text-center" value="<?php echo esc_attr($client_estimate['unit']); ?>">
+					<input type="text" id="estimate_client_unit" name="estimate_client_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($client_estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_zalo" name="estimate_client_zalo" placeholder="Link nhóm zalo" class="form-control text-center" value="<?php echo esc_attr($client_estimate['zalo']); ?>">
+					<input type="text" id="estimate_client_zalo" name="estimate_client_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($client_estimate['zalo']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_client_url" name="estimate_client_url" placeholder="Link dự toán" class="form-control text-center" value="<?php echo ($client_estimate['url'])?esc_url($client_estimate['url']):''; ?>">
+					<input type="text" id="estimate_client_url" name="estimate_client_url" placeholder="Link dự toán" class="form-control" value="<?php echo ($client_estimate['url'])?esc_url($client_estimate['url']):''; ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
@@ -182,6 +191,12 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 					</label>
 				</div>
 				<div class="mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="yes" name="estimate_client_quote" id="estimate_client_quote" <?php checked( (isset($client_estimate['quote']) && $client_estimate['quote']=='yes'), true, true ); ?>>
+						<label class="form-check-label" for="estimate_client_quote">Đã gửi cho khách hàng?</label>
+					</div>
+				</div>
+				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-estimate-manage-submit">Lưu lại</button>
 				</div>
 				
@@ -194,7 +209,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-estimate-manage" tabindex="-1" role="dialog" aria-labelledby="edit-estimate-manage-label">
-			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-estimate-manage-label">Sửa dự toán</h5>

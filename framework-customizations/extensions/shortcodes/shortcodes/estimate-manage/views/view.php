@@ -43,7 +43,7 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					$default_url = fw_get_db_post_option($estimate_id,'estimate_url');
 
-					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>''];
+					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 					if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 					if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
@@ -67,13 +67,22 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 								</div>
 								<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
 								
-								<?php if(has_role('administrator')) { ?>
 								<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-									<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-									<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-1" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$current_client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+									<div class="estimate-quote">
+									<?php
+									if(isset($client_estimate['quote']) && $client_estimate['quote']=='yes') {
+										?>
+										<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>
+										<?php
+									}
+									?>
+									</div>
+									<?php if(has_role('administrator')) { ?>
+										<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+										<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$current_client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
+									<?php } ?>
 								</div>
-								<?php } ?>
-
+								
 								<div class="zalo-link position-absolute top-0 end-0 p-2">
 								<?php if($client_estimate['zalo']) { ?>
 									<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($client_estimate['zalo'])?>" target="_blank">Zalo</a>
@@ -84,14 +93,18 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 								<?php } ?>
 							</div>
 							<div class="estimate-info text-center px-1">
-								<div class="estimate-title pt-3 mb-1 fs-5">
+								<div class="estimate-title pt-3 mb-1 fs-5 text-green">
 									<?php echo esc_html(get_the_title( $estimate_id )); ?>
 								</div>
 								<?php if($client_estimate['value']) { ?>
 								<div class="estimate-value mb-1">
 									<span>Tổng giá trị:</span>
 									<span class="text-red fw-bold"><?php echo esc_html($client_estimate['value']); ?></span>
-									<div class="text-red"> <?php echo esc_html($client_estimate['unit']); ?></div>
+								</div>
+								<?php } ?>
+								<?php if($client_estimate['unit']) { ?>
+								<div class="estimate-unit mb-1">
+									<div class="text-red"><?php echo esc_html($client_estimate['unit']); ?></div>
 								</div>
 								<?php } ?>
 								<div class="d-flex flex-wrap justify-content-center estimate-url mb-3">

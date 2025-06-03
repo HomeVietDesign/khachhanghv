@@ -65,6 +65,10 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			<div class="contractor-value mb-1">
 				<span>Tổng giá trị:</span>
 				<span class="text-red fw-bold"><?php echo  esc_html($estimate['value']); ?></span>
+			</div>
+			<?php } ?>
+			<?php if($estimate['unit']) { ?>
+			<div class="contractor-unit mb-1">
 				<div class="text-red"><?php echo esc_html($estimate['unit']); ?></div>
 			</div>
 			<?php } ?>
@@ -285,7 +289,11 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 					<div class="contractor-value mb-1">
 						<span>Tổng giá trị: </span>
 						<span class="text-red fw-bold"><?php echo  esc_html($estimate['value']); ?></span>
-						<div class="text-red"> <?php echo esc_html($estimate['unit']); ?></div>
+					</div>
+					<?php } ?>
+					<?php if($estimate['unit']!='') { ?>
+					<div class="contractor-unit mb-1">
+						<div class="text-red"><?php echo esc_html($estimate['unit']); ?></div>
 					</div>
 					<?php } ?>
 					<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
