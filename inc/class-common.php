@@ -4,15 +4,22 @@ namespace HomeViet;
 final class Common {
 
 	public static function get_custom_page($template) {
-		$pages = self::get_page_by_template($template);
+		$pages = self::get_custom_pages($template);
 
 		return ($pages) ? $pages[0] : null;
+	}
+
+	public static function get_custom_pages($template) {
+		$pages = self::get_page_by_template($template);
+
+		return $pages;
 	}
 
 	public static function get_page_by_template($template = '') {
 		$args = array(
 			'meta_key' => '_wp_page_template',
-			'meta_value' => $template
+			'meta_value' => $template,
+			'orderby' => ['menu_order'=>'ASC', 'date'=>'DESC'],
 		);
 		return get_pages($args); 
 	}

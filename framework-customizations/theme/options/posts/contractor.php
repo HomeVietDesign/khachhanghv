@@ -26,12 +26,16 @@ $options = array(
 				'label' => 'Link nhóm zalo',
 				'type' => 'text'
 			),
-			'estimate_attachment' => array(
-				'label' => 'File pdf dự toán',
-				'type' => 'upload',
-				'images_only' => false,
-				'files_ext' => array( 'pdf' ),
+			'estimate_default_link' => array(
+				'label' => 'Link dự toán gốc',
+				'type' => 'text'
 			),
+			// 'estimate_attachment' => array(
+			// 	'label' => 'File pdf dự toán',
+			// 	'type' => 'upload',
+			// 	'images_only' => false,
+			// 	'files_ext' => array( 'pdf' ),
+			// ),
 		),
 	),
 	

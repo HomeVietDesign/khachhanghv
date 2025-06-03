@@ -163,27 +163,31 @@ class Header {
 			}
 
 			if(has_role('administrator') || ($current_password && $current_password->term_id == get_option( 'default_term_passwords', -1 )) ) {
-				$estimate_manage_page = Common::get_custom_page('estimate-manage.php');
-				if($estimate_manage_page) {
-					$estimate_manage_page_url = get_permalink($estimate_manage_page);
-					$this_template = is_page_template('estimate-manage.php') ? true : false;
-					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-					if($this_template) {
-						$menu_html .= ' current-menu-ancestor current-menu-parent';
-					}
-					$menu_html .= '">';
-					$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
-					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-					$menu_html .= '<ul class="sub-menu position-absolute">';
-					foreach ($passwords as $key => $value) {
-						$menu_html .= '<li class="menu-item';
-						$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+				$estimate_manage_pages = Common::get_custom_pages('estimate-manage.php');
+				if($estimate_manage_pages) {
+					foreach ($estimate_manage_pages as $estimate_manage_page) {
+						$estimate_manage_page_url = get_permalink($estimate_manage_page);
+						
+						//$this_template = is_page_template('estimate-manage.php') ? true : false;
+						
+						$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+						if($object->ID==$estimate_manage_page->ID) {
+							$menu_html .= ' current-menu-ancestor current-menu-parent';
+						}
 						$menu_html .= '">';
-						$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+						$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
+						$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+						$menu_html .= '<ul class="sub-menu position-absolute">';
+						foreach ($passwords as $key => $value) {
+							$menu_html .= '<li class="menu-item';
+							$menu_html .= ($object->ID==$estimate_manage_page->ID && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+							$menu_html .= '">';
+							$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+							$menu_html .= '</li>';
+						}
+						$menu_html .= '</ul>';
 						$menu_html .= '</li>';
 					}
-					$menu_html .= '</ul>';
-					$menu_html .= '</li>';
 				}
 
 				$partner_page = Common::get_custom_page('partner.php');

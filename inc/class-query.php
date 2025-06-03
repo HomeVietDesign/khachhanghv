@@ -14,6 +14,23 @@ class Query {
 		add_filter( 'posts_clauses', [$this, 'custom_fields_search'], 10, 2 );
 		//add_filter( 'posts_clauses', [$this, 'post_name_search'], 10, 2 );
 
+		add_filter( 'get_pages_query_args', [$this, 'get_pages_query_args'], 10, 2 );
+
+	}
+
+	public function get_pages_query_args($query_args, $parsed_args) {
+		if(isset($parsed_args['orderby'])) {
+			$query_args['orderby'] = $parsed_args['orderby'];
+		}
+
+		if(isset($parsed_args['order'])) {
+			$query_args['order'] = $parsed_args['order'];
+		}
+
+		// debug_log($parsed_args);
+		// debug_log($query_args);
+
+		return $query_args;
 	}
 
 	public function debug_request($request, $query) {

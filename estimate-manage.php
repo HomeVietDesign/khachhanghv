@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dự toán xây dựng
+ * Template Name: Dự toán Xây dựng - Đồ gỗ
  * 
  */
 $client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;

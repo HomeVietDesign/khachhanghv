@@ -47,7 +47,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
 			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
-			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn btn-sm btn-danger" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải dự toán</a>':'';
+			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
 
 			ob_start();
 		?>
@@ -247,8 +247,10 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
 		];
 
+		$default_link = fw_get_db_post_option($contractor_id, 'estimate_default_link');
+
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -263,13 +265,13 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		<div class="col-lg-3 col-md-6 estimate-item mb-4">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
-					<div class="attachment-download position-absolute top-0 start-0 p-2 z-3">
+					<div class="attachment-download position-absolute top-0 start-0 p-1 z-3">
 					<?php if(client_can_view()) {
 						if(isset($estimate['attachment_id']) && $estimate['attachment_id']!='') {
 							$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
 							if($attachment_url) {
 							?>
-							<a class="btn btn-sm btn-danger" href="<?=esc_url($attachment_url)?>" target="_blank">Tải dự toán</a>
+							<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
 							<?php
 							}
 						}
@@ -287,6 +289,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 					<?php } ?>
 					</div>
+					<?php if($default_link) { ?>
+						<a class="btn btn-sm btn-primary btn-shadow fw-bold position-absolute start-0 bottom-0 m-1 z-3" href="<?=esc_url($default_link)?>" target="_blank">Gốc</a>
+					<?php } ?>
 				</div>
 				<div class="contractor-info text-center px-1">
 					<div class="contractor-title pt-3 mb-1 fs-5">
