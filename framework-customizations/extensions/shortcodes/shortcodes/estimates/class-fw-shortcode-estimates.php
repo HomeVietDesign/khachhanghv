@@ -205,7 +205,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				<div class="row">
+				<div class="row gx-3">
 					<div class="col mb-3">
 						Ngày gửi đề bài yêu cầu
 						<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
@@ -219,7 +219,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						<input class="form-control" type="date" value="<?php echo (isset($estimate['completed'])&&$estimate['completed']!='')?esc_html(date('Y-m-d', strtotime($estimate['completed']))):''; ?>" name="estimate_completed" id="estimate_completed">
 					</div>
 				</div>
-				<div class="row">
+				<div class="row gx-3">
 					<div class="col mb-3">
 						<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
 					</div>
@@ -228,7 +228,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					</div>
 				</div>
 				
-				<div class="row">
+				<div class="row gx-3">
 					<div class="col mb-3">
 						<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
 					</div>
@@ -248,7 +248,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							<?php if($attachment_url) { ?>
 							<div class="input-group input-group-sm">
 								<div class="form-control overflow-hidden"><?=esc_html(basename($attachment_url))?></div>
-								<button class="btn btn-danger" id="estimate_remove_attachment">Xóa file</button>
+								<button class="btn btn-warning" id="estimate_remove_attachment">Xóa file</button>
 							</div>
 							<?php } ?>
 						</div>
