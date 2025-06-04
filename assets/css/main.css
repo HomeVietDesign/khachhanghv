@@ -511,6 +511,24 @@ label[for="estimate_attachment"] {
 	color: #f00;
 	background: #ff0;
 }
+.estimate-progress .col {
+	height: 40px;
+	line-height: 40px;
+	position: relative;
+}
+.estimate-progress .col::after {
+	display: block;
+	content: "";
+	position: absolute;
+	height: 100%;
+	width: 1px;
+	background: rgb(33 37 41);
+	top: 0;
+	right: 0;
+}
+.estimate-progress .col:last-child::after {
+	display: none;
+}
 @media (min-width: 375px) {
 	
 }

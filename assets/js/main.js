@@ -318,6 +318,8 @@ window.addEventListener('DOMContentLoaded', function(){
 								$('.estimate-'+formData.get('estimate_contractor')+' .attachment-download').html(response['attachment']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-required').html(response['required']);
+								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-received').html(response['received']);
+								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-completed').html(response['completed']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate .btn-close').trigger('click');
 							}
@@ -516,6 +518,7 @@ window.addEventListener('DOMContentLoaded', function(){
 								$('.estimate-'+formData.get('estimate_id')+' .estimate-info').html(response['info']);
 								$('.estimate-'+formData.get('estimate_id')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_id')+' .file-download').html(response['file']);
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-required').html(response['required']);
 								$('.estimate-'+formData.get('estimate_id')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate-manage .btn-close').trigger('click');
 							}

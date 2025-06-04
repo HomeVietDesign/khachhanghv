@@ -43,27 +43,39 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					$default_url = fw_get_db_post_option($estimate_id,'estimate_url');
 
-					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 					if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 					if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
 					if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
 
+					//debug($client_estimate);
 					?>
 					<div class="col-lg-3 col-md-6 estimate-item mb-4">
 						<div class="estimate estimate-<?=$estimate_id?> border border-dark h-100">
 							<div class="estimate-thumbnail position-relative">
-								<div class="file-download position-absolute top-0 start-0 p-1 z-3">
-								<?php
-								if(isset($client_estimate['file_id']) && $client_estimate['file_id']!='') {
-									$attachment_url = wp_get_attachment_url($client_estimate['file_id']);
-									if($attachment_url) {
-									?>
-									<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+								<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+									<div class="file-download">
 									<?php
+									if(isset($client_estimate['file_id']) && $client_estimate['file_id']!='') {
+										$attachment_url = wp_get_attachment_url($client_estimate['file_id']);
+										if($attachment_url) {
+										?>
+										<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+										<?php
+										}
 									}
-								}
-								?>
+									?>
+									</div>
+									<div class="estimate-required">
+									<?php
+									if(isset($client_estimate['required']) && $client_estimate['required']!='') {
+										?>
+										<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark me-2" title="Ngày gửi đề bài yêu cầu"><?php echo esc_html(date('d/m/Y', strtotime($client_estimate['required']))); ?></span>
+										<?php
+									}
+									?>
+									</div>
 								</div>
 								<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
 								

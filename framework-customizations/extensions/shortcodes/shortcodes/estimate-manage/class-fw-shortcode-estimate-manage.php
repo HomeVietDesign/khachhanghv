@@ -21,7 +21,9 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 		$response = [
 			'info' => '',
 			'zalo' => '',
-			'file' => ''
+			'required' => '',
+			'file' => '',
+			'quote' => '',
 		];
 
 		if($estimate_client && $estimate_id) {
@@ -32,7 +34,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			];
 
 			$client_estimates = get_term_meta($estimate_client, '_estimates', true);
-			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+			$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:['value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 			if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 			if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
@@ -40,6 +42,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 
 			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['file'] = ($client_estimate['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($client_estimate['file_id'])).'" target="_blank">Tải</a>':'';
+			$response['required'] = (isset($client_estimate['required']) && $client_estimate['required']!='')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark me-2" title="Ngày gửi đề bài yêu cầu">'.esc_html(date('d/m/Y', strtotime($client_estimate['required']))).'</span>':'';
 			$response['quote'] = (isset($client_estimate['quote']) && $client_estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
 
@@ -95,6 +98,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			$estimate_file_id = isset($_POST['estimate_file_id'])?absint($_POST['estimate_file_id']):0;
 			$estimate_file = isset($_FILES['estimate_file']) ? $_FILES['estimate_file'] : null;
 
+			$estimate_client_required = isset($_POST['estimate_client_required']) ? $_POST['estimate_client_required'] : '';
 			$estimate_client_quote = isset($_POST['estimate_client_quote']) ? $_POST['estimate_client_quote'] : '';
 			
 			if($estimate_client && $estimate_id) {
@@ -105,6 +109,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				$new_client_estimate = [
 					'value' => $estimate_client_value,
 					'unit' => $estimate_client_unit,
+					'required' => $estimate_client_required,
 					'zalo' => $estimate_client_zalo,
 					'url' => $estimate_client_url,
 					'file_id' => ($estimate_file_id!=0)?$estimate_file_id:'',
@@ -164,6 +169,10 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_client_unit" name="estimate_client_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($client_estimate['unit']); ?>">
+				</div>
+				<div class="mb-3">
+					Ngày gửi đề bài yêu cầu
+					<input class="form-control" type="date" value="<?php echo (isset($client_estimate['required'])&&$client_estimate['required']!='')?esc_html(date('Y-m-d', strtotime($client_estimate['required']))):''; ?>" name="estimate_client_required" id="estimate_client_required">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_client_zalo" name="estimate_client_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($client_estimate['zalo']); ?>">

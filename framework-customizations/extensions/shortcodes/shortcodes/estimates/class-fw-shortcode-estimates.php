@@ -22,6 +22,8 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			'zalo' => '',
 			'attachment' => '',
 			'required' => '',
+			'received' => '',
+			'completed' => '',
 			'quote' => '',
 		];
 		
@@ -36,7 +38,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimates = get_post_meta($contractor_id, '_estimates', true);
 			if(empty($estimates)) $estimates = [];
 			
-			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:['value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
+			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:['required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
 
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -51,7 +53,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
 
-			$response['required'] = (isset($estimate['required']) && $estimate['required']!='')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark me-2" title="Ngày gửi đề bài yêu cầu">'.esc_html(date('d/m/Y'), strtotime($estimate['required'])).'</span>':'';
+			$response['required'] = (isset($estimate['required']) && $estimate['required']!='')?'<div title="Ngày gửi đề bài yêu cầu">'.esc_html(date('d/m/Y', strtotime($estimate['required']))).'</div>':'';
+			$response['received'] = (isset($estimate['received']) && $estimate['received']!='')?'<div title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m/Y', strtotime($estimate['received']))).'</div>':'';
+			$response['completed'] = (isset($estimate['completed']) && $estimate['completed']!='')?'<div title="Ngày nhận dự toán khách hàng">'.esc_html(date('d/m/Y', strtotime($estimate['completed']))).'</div>':'';
 
 			$response['quote'] = (isset($estimate['quote']) && $estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Đã gửi dự toán khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
@@ -129,6 +133,8 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
 			$estimate_required = isset($_POST['estimate_required']) ? $_POST['estimate_required'] : '';
+			$estimate_received = isset($_POST['estimate_received']) ? $_POST['estimate_received'] : '';
+			$estimate_completed = isset($_POST['estimate_completed']) ? $_POST['estimate_completed'] : '';
 			$estimate_quote = isset($_POST['estimate_quote']) ? $_POST['estimate_quote'] : '';
 
 			//debug_log($_POST);
@@ -136,12 +142,14 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimates', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
+					'required' => $estimate_required,
+					'received' => $estimate_received,
+					'completed' => $estimate_completed,
 					'value' => $estimate_value,
 					'unit' => $estimate_unit,
-					'required' => $estimate_required,
 					'zalo' => $estimate_zalo,
 					'info' => $estimate_info,
 					'link' => $estimate_link,
@@ -188,7 +196,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimates = get_post_meta($contractor, '_estimates', true);
 			if(empty($estimates)) $estimates = [];
 			
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:['required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
 
 			$attachment_url = (isset($estimate['attachment_id']) && $estimate['attachment_id']!='')?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -197,43 +205,63 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				<div class="mb-3">
-					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
+				<div class="row">
+					<div class="col mb-3">
+						Ngày gửi đề bài yêu cầu
+						<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
+					</div>
+					<div class="col mb-3">
+						Ngày nhận dự toán nhà thầu
+						<input class="form-control" type="date" value="<?php echo (isset($estimate['received'])&&$estimate['received']!='')?esc_html(date('Y-m-d', strtotime($estimate['received']))):''; ?>" name="estimate_received" id="estimate_received">
+					</div>
+					<div class="col mb-3">
+						Ngày nhận dự toán khách hàng
+						<input class="form-control" type="date" value="<?php echo (isset($estimate['completed'])&&$estimate['completed']!='')?esc_html(date('Y-m-d', strtotime($estimate['completed']))):''; ?>" name="estimate_completed" id="estimate_completed">
+					</div>
 				</div>
-				<div class="mb-3">
-					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+				<div class="row">
+					<div class="col mb-3">
+						<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
+					</div>
+					<div class="col mb-3">
+						<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+					</div>
 				</div>
-				<div class="mb-3">
-					Ngày gửi đề bài yêu cầu
-					<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
-				</div>
-				<div class="mb-3">
-					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
-				</div>
-				<div class="mb-3">
-					<input type="text" id="estimate_info" name="estimate_info" placeholder="Thông tin nhà thầu" class="form-control" value="<?php echo esc_attr($estimate['info']); ?>">
+				
+				<div class="row">
+					<div class="col mb-3">
+						<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
+					</div>
+					<div class="col mb-3">
+						<input type="text" id="estimate_info" name="estimate_info" placeholder="Thông tin nhà thầu" class="form-control" value="<?php echo esc_attr($estimate['info']); ?>">
+					</div>
+					
 				</div>
 				<div class="mb-3">
 					<input type="text" id="estimate_link" name="estimate_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_attr($estimate['link']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
-					<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr((isset($estimate['attachment_id']))?$estimate['attachment_id']:'')?>">
-					<?php if($attachment_url) { ?>
-					<div class="mb-2">
-						<span class="overflow-hidden"><?=esc_html(basename($attachment_url))?></span>
-						<button class="btn btn-sm btn-danger" id="estimate_remove_attachment">Xóa file</button>
-					</div>
-					<?php } ?>
-					<label class="d-block" for="estimate_attachment">
-						<span class="input-group">
-							<span class="form-control overflow-hidden"></span>
-							<span class="input-group-text">Bấm tải lên</span>
-						</span>
-						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".xls,.xlsx" class="form-control">
+					<div class="d-flex justify-content-between p-2 border rounded-2">
+						<div class="attachment-uploaded">
+							<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr((isset($estimate['attachment_id']))?$estimate['attachment_id']:'')?>">
+							<?php if($attachment_url) { ?>
+							<div class="input-group input-group-sm">
+								<div class="form-control overflow-hidden"><?=esc_html(basename($attachment_url))?></div>
+								<button class="btn btn-danger" id="estimate_remove_attachment">Xóa file</button>
+							</div>
+							<?php } ?>
 						</div>
-					</label>
+						<label class="d-block" for="estimate_attachment">
+							<div class="input-group input-group-sm">
+								<div class="form-control overflow-hidden">Chọn file dự toán cần tải lên</div>
+								<button class="btn btn-primary">Bấm tải lên</button>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".xls,.xlsx" class="form-control">
+							</div>
+						</label>
+					</div>
 				</div>
 				<div class="mb-3">
 					<div class="form-check">
@@ -254,7 +282,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-estimate" tabindex="-1" role="dialog" aria-labelledby="edit-estimate-label">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-estimate-label">Sửa dự toán</h5>
@@ -278,7 +306,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		$default_link = fw_get_db_post_option($contractor_id, 'estimate_default_link');
 
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -291,30 +319,54 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4">
-			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
-				<div class="contractor-thumbnail position-relative">
-					<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
-						<div class="attachment-download">
-						<?php if(client_can_view()) {
-							if(isset($estimate['attachment_id']) && $estimate['attachment_id']!='') {
-								$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
-								if($attachment_url) {
-								?>
-								<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
-								<?php
-								}
-							}
-						} ?>
+			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100 bg-black">
+				<div class="row g-0 estimate-progress text-center text-yellow">
+					<div class="col estimate-required">
+					<?php
+					if(isset($estimate['required']) && $estimate['required']!='') {
+						?>
+						<div title="Ngày gửi đề bài yêu cầu">
+							<?php echo esc_html(date('d/m/Y', strtotime($estimate['required']))); ?>
 						</div>
-						<div class="estimate-required">
 						<?php
-						if(isset($estimate['required']) && $estimate['required']!='') {
+					}
+					?>
+					</div>
+					<div class="col estimate-received">
+						<?php
+						if(isset($estimate['received']) && $estimate['received']!='') {
 							?>
-							<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark me-2" title="Ngày gửi đề bài yêu cầu"><?php echo esc_html(date('d/m/Y'), strtotime($estimate['required'])); ?></span>
+							<div title="Ngày nhận dự toán nhà thầu">
+								<?php echo esc_html(date('d/m/Y', strtotime($estimate['received']))); ?>
+							</div>
 							<?php
 						}
 						?>
-						</div>
+					</div>
+					<div class="col estimate-completed">
+						<?php
+						if(isset($estimate['completed']) && $estimate['completed']!='') {
+							?>
+							<div title="Ngày nhận dự toán khách hàng">
+								<?php echo esc_html(date('d/m/Y', strtotime($estimate['completed']))); ?>
+							</div>
+							<?php
+						}
+						?>
+					</div>
+				</div>
+				<div class="contractor-thumbnail position-relative">
+					<div class="attachment-download position-absolute top-0 start-0 p-1 z-3">
+					<?php if(client_can_view()) {
+						if(isset($estimate['attachment_id']) && $estimate['attachment_id']!='') {
+							$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
+							if($attachment_url) {
+							?>
+							<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+							<?php
+							}
+						}
+					} ?>
 					</div>
 					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="#"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
