@@ -46,8 +46,8 @@ class FW_Shortcode_Partners extends FW_Shortcode
 
 			ob_start();
 		?>
-			<div class="partner-title pt-3 mb-1 fs-5">
-				<span class="d-block" title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><?php echo esc_html(get_the_title( $partner_id )); ?></span>
+			<div class="partner-title pt-3 mb-1 fs-5 text-green text-uppercase">
+				<?php echo esc_html(get_the_title( $partner_id )); ?>
 			</div>
 			<?php if($partner_data['value']!='') { ?>
 			<div class="partner-value mb-1">
@@ -92,7 +92,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 			'data' => []
 		];
 
-		if(has_role('administrator') && check_ajax_referer( 'edit-partner', 'nonce', false )) {
+		if(current_user_can('partner_edit') && check_ajax_referer( 'edit-partner', 'nonce', false )) {
 			$partner_client = isset($_POST['partner_client'])?absint($_POST['partner_client']):0;
 			$partner_id = isset($_POST['partner_id'])?absint($_POST['partner_id']):0;
 			$partner_attachment_id = isset($_POST['partner_attachment_id'])?absint($_POST['partner_attachment_id']):'';
@@ -170,22 +170,26 @@ class FW_Shortcode_Partners extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dữ liệu</div>
-					<input type="hidden" id="partner_attachment_id" name="partner_attachment_id" value="<?=esc_attr($partner_data['attachment_id'])?>">
-					<?php if($attachment_url) { ?>
-					<div class="mb-2">
-						<span class="overflow-hidden"><?=esc_html(basename($attachment_url))?></span>
-						<button class="btn btn-sm btn-danger" id="partner_remove_attachment">Xóa file</button>
-					</div>
-					<?php } ?>
-					<label class="d-block" for="partner_attachment">
-						<span class="input-group">
-							<span class="form-control overflow-hidden"></span>
-							<span class="input-group-text">Bấm tải lên</span>
-						</span>
-						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="partner_attachment" name="partner_attachment" accept=".pdf" class="form-control">
+					<div class="row row-cols-2 g-0 p-2 border rounded-2">
+						<div class="col attachment-uploaded">
+							<input type="hidden" id="partner_attachment_id" name="partner_attachment_id" value="<?=esc_attr($partner_data['attachment_id'])?>">
+							<?php if($attachment_url) { ?>
+							<div class="input-group input-group-sm">
+								<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
+								<button class="btn btn-warning" id="document_remove_attachment" type="button">Xóa file</button>
+							</div>
+							<?php } ?>
 						</div>
-					</label>
+						<label class="col d-block ps-5" for="partner_attachment">
+							<div class="input-group input-group-sm">
+								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+								<span class="btn btn-primary">Bấm tải lên</span>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="partner_attachment" name="partner_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
+							</div>
+						</label>
+					</div>
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-partner-submit">Lưu lại</button>
@@ -200,7 +204,7 @@ class FW_Shortcode_Partners extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-partner" tabindex="-1" role="dialog" aria-labelledby="edit-partner-label">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-partner-label"></h5>

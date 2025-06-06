@@ -144,7 +144,7 @@ function has_role($role, $user=null) {
 
 function client_can_view() {
 	global $current_password;
-	$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
+	//$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 
 	if( has_role('administrator') || has_role('viewer') || ( $current_password && $current_password->term_id == get_option('default_term_passwords', -1) ) ) {
 		return true;

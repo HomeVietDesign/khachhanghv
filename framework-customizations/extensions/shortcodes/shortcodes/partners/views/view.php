@@ -5,13 +5,12 @@
 /**
  * @var array $atts
  */
-global $current_password;
+global $current_password, $current_client;
 $default_term_password = get_option( 'default_term_passwords', -1 );
 
-$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 $partner_cats = get_terms(['taxonomy' => 'partner_cat','parent'=>0]);
 
-if($partner_cats && $client) {
+if($partner_cats && $current_client) {
 	?>
 	<div class="fw-shortcode-partners">
 		<div class="accordion">
@@ -50,7 +49,7 @@ if($partner_cats && $client) {
 							];
 
 							$data = get_post_meta($partner_id, '_data', true);
-							$partner_data = isset($data[$client->term_id])?$data[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+							$partner_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 							if(empty($partner_data['value'])) $partner_data['value'] = $default_data['value'];
 							if(empty($partner_data['unit'])) $partner_data['unit'] = $default_data['unit'];
@@ -61,24 +60,26 @@ if($partner_cats && $client) {
 							
 							?>
 							<div class="col-lg-3 col-md-6 partner-item mb-4">
-								<div class="partner partner-<?=$partner_id?> border border-dark h-100">
+								<div class="partner partner-<?=$partner_id?> border border-dark h-100 bg-black">
 									<div class="partner-thumbnail position-relative">
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $partner_id, 'full' ); ?></span>
-										<?php if(has_role('administrator')) { ?>
+										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $partner_id, 'full' ); ?></span>
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+											<?php if(has_role('administrator')) { ?>
 											<a href="<?php echo get_edit_post_link( $partner_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-partner" data-client="<?=$client->term_id?>" data-partner="<?=$partner_id?>" data-partner-title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											<?php } ?>
+											<?php if(current_user_can('partner_edit')) { ?>
+											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-partner" data-client="<?=$current_client->term_id?>" data-partner="<?=$partner_id?>" data-partner-title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											<?php } ?>
 										</div>
-										<?php } ?>
-										<div class="zalo-link position-absolute top-0 end-0 p-2">
+										<div class="zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($partner_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($partner_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 									</div>
 									<div class="partner-info text-center px-1">
-										<div class="partner-title pt-3 mb-1 fs-5">
-											<span class="d-block" title="<?php echo esc_attr(get_the_title( $partner_id )); ?>"><?php echo esc_html(get_the_title( $partner_id )); ?></span>
+										<div class="partner-title pt-3 mb-1 fs-5 text-green text-uppercase">
+											<?php echo esc_html(get_the_title( $partner_id )); ?>
 										</div>
 										<?php if($partner_data['value']!='') { ?>
 										<div class="partner-value mb-1">

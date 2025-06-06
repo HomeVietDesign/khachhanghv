@@ -15,7 +15,7 @@ if($class) {
     $index = absint(get_term_meta($class[0]->term_id, 'order', true));
 }
 
-if( has_role('viewer') || (!is_user_logged_in() && $current_password)) {
+if( (current_user_can('contractor_view') && !current_user_can('contractor_edit')) || $current_password ) {
     $default_province = (int) get_option( 'default_term_province', 0 );
     ?>
     <div class="contractor col-md-6 col-lg-3">
@@ -25,7 +25,7 @@ if( has_role('viewer') || (!is_user_logged_in() && $current_password)) {
                     <span class="d-block"><?php the_post_thumbnail('large', ['alt'=>esc_attr(get_the_title())]); ?></span>
                 </div>
 
-                <div class="position-absolute top-0 start-50 mt-1 translate-middle-x d-flex featured">
+                <div class="position-absolute top-0 start-50 mt-2 translate-middle-x d-flex featured">
                     <?php if($best=='true') { ?>
                     <span class="d-block px-2 py-1 mx-1 bg-danger text-white rounded-0 fw-bold text-uppercase text-nowrap">Nhà thầu Uy tín</span>
                     <?php } ?>
@@ -61,7 +61,7 @@ if( has_role('viewer') || (!is_user_logged_in() && $current_password)) {
             <?php
             // debug($current_password_province);
             // debug($default_province);
-            if($current_password_province->term_id == $default_province) { ?>
+            if( has_role('viewer') || ($current_password_province && $current_password_province->term_id == $default_province)) { ?>
             <div class="provinces px-2 pb-1 d-flex flex-wrap justify-content-center">
                 <?php
                 $provinces = get_the_terms( $post, 'province' );
@@ -78,7 +78,7 @@ if( has_role('viewer') || (!is_user_logged_in() && $current_password)) {
         </div>
     </div>
     <?php
-} elseif (has_role('administrator')) {
+} elseif (current_user_can('contractor_edit')) {
     $has_term = false;
     
     $_is_down = get_post_meta($post->ID, '_is_down', true);

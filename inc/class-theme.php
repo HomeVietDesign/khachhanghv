@@ -43,16 +43,68 @@ class Theme {
 
 		}
 
-		// add_action('after_switch_theme', [$this, 'theme_activation']);
-		// add_action('switch_theme', [$this, 'theme_deactivation']);
+		add_action('after_switch_theme', [$this, 'theme_activation']);
+		add_action('switch_theme', [$this, 'theme_deactivation']);
 	}
 
 	public function theme_activation() {
+		add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
 
+		$admin_role = get_role( 'administrator' );
+		$admin_role->add_cap('contractor_view');
+		$admin_role->add_cap('contractor_edit');
+		$admin_role->add_cap('estimate_contractor_view');
+		$admin_role->add_cap('estimate_contractor_edit');
+		$admin_role->add_cap('estimate_customer_view');
+		$admin_role->add_cap('estimate_customer_edit');
+		$admin_role->add_cap('estimate_manage_view');
+		$admin_role->add_cap('estimate_manage_edit');
+		$admin_role->add_cap('partner_view');
+		$admin_role->add_cap('partner_edit');
+		$admin_role->add_cap('document_view');
+		$admin_role->add_cap('document_edit');
+		
+		$sangtran = get_user_by( 'login', 'sangtran' );
+		$sangtran->add_cap('estimate_contractor_view');
+		$sangtran->add_cap('estimate_contractor_edit');
+
+		$sangtran = get_user_by( 'login', 'tanhv' );
+		$sangtran->add_cap('estimate_contractor_view');
+		$sangtran->add_cap('estimate_contractor_edit');
+
+		$sangtran = get_user_by( 'login', 'thaotde' );
+		$sangtran->add_cap('estimate_contractor_view');
+		$sangtran->add_cap('estimate_contractor_edit');
 	}
 
 	public function theme_deactivation() {
-		
+		remove_role( 'viewer' );
+
+		$admin_role = get_role( 'administrator' );
+		$admin_role->remove_cap('contractor_view');
+		$admin_role->remove_cap('contractor_edit');
+		$admin_role->remove_cap('estimate_contractor_view');
+		$admin_role->remove_cap('estimate_contractor_edit');
+		$admin_role->remove_cap('estimate_customer_view');
+		$admin_role->remove_cap('estimate_customer_edit');
+		$admin_role->remove_cap('estimate_manage_view');
+		$admin_role->remove_cap('estimate_manage_edit');
+		$admin_role->remove_cap('partner_view');
+		$admin_role->remove_cap('partner_edit');
+		$admin_role->remove_cap('document_view');
+		$admin_role->remove_cap('document_edit');
+
+		$sangtran = get_user_by( 'login', 'sangtran' );
+		$sangtran->remove_cap('estimate_contractor_view');
+		$sangtran->remove_cap('estimate_contractor_edit');
+
+		$sangtran = get_user_by( 'login', 'tanhv' );
+		$sangtran->remove_cap('estimate_contractor_view');
+		$sangtran->remove_cap('estimate_contractor_edit');
+
+		$sangtran = get_user_by( 'login', 'thaotde' );
+		$sangtran->remove_cap('estimate_contractor_view');
+		$sangtran->remove_cap('estimate_contractor_edit');
 	}
 
 	public static function instance() {

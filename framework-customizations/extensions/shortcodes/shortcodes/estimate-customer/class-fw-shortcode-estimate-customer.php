@@ -74,7 +74,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 				<?php
-				if($phone_number && client_can_view()) {
+				if($phone_number && (current_user_can('estimate_customer_view') || ( $current_password && $current_password->term_id == $default_term_password ))) {
 					?>
 					<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
 					<?php
@@ -105,7 +105,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			'data' => []
 		];
 
-		if((has_role('administrator') || has_role('viewer')) && check_ajax_referer( 'edit-estimate-customer', 'nonce', false )) {
+		if((current_user_can('estimate_customer_edit')) && check_ajax_referer( 'edit-estimate-customer', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
 			//$estimate_drawing_id = isset($_POST['estimate_drawing_id'])?absint($_POST['estimate_drawing_id']):0;
@@ -173,10 +173,10 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate-customer', 'nonce' ); ?>
 				<div id="edit-estimate-customer-response"></div>
-				<div class="mb-3">
+				<div class="col mb-3">
 					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
 				</div>
-				<div class="mb-3">
+				<div class="col mb-3">
 					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
@@ -184,22 +184,26 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
-					<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr($estimate['attachment_id'])?>">
-					<?php if($attachment_url) { ?>
-					<div class="mb-2">
-						<span class="overflow-hidden"><?=esc_html(basename($attachment_url))?></span>
-						<button class="btn btn-sm btn-danger" id="estimate_customer_remove_attachment">Xóa file</button>
-					</div>
-					<?php } ?>
-					<label class="d-block" for="estimate_attachment">
-						<span class="input-group">
-							<span class="form-control overflow-hidden"></span>
-							<span class="input-group-text">Bấm tải lên</span>
-						</span>
-						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".pdf" class="form-control">
+					<div class="row row-cols-2 g-0 p-2 border rounded-2">
+						<div class="col attachment-uploaded">
+							<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr($estimate['attachment_id'])?>">
+							<?php if($attachment_url) { ?>
+								<div class="input-group input-group-sm">
+									<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
+									<button class="btn btn-warning" id="estimate_customer_remove_attachment" type="button">Xóa file</button>
+								</div>
+							<?php } ?>
 						</div>
-					</label>
+						<label class="col d-block ps-5" for="estimate_attachment">
+							<div class="input-group input-group-sm">
+								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+								<span class="btn btn-primary">Bấm tải lên</span>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control">
+							</div>
+						</label>
+					</div>
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-estimate-customer-submit">Lưu lại</button>
@@ -214,7 +218,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-estimate-customer" tabindex="-1" role="dialog" aria-labelledby="edit-estimate-customer-label">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-estimate-customer-label">Sửa dự toán</h5>
@@ -228,6 +232,9 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	}
 
 	public static function display_contractor($contractor_id, $client) {
+		global $current_password;
+		$default_term_password = get_option('default_term_passwords', -1);
+		
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
 		$default_estimate = [
 			'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
@@ -250,7 +257,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
-		if(!(has_role('administrator')||has_role('viewer')) && empty($estimate['attachment_id'])) {
+		if( !(current_user_can('estimate_customer_view')) && empty($estimate['attachment_id']) ) {
 			return;
 		}
 		?>
@@ -258,19 +265,29 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
 					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>"<?php echo ($external_url!='#')?' target="_blank"':''; ?>><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
-					<?php if(has_role('administrator')||has_role('viewer')) { ?>
+					
+					<?php if(current_user_can('estimate_customer_view')): ?>
+
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+						
 						<?php if(has_role('administrator')) { ?>
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						<?php } ?>
+						<?php } // if(has_role('administrator')) ?>
+						
+						<?php if(current_user_can('estimate_customer_edit')) { ?>
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-customer" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+						<?php } // if(current_user_can('estimate_customer_edit')) ?>
+
 					</div>
-					<?php } ?>
+
+					<?php endif; // if(current_user_can('estimate_customer_view')) ?>
+
 					<div class="zalo-link position-absolute top-0 end-0 p-2">
 					<?php if($estimate['zalo']) { ?>
 						<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 					<?php } ?>
 					</div>
+
 				</div>
 				<div class="contractor-info text-center px-1">
 					<div class="contractor-title pt-3 mb-1 fs-5">
@@ -298,7 +315,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 					<?php } ?>
 					<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 						<?php
-						if($phone_number && client_can_view()) {
+						if($phone_number && (current_user_can('estimate_customer_view') || ( $current_password && $current_password->term_id == $default_term_password ))) {
 							?>
 							<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
 							<?php

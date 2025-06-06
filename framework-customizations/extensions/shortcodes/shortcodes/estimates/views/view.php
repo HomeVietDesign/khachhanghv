@@ -59,6 +59,8 @@ if($current_client) {
 
 					if($contractors) {
 						$total = ($per>0)?ceil(count($contractors)/$per):0;
+
+						$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 						?>
 						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3 <?php echo (in_array($value->term_id, $contractor_cat_hide))?'hidden':''; ?>">
 							<h2 class="accordion-header position-relative">
@@ -70,7 +72,7 @@ if($current_client) {
 									<?php
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											\FW_Shortcode_Estimates::display_contractor($contractor_id, $current_client);
+											\FW_Shortcode_Estimates::display_contractor($contractor_id, $current_client, $progress);
 										} else {
 											break;
 										}

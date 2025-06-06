@@ -86,7 +86,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			'data' => []
 		];
 
-		if(has_role('administrator') && check_ajax_referer( 'edit-document', 'nonce', false )) {
+		if(current_user_can('document_edit') && check_ajax_referer( 'edit-document', 'nonce', false )) {
 			$document_client = isset($_POST['document_client'])?absint($_POST['document_client']):0;
 			$document_id = isset($_POST['document_id'])?absint($_POST['document_id']):0;
 			$document_attachment_id = isset($_POST['document_attachment_id'])?absint($_POST['document_attachment_id']):'';
@@ -164,22 +164,26 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dữ liệu</div>
-					<input type="hidden" id="document_attachment_id" name="document_attachment_id" value="<?=esc_attr($document_data['attachment_id'])?>">
-					<?php if($attachment_url) { ?>
-					<div class="mb-2">
-						<span class="overflow-hidden"><?=esc_html(basename($attachment_url))?></span>
-						<button class="btn btn-sm btn-danger" id="document_remove_attachment">Xóa file</button>
-					</div>
-					<?php } ?>
-					<label class="d-block" for="document_attachment">
-						<span class="input-group">
-							<span class="form-control overflow-hidden"></span>
-							<span class="input-group-text">Bấm tải lên</span>
-						</span>
-						<div style="width: 0;height: 0;overflow: hidden;">
-							<input type="file" id="document_attachment" name="document_attachment" accept=".pdf,.rar,.zip" class="form-control">
+					<div class="row row-cols-2 g-0 p-2 border rounded-2">
+						<div class="col attachment-uploaded">
+							<input type="hidden" id="document_attachment_id" name="document_attachment_id" value="<?=esc_attr($document_data['attachment_id'])?>">
+							<?php if($attachment_url) { ?>
+							<div class="input-group input-group-sm">
+								<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
+								<button class="btn btn-warning" id="document_remove_attachment" type="button">Xóa file</button>
+							</div>
+							<?php } ?>
 						</div>
-					</label>
+						<label class="col d-block ps-5" for="document_attachment">
+							<div class="input-group input-group-sm">
+								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+								<span class="btn btn-primary">Bấm tải lên</span>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="document_attachment" name="document_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
+							</div>
+						</label>
+					</div>
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-document-submit">Lưu lại</button>
@@ -194,7 +198,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-document" tabindex="-1" role="dialog" aria-labelledby="edit-document-label">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-document-label"></h5>

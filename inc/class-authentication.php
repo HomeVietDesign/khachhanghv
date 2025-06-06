@@ -11,6 +11,41 @@ class Authentication {
 		add_filter( 'post_password_required', [$this, 'post_password_required'], 10, 2 );
 
 		add_filter( 'nonce_life', [$this, 'nonce_life'] );
+
+		//add_action( 'init', [$this, 'custom_capability'] );
+	}
+
+	public function custom_capability() {
+		// $nha88 = get_user_by( 'login', 'nha88' );
+		// $nha88->remove_cap('contractor_view');
+		// $nha88->remove_cap('estimate_contractor_view');
+		// $nha88->remove_cap('estimate_contractor_edit');
+		// $nha88->remove_cap('estimate_customer_view');
+		
+		// $ngochv = get_user_by( 'login', 'ngochv' );
+		// $ngochv->remove_cap('contractor_view');
+		// $ngochv->remove_cap('estimate_contractor_view');
+		// $ngochv->remove_cap('estimate_customer_view');
+		// $ngochv->remove_cap('estimate_customer_edit');
+		// $ngochv->remove_cap('estimate_manage_view');
+		// $ngochv->remove_cap('estimate_manage_edit');
+		// $ngochv->remove_cap('partner_view');
+		// $ngochv->remove_cap('document_view');
+
+		// $admin_role = get_role( 'administrator' );
+		// $admin_role->add_cap('contractor_view');
+		// $admin_role->add_cap('contractor_edit');
+		// $admin_role->add_cap('estimate_contractor_view');
+		// $admin_role->add_cap('estimate_contractor_edit');
+		// $admin_role->add_cap('estimate_customer_view');
+		// $admin_role->add_cap('estimate_customer_edit');
+		// $admin_role->add_cap('estimate_manage_view');
+		// $admin_role->add_cap('estimate_manage_edit');
+		// $admin_role->add_cap('partner_view');
+		// $admin_role->add_cap('partner_edit');
+		// $admin_role->add_cap('document_view');
+		// $admin_role->add_cap('document_edit');
+		
 	}
 
 	public function nonce_life() {
@@ -23,23 +58,46 @@ class Authentication {
 		$post = get_post( $post );
 		
 		$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
+		$default_term_password = get_option( 'default_term_passwords', -1 );
 
-		if($post->post_type=="contractor_page") {
+		if( $post->post_type=="contractor_page" || is_singular('contractor_page') ) { // trang danh sách nhà thầu theo hạng mục
 			$required = true;
 
-			if($current_password || has_role('administrator') || has_role('viewer')) {
+			if( $current_password || current_user_can( 'contractor_view' ) ) { // khách hàng và nhà quản lý có quyền
+			//if( current_user_can( 'contractor_view' ) ) { // Nhà quản lý có quyền
 				$required = false;
 			}
-		} elseif(is_page_template( 'estimates.php' ) || is_page_template( 'estimate.php' ) || is_page_template( 'estimate-customer.php' )) {
-			$required = true;
 
-			if( has_role('administrator') || has_role('viewer') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+		} elseif( is_page_template( 'estimates.php' ) ) { // trang chủ dự toán
+			$required = true;
+			if( has_role('administrator') || has_role('viewer') || ($current_password &&  $current_password->term_id == $default_term_password) ) { // nhà quản lý | khách hàng mặc định
 				$required = false;
 			}
-		} elseif ( is_page_template( 'estimate-manage.php' ) || is_page_template( 'partner.php' ) || is_page_template( 'document.php' ) ) {
+		} elseif( is_page_template( 'estimate.php' ) ) { // trang dự toán nhà thầu
 			$required = true;
-
-			if( has_role('administrator') || ($current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
+			if( current_user_can('estimate_contractor_view') 
+				|| ( $current_password && $current_password->term_id == $default_term_password ) 
+			) {  // nhà quản lý có quyền | khách hàng mặc định
+				$required = false;
+			}
+		} elseif( is_page_template( 'estimate-customer.php' ) ) { // trang dự toán khách hàng
+			$required = true;
+			if( current_user_can('estimate_customer_view') || ( $current_password && ( ($client && $current_password->term_id == $client->term_id) || $current_password->term_id == $default_term_password ) ) ) { // nhà quản lý có quyền | khách hàng | khách hàng mặc định
+				$required = false;
+			}
+		} elseif ( is_page_template( 'estimate-manage.php' ) ) {
+			$required = true;
+			if( current_user_can('estimate_manage_view') || ( $current_password && $current_password->term_id == $default_term_password ) ) { // nhà quản lý có quyền | khách hàng mặc định
+				$required = false;
+			}
+		} elseif ( is_page_template( 'partner.php' ) ) {
+			$required = true;
+			if( current_user_can('partner_view') || ( $current_password && $current_password->term_id == $default_term_password ) ) { // nhà quản lý có quyền | khách hàng mặc định
+				$required = false;
+			}
+		} elseif ( is_page_template( 'document.php' ) ) {
+			$required = true;
+			if( current_user_can('document_view') || ( $current_password && $current_password->term_id == $default_term_password ) ) { // nhà quản lý có quyền | khách hàng mặc định
 				$required = false;
 			}
 		}

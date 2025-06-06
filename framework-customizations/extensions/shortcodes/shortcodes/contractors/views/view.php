@@ -49,7 +49,7 @@ if($default_province) {
 	$provinces[] = $default_province;
 }
 
-if( !is_user_logged_in() ) {
+if( !is_user_logged_in() || $current_password ) {
 	if($current_password) {
 		$allow_query = true;
 
@@ -62,7 +62,7 @@ if( !is_user_logged_in() ) {
 
 			if($default_province==$current_password_province->term_id && !$current_province) { // chủ đầu tư thuộc toàn quốc
 				$provinces=[]; // loại bỏ lọc theo tỉnh thành để hiển thị tất cả nhà thầu
-			} else {
+			} elseif($current_province) {
 				// lọc theo tỉnh của chủ đầu tư
 				$provinces[] = $current_province->term_id;
 			}
@@ -72,7 +72,7 @@ if( !is_user_logged_in() ) {
 		}
 		
 	}
-} elseif(has_role('administrator') || has_role('viewer')) {
+} elseif(current_user_can('contractor_view')) {
 	$allow_query = true;
 	
 	$orderby = [

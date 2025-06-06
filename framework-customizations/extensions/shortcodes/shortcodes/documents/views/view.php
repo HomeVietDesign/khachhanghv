@@ -5,13 +5,12 @@
 /**
  * @var array $atts
  */
-global $current_password;
+global $current_password, $current_client;
 $default_term_password = get_option( 'default_term_passwords', -1 );
 
-$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
 $document_cats = get_terms(['taxonomy' => 'document_cat','parent'=>0]);
 
-if($document_cats && $client) {
+if($document_cats && $current_client) {
 	?>
 	<div class="fw-shortcode-documents">
 		<div class="accordion">
@@ -50,7 +49,7 @@ if($document_cats && $client) {
 							];
 
 							$data = get_post_meta($document_id, '_data', true);
-							$document_data = isset($data[$client->term_id])?$data[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 							
 							if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
 							if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
@@ -59,16 +58,19 @@ if($document_cats && $client) {
 							
 							?>
 							<div class="col-lg-3 col-md-6 document-item mb-4">
-								<div class="document document-<?=$document_id?> border border-dark h-100">
+								<div class="document document-<?=$document_id?> border border-dark h-100 bg-black">
 									<div class="document-thumbnail position-relative">
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $document_id, 'full' ); ?></span>
-										<?php if(has_role('administrator')) { ?>
+										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $document_id, 'full' ); ?></span>
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+											<?php if(has_role('administrator')) { ?>
 											<a href="<?php echo get_edit_post_link( $document_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-document" data-client="<?=$client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											<?php } ?>
+											<?php if(current_user_can('document_edit')) { ?>
+											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-document" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											<?php } ?>
 										</div>
-										<?php } ?>
-										<div class="zalo-link position-absolute top-0 end-0 p-2">
+										
+										<div class="zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($document_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($document_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>

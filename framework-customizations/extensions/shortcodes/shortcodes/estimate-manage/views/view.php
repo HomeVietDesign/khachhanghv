@@ -6,9 +6,9 @@
  * @var array $atts
  */
 global $current_password, $current_client;
-$default_term_password = get_option( 'default_term_passwords', -1 );
+//$default_term_password = get_option( 'default_term_passwords', -1 );
 
-//$client = isset($_GET['client'])?get_term_by( 'id', absint($_GET['client']), 'passwords' ):null;
+$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 $estimate_cat = isset($atts['estimate_cat']) ? get_term_by( 'term_id', $atts['estimate_cat'][0], 'estimate_cat' ) : null;
 
@@ -33,7 +33,11 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 					]
 				]
 			]);
+
 			if($estimates) {
+
+				$display = empty($progress) ? true : false;
+
 				foreach($estimates as $estimate_id) {
 					$default_estimate = [
 						'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
@@ -43,16 +47,102 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					$default_url = fw_get_db_post_option($estimate_id,'estimate_url');
 
-					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'value'=>'', 'unit'=>'', 'required'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
 					if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 					if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
 					if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
 
 					//debug($client_estimate);
+					if(!$display) {
+						$display_required = true;
+						if('required'==$progress) {
+							$display_required = false;
+							if(isset($client_estimate['required']) && $client_estimate['required']!='' ) {
+								$display_required = true;
+							}
+						}
+
+						$display_received = true;
+						if('received'==$progress) {
+							$display_received = false;
+							if(isset($client_estimate['received']) && $client_estimate['received']!='' ) {
+								$display_received = true;
+							}
+						}
+
+						$display_completed = true;
+						if('completed'==$progress) {
+							$display_completed = false;
+							if(isset($client_estimate['completed']) && $client_estimate['completed']!='' ) {
+								$display_completed = true;
+							}
+						}
+
+						$display_sent = true;
+						if('sent'==$progress) {
+							$display_sent = false;
+							if(isset($client_estimate['sent']) && $client_estimate['sent']!='' ) {
+								$display_sent = true;
+							}
+						}
+
+					}
+
+					$item_class = '';
+
+					if(!$display && !($display_required && $display_received && $display_completed && $display_sent)) {
+						$item_class = 'hidden';
+					}
 					?>
-					<div class="col-lg-3 col-md-6 estimate-item mb-4">
-						<div class="estimate estimate-<?=$estimate_id?> border border-dark h-100">
+					<div class="col-lg-3 col-md-6 estimate-item mb-4 <?=$item_class?>">
+						<div class="estimate estimate-<?=$estimate_id?> border border-dark bg-black h-100">
+							<div class="row g-0 estimate-progress text-center text-yellow">
+								<div class="col estimate-required<?php echo (isset($client_estimate['required']) && $client_estimate['required']!='')?' on':''; ?>">
+								<?php
+								if(isset($client_estimate['required']) && $client_estimate['required']!='') {
+									?>
+									<div title="Ngày gửi yêu cầu">
+										<?php echo esc_html(date('d/m/y', strtotime($client_estimate['required']))); ?>
+									</div>
+									<?php
+								}
+								?>
+								</div>
+								<div class="col estimate-received<?php echo (isset($client_estimate['received']) && $client_estimate['received']!='')?' on':''; ?>">
+									<?php
+									if(isset($client_estimate['received']) && $client_estimate['received']!='') {
+										?>
+										<div title="Ngày nhận dự toán nhà thầu">
+											<?php echo esc_html(date('d/m/y', strtotime($client_estimate['received']))); ?>
+										</div>
+										<?php
+									}
+									?>
+								</div>
+								<div class="col estimate-completed<?php echo (isset($client_estimate['completed']) && $client_estimate['completed']!='')?' on':''; ?>">
+									<?php
+									if(isset($client_estimate['completed']) && $client_estimate['completed']!='') {
+										?>
+										<div title="Ngày làm xong dự toán">
+											<?php echo esc_html(date('d/m/y', strtotime($client_estimate['completed']))); ?>
+										</div>
+										<?php
+									}
+									?>
+								</div>
+								<div class="col estimate-sent<?php echo (isset($client_estimate['sent']) && $client_estimate['sent']!='')?' on':''; ?>">
+									<?php
+									if(isset($client_estimate['sent']) && $client_estimate['sent']!='') {
+										?>
+										<div title="Ngày gửi khách">
+											<?php echo esc_html(date('d/m/y', strtotime($client_estimate['sent']))); ?>
+										</div>
+										<?php
+									}
+									?>
+								</div>
+							</div>
 							<div class="estimate-thumbnail position-relative">
 								<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
 									<div class="file-download">
@@ -67,17 +157,8 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 									}
 									?>
 									</div>
-									<div class="estimate-required">
-									<?php
-									if(isset($client_estimate['required']) && $client_estimate['required']!='') {
-										?>
-										<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark me-2" title="Ngày gửi đề bài yêu cầu"><?php echo esc_html(date('d/m/Y', strtotime($client_estimate['required']))); ?></span>
-										<?php
-									}
-									?>
-									</div>
 								</div>
-								<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
+								<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $estimate_id, 'full' ); ?></div>
 								
 								<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 									<div class="estimate-quote">
@@ -91,6 +172,8 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 									</div>
 									<?php if(has_role('administrator')) { ?>
 										<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+									<?php } ?>
+									<?php if(current_user_can('estimate_manage_edit')) { ?>
 										<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$current_client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
 									<?php } ?>
 								</div>

@@ -320,6 +320,7 @@ window.addEventListener('DOMContentLoaded', function(){
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-required').html(response['required']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-received').html(response['received']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-completed').html(response['completed']);
+								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-sent').html(response['sent']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate .btn-close').trigger('click');
 							}
@@ -339,9 +340,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('click', '#estimate_remove_attachment', function(e){
 			e.preventDefault();
 			let $this = $(this);
-			$this.prev('span').html('');
 			$('#estimate_attachment_id').val('');
-			$this.remove();
+			$this.closest('.input-group').remove();
 		});
 
 		// estimate customer
@@ -435,9 +435,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('click', '#estimate_customer_remove_attachment', function(e){
 			e.preventDefault();
 			let $this = $(this);
-			$this.prev('span').html('');
 			$('#estimate_attachment_id').val('');
-			$this.remove();
+			$this.closest('.input-group').remove();
 		});
 		$(document).on('input', '#estimate_attachment', function() {
 			let $input = $(this);
@@ -519,6 +518,9 @@ window.addEventListener('DOMContentLoaded', function(){
 								$('.estimate-'+formData.get('estimate_id')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_id')+' .file-download').html(response['file']);
 								$('.estimate-'+formData.get('estimate_id')+' .estimate-required').html(response['required']);
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-received').html(response['received']);
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-completed').html(response['completed']);
+								$('.estimate-'+formData.get('estimate_id')+' .estimate-sent').html(response['sent']);
 								$('.estimate-'+formData.get('estimate_id')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate-manage .btn-close').trigger('click');
 							}
@@ -538,9 +540,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('click', '#estimate_remove_file', function(e){
 			e.preventDefault();
 			let $this = $(this);
-			$this.prev('span').html('');
 			$('#estimate_file_id').val('');
-			$this.remove();
+			$this.closest('.input-group').remove();
 		});
 		$(document).on('input', '#estimate_file', function() {
 			let $input = $(this);
@@ -639,9 +640,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('click', '#partner_remove_attachment', function(e){
 			e.preventDefault();
 			let $this = $(this);
-			$this.prev('span').html('');
 			$('#partner_attachment_id').val('');
-			$this.remove();
+			$this.closest('.input-group').remove();
 		});
 
 		$(document).on('input', '#partner_attachment', function() {
@@ -741,9 +741,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('click', '#document_remove_attachment', function(e){
 			e.preventDefault();
 			let $this = $(this);
-			$this.prev('span').html('');
 			$('#document_attachment_id').val('');
-			$this.remove();
+			$this.closest('.input-group').remove();
 		});
 
 		$(document).on('input', '#document_attachment', function() {
@@ -867,8 +866,61 @@ window.addEventListener('DOMContentLoaded', function(){
 					}
 				}
 			});
-			
 		});
+
+		$('.client-heading.position-sticky').each(function(index, el){
+			let $el = $(el);
+			let stickyObserver = new IntersectionObserver(([entry]) => {
+				//console.log(entry.intersectionRatio);
+				if (entry.intersectionRatio < 1) {
+					$el.removeClass('is-stuck');
+				} else {
+					$el.addClass('is-stuck');
+				}
+			}, {
+				threshold: [1],
+				root: document.getElementById('site-body'),
+				rootMargin: '-2px 0px 0px 0px'
+			});
+
+			stickyObserver.observe(el);
+		});
+
+		$('input.progress-checker').on('change', function(e){
+			let $this = $(this);
+			
+			$this.closest('.filter-progress-item').siblings().find('.progress-checker').prop('checked', false);
+			$this.closest('form').submit();
+		});
+
+		if($('#estimate-filter-form').length) {
+			let required = 0, received = 0, completed = 0, sent = 0, quote = 0;
+			$('#estimate-filter-form').find('.estimate-item').each(function(i, el){
+				let $el = $(el);
+					
+				if($el.find('.estimate-required').hasClass('on')) {
+					required += 1;
+				}
+				if($el.find('.estimate-received').hasClass('on')) {
+					received += 1;
+				}
+				if($el.find('.estimate-completed').hasClass('on')) {
+					completed += 1;
+				}
+				if($el.find('.estimate-sent').hasClass('on')) {
+					sent += 1;
+				}
+				if($el.find('.estimate-quote').hasClass('on')) {
+					quote += 1;
+				}
+				
+			});
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-received"] span').text(received);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-quote"] span').text(quote);
+		}
 
 	});// jQuery
 	

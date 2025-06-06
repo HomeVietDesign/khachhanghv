@@ -159,7 +159,7 @@ class Setup {
 			}
 		}
 		
-		if(has_role('administrator') || $view_province) {
+		if(current_user_can('contractor_view') || $view_province) {
 			add_filter('post_type_link', [$this, 'contractor_page_link'], 10, 2);
 		}
 
@@ -255,8 +255,6 @@ class Setup {
 
 		//add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
 
-		//remove_role( 'viewer' );
-		add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
 	}
 
 	public function query_post_type_for_search( $query ) {

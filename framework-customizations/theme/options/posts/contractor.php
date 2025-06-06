@@ -44,6 +44,10 @@ $options = array(
 		'title'   => 'Cài đặt nâng cao',
 		'type'    => 'box',
         'options' => array(
+        	'phone_number_label' => array(
+				'label' => 'Nhãn trước số điện thoại',
+				'type' => 'text',
+			),
 			'_phone_number' => array(
 				'label' => 'Số điện thoại',
 				'type' => 'text',
