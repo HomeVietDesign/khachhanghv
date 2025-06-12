@@ -9,6 +9,20 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_estimate_manage_form', [$this, 'ajax_get_edit_estimate_manage_form']);
       add_action( 'wp_ajax_update_estimate_manage', [$this, 'ajax_update_estimate_manage']);
       add_action( 'wp_ajax_get_estimate_manage_info', [$this, 'ajax_get_estimate_manage_info']);
+      add_action( 'wp_ajax_estimate_manage_hide', [$this, 'ajax_estimate_manage_hide']);
+	}
+
+	public function ajax_estimate_manage_hide() {
+		global $current_client;
+		$estimate_id = isset($_POST['estimate']) ? absint($_POST['estimate']) : 0;
+		$response = false;
+		if(current_user_can('estimate_manage_edit') && $current_client && $estimate_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$client_hidden = fw_get_db_post_option($estimate_id, 'client_hidden', []);
+			$client_hidden[] = $current_client->term_id;
+			fw_set_db_post_option($estimate_id, 'client_hidden', $client_hidden);
+			$response = true;
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_get_estimate_manage_info() {

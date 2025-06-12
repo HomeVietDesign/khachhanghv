@@ -999,6 +999,31 @@ window.addEventListener('DOMContentLoaded', function(){
 			}
 		});
 
+		$('.estimate-manage-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				estimate = $this.data('estimate'),
+				estimate_title = $this.data('estimateTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('Ẩn nhà thầu "'+estimate_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_manage_hide', client: client, estimate: estimate},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$estimate.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
 		$('.client-heading.position-sticky').each(function(index, el){
 			let $el = $(el);
 			let stickyObserver = new IntersectionObserver(([entry]) => {
