@@ -97,9 +97,7 @@ class Custom_Types {
 			$wp_taxonomies['post_tag']->labels->menu_name = 'Đặc điểm';
 			$wp_taxonomies['post_tag']->labels->name_admin_bar = 'Đặc điểm';
 		}
-
-		
-		
+	
 	}
 
 	public function _theme_action_register_custom_type_10() {
@@ -306,8 +304,8 @@ class Custom_Types {
 			'hierarchical'        => false,
 			//'description'         => 'description',
 			//'taxonomies'          => array('contractor_cat'),
-			'public'              => true,
-			'show_ui'             => true,
+			'public'              => false,
+			'show_ui'             => false,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 6,
@@ -374,6 +372,50 @@ class Custom_Types {
 			),
 		);
 		register_post_type( 'document', $args );
+
+		$labels = array(
+			'name'               => 'Hợp đồng',
+			'singular_name'      => 'Hợp đồng',
+			'add_new'            => 'Thêm mới Hợp đồng',
+			'add_new_item'       => 'Thêm mới Hợp đồng',
+			'edit_item'          => 'Sửa Hợp đồng',
+			'new_item'           => 'Hợp đồng mới',
+			'view_item'          => 'Xem Hợp đồng',
+			'search_items'       => 'Tìm Hợp đồng',
+			'not_found'          => 'Không có Hợp đồng nào',
+			'not_found_in_trash' => 'Không có Hợp đồng nào trong Thùng rác',
+			'parent_item_colon'  => 'Hợp đồng cấp trên:',
+			'menu_name'          => 'Hợp đồng',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 6,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'post',
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'contract', $args );
 	}
 
 	/**
@@ -669,6 +711,32 @@ class Custom_Types {
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'document_cat', 'document', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Loại hợp đồng',
+			'singular_name'     => 'Loại hợp đồng',
+			'search_items'      => 'Tìm Loại hợp đồng',
+			'all_items'         => 'Tất cả Loại hợp đồng',
+			'edit_item'         => 'Sửa Loại hợp đồng',
+			'update_item'       => 'Cập nhật Loại hợp đồng',
+			'add_new_item'      => 'Thêm Loại hợp đồng mới',
+			'new_item_name'     => 'Loại hợp đồng mới',
+			'menu_name'         => 'Loại hợp đồng',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'contract_cat', 'contract', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {

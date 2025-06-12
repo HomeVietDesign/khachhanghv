@@ -11,7 +11,8 @@ while (have_posts()) {
 	if($current_client) {
 		?>
 		<div class="client-heading container-fluid text-center py-3 text-yellow text-uppercase m-0 position-sticky">
-			<span><?=esc_html($current_client->description)?></span>
+			<div><?=esc_html($current_client->description)?></div>
+			<div class="fs-6">( <?=esc_html($current_client->name)?> )</div>
 		</div>
 		<?php
 	}

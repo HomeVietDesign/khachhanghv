@@ -63,8 +63,8 @@ class Authentication {
 		if( $post->post_type=="contractor_page" || is_singular('contractor_page') ) { // trang danh sách nhà thầu theo hạng mục
 			$required = true;
 
-			if( $current_password || current_user_can( 'contractor_view' ) ) { // khách hàng và nhà quản lý có quyền
-			//if( current_user_can( 'contractor_view' ) ) { // Nhà quản lý có quyền
+			//if( $current_password || current_user_can( 'contractor_view' ) ) { // khách hàng và nhà quản lý có quyền
+			if( current_user_can( 'contractor_view' ) ) { // Nhà quản lý có quyền
 				$required = false;
 			}
 

@@ -96,7 +96,9 @@ img.aligncenter {
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
 	line-height: 1.5;
 }
-
+.popover {
+	--bs-popover-max-width: 800px;
+}
 .modal {
 	--bs-modal-margin: 12px;
 	--bs-modal-zindex: 99999;
@@ -440,6 +442,7 @@ video {
 	transform: translateY(-50%);
 }
 
+.fw-shortcode-contracts .accordion,
 .fw-shortcode-documents .accordion,
 .fw-shortcode-partners .accordion,
 .fw-shortcode-estimate-manage .accordion,
@@ -457,6 +460,7 @@ video {
 	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
+.fw-shortcode-contracts .accordion .accordion-button,
 .fw-shortcode-documents .accordion .accordion-button,
 .fw-shortcode-partners .accordion .accordion-button,
 .fw-shortcode-estimate-manage .accordion .accordion-button,
@@ -466,30 +470,35 @@ video {
 	justify-content: center;
 	text-align: center;
 }
+.fw-shortcode-contracts .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-documents .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-partners .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimate-manage .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
+.fw-shortcode-contracts .accordion .accordion-button::after,
 .fw-shortcode-documents .accordion .accordion-button::after,
 .fw-shortcode-partners .accordion .accordion-button::after,
 .fw-shortcode-estimate-manage .accordion .accordion-button::after,
 .fw-shortcode-estimates .accordion .accordion-button::after {
 	display: none;
 }
+.fw-shortcode-contracts .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-documents .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-partners .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimate-manage .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
 }
+.fw-shortcode-contracts .accordion .accordion-button:focus,
 .fw-shortcode-documents .accordion .accordion-button:focus,
 .fw-shortcode-partners .accordion .accordion-button:focus,
 .fw-shortcode-estimate-manage .accordion .accordion-button:focus,
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }
+.fw-shortcode-contracts .contract-thumbnail,
 .fw-shortcode-documents .document-thumbnail,
 .fw-shortcode-partners .partner-thumbnail,
 .fw-shortcode-estimate-manage .estimate-thumbnail,
@@ -497,12 +506,14 @@ video {
 	padding-bottom: 60%;
 	overflow: hidden;
 }
+.fw-shortcode-contracts .thumbnail-image,
 .fw-shortcode-documents .thumbnail-image,
 .fw-shortcode-partners .thumbnail-image,
 .fw-shortcode-estimate-manage .thumbnail-image,
 .fw-shortcode-estimates .thumbnail-image {
 	background: #0e0d0d;
 }
+.fw-shortcode-contracts .thumbnail-image img,
 .fw-shortcode-documents .thumbnail-image img,
 .fw-shortcode-partners .thumbnail-image img,
 .fw-shortcode-estimate-manage .thumbnail-image img,
@@ -539,6 +550,7 @@ label[for="estimate_attachment"] {
 	cursor: pointer;
 }
 #edit-estimate-customer.modal,
+#edit-contract.modal,
 #edit-document.modal,
 #edit-partner.modal,
 #edit-estimate-manage.modal,
@@ -552,8 +564,14 @@ label[for="estimate_attachment"] {
 	color: #f00;
 	background: #ff0;
 }
+.zalo-link .btn:focus,
+.zalo-link .btn:active {
+	background: #ff0;
+	color: #000;
+}
 .estimate-progress {
-	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 1px;
 }
 .estimate-progress .col {
 	height: 40px;
@@ -576,6 +594,47 @@ label[for="estimate_attachment"] {
 /*.filter-progress-item label {
 	vertical-align: middle;
 }*/
+.popover-header {
+	color: #212529;
+}
+.thumbnail-image.pswp-gallery a:first-child {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	z-index: ;
+}
+.thumbnail-image.pswp-gallery a:first-child::before {
+	display: block;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .6);
+	opacity: 0;
+	transition: opacity .2s ease;
+}
+.thumbnail-image.pswp-gallery a:first-child::after {
+	display: block;
+	content: "\f10f";
+	font-family: dashicons;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 32px;
+	color: #b3b3b3;
+	opacity: 0;
+	transition: opacity .2s ease;
+}
+.thumbnail-image.pswp-gallery a:first-child:hover::before,
+.thumbnail-image.pswp-gallery a:first-child:hover::after {
+	opacity: 1;
+}
+
 @media (min-width: 375px) {
 	
 }

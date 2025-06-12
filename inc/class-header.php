@@ -13,7 +13,7 @@ class Header {
 	public function site_header() {
 		global $current_password;
 
-		if( has_role('administrator') || has_role('viewer') || $current_password ) { // nhà quản lý | khách hàng
+		if( has_role('administrator') || has_role('viewer')) { // nhà quản lý
 		?>
 		<header id="site-header" class="position-sticky">
 			<?php self::primary_menu(); ?>
@@ -167,28 +167,30 @@ class Header {
 
 		
 			$estimate_manage_pages = Common::get_custom_pages('estimate-manage.php');
-			if( $estimate_manage_pages && current_user_can('estimate_manage_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if( $estimate_manage_pages ) {
 				$this_template = is_page_template('estimate-manage.php') ? true : false;
 				foreach ($estimate_manage_pages as $estimate_manage_page) {
-					$estimate_manage_page_url = get_permalink($estimate_manage_page);
-					
-					$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-					if($this_template && $object->ID==$estimate_manage_page->ID) {
-						$menu_html .= ' current-menu-ancestor current-menu-parent';
-					}
-					$menu_html .= '">';
-					$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
-					$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-					$menu_html .= '<ul class="sub-menu position-absolute">';
-					foreach ($passwords as $key => $value) {
-						$menu_html .= '<li class="menu-item';
-						$menu_html .= ($this_template && $object->ID==$estimate_manage_page->ID && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					if(current_user_can('estimate_manage_'.$estimate_manage_page->post_name.'_view') || ($current_password && $current_password->term_id == $default_term_password)) {
+						$estimate_manage_page_url = get_permalink($estimate_manage_page);
+						
+						$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+						if($this_template && $object->ID==$estimate_manage_page->ID) {
+							$menu_html .= ' current-menu-ancestor current-menu-parent';
+						}
 						$menu_html .= '">';
-						$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+						$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
+						$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+						$menu_html .= '<ul class="sub-menu position-absolute">';
+						foreach ($passwords as $key => $value) {
+							$menu_html .= '<li class="menu-item';
+							$menu_html .= ($this_template && $object->ID==$estimate_manage_page->ID && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+							$menu_html .= '">';
+							$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+							$menu_html .= '</li>';
+						}
+						$menu_html .= '</ul>';
 						$menu_html .= '</li>';
 					}
-					$menu_html .= '</ul>';
-					$menu_html .= '</li>';
 				}
 			}
 
@@ -238,28 +240,28 @@ class Header {
 				$menu_html .= '</li>';
 			}
 
-			// $contract_page = Common::get_custom_page('contract.php');
-			// if($contract_page) {
-			// 	$contract_page_url = get_permalink($contract_page);
-			// 	$this_template = is_page_template('contract.php') ? true : false;
-			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-			// 	if($this_template) {
-			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
-			// 	}
-			// 	$menu_html .= '">';
-			// 	$menu_html .= '<a href="#">'.esc_html($contract_page->post_title).'</a>';
-			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
-			// 	foreach ($passwords as $key => $value) {
-			// 		$menu_html .= '<li class="menu-item';
-			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-			// 		$menu_html .= '">';
-			// 		$menu_html .= '<a href="'.esc_url($contract_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-			// 		$menu_html .= '</li>';
-			// 	}
-			// 	$menu_html .= '</ul>';
-			// 	$menu_html .= '</li>';
-			// }
+			$contract_page = Common::get_custom_page('contract.php');
+			if( $contract_page && current_user_can('contract_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+				$contract_page_url = get_permalink($contract_page);
+				$this_template = is_page_template('contract.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($contract_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($contract_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
 	
 		}
 

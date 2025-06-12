@@ -15,11 +15,6 @@ $default_term_password = get_option( 'default_term_passwords', -1 );
 if($current_client) {
 	$exclude = [get_option( 'default_term_contractor_cat', -1 )];
 
-	$contractor_cat_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_cat_hide', []);
-	if(empty($contractor_cat_hide)) {
-		$contractor_cat_hide = [];
-	}
-
 	$contractor_cats = get_terms(['taxonomy' => 'contractor_cat','parent'=>0, 'exclude' => $exclude]);
 
 	if($contractor_cats) {
@@ -62,7 +57,7 @@ if($current_client) {
 
 						$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 						?>
-						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3 <?php echo (in_array($value->term_id, $contractor_cat_hide))?'hidden':''; ?>">
+						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3">
 							<h2 class="accordion-header position-relative">
 								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 							</h2>

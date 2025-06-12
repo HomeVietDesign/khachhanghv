@@ -9,15 +9,30 @@ class FW_Shortcode_Estimates extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_estimate_form', [$this, 'ajax_get_edit_estimate_form']);
       add_action( 'wp_ajax_update_estimate', [$this, 'ajax_update_estimate']);
       add_action( 'wp_ajax_get_estimate_info', [$this, 'ajax_get_estimate_info']);
+      add_action( 'wp_ajax_estimate_hide', [$this, 'ajax_estimate_hide']);
+	}
+
+	public function ajax_estimate_hide() {
+		global $current_client;
+		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
+		$response = false;
+		if(current_user_can('estimate_contractor_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$client_hidden = fw_get_db_post_option($contractor_id, 'client_hidden', []);
+			$client_hidden[] = $current_client->term_id;
+			fw_set_db_post_option($contractor_id, 'client_hidden', $client_hidden);
+			$response = true;
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_get_estimate_info() {
-		global $current_password, $current_client;
+		global $current_client;
 		$default_term_password = get_option( 'default_term_passwords', -1 );
 
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
 		$response = [
+			//'require_content' => '',
 			'info' => '',
 			'zalo' => '',
 			'attachment' => '',
@@ -34,6 +49,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 				'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
 				'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
+				'attachment_id' => (!empty($default_estimate_attachment))?$default_estimate_attachment['attachment_id']:'',
 			];
 
 			$estimates = get_post_meta($contractor_id, '_estimates', true);
@@ -44,6 +60,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
 			if(empty($estimate['zalo'])) $estimate['zalo'] = $default_estimate['zalo'];
+			if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 			$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 			$phone_number_label = fw_get_db_post_option($contractor_id, 'phone_number_label', '');
@@ -55,10 +72,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
 
-			$response['required'] = (isset($estimate['required']) && $estimate['required']!='')?'<div title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($estimate['required']))).'</div>':'';
-			$response['received'] = (isset($estimate['received']) && $estimate['received']!='')?'<div title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m', strtotime($estimate['received']))).'</div>':'';
-			$response['completed'] = (isset($estimate['completed']) && $estimate['completed']!='')?'<div title="Ngày làm xong dự toán">'.esc_html(date('d/m', strtotime($estimate['completed']))).'</div>':'';
-			$response['sent'] = (isset($estimate['sent']) && $estimate['sent']!='')?'<div title="Ngày gửi cho khách">'.esc_html(date('d/m', strtotime($estimate['sent']))).'</div>':'';
+			//$response['require_content'] = (isset($estimate['require_content']) && $estimate['require_content']!='')?'<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Dự toán yêu cầu" data-bs-content="'.esc_attr(wp_format_content($estimate['require_content'])).'" data-bs-html="true">Đề bài</button>':'';
+
+			$response['required'] = (isset($estimate['required']) && $estimate['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($estimate['required']))).'</div>':'';
+			$response['received'] = (isset($estimate['received']) && $estimate['received']!='')?'<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m', strtotime($estimate['received']))).'</div>':'';
+			$response['completed'] = (isset($estimate['completed']) && $estimate['completed']!='')?'<div class="bg-danger" title="Ngày làm xong dự toán">'.esc_html(date('d/m', strtotime($estimate['completed']))).'</div>':'';
+			$response['sent'] = (isset($estimate['sent']) && $estimate['sent']!='')?'<div class="bg-danger" title="Ngày gửi cho khách">'.esc_html(date('d/m', strtotime($estimate['sent']))).'</div>':'';
 
 			$response['quote'] = (isset($estimate['quote']) && $estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Dự toán được khách hàng chọn"><span class="dashicons dashicons-yes"></span></span>':'';
 
@@ -81,7 +100,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					<?php
 					if($cats) {
 						foreach ($cats as $key => $cat) {
-							echo '<div>'.(($key>0)?', ':' ').esc_html($cat->name).'</div>';
+							$page = absint(get_term_meta($cat->term_id, '_page', true));
+							if($page) {
+								echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
+							} else {
+								echo '<span>'.(($key>0)?', ':' ').esc_html($cat->name).'</span>';
+							} 
 						}
 					}
 					?>
@@ -101,12 +125,11 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links">
 				<?php
-				if(client_can_view()) {
-					if(!empty($estimate['info'])) {
-						?>
-						<span class="bg-danger px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($estimate['info'])?></span>
-						<?php
-					}
+			
+				if(!empty($estimate['info'])) {
+					?>
+					<span class="bg-danger px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($estimate['info'])?></span>
+					<?php
 				}
 
 				if($estimate['link']) {
@@ -143,6 +166,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimate_link = isset($_POST['estimate_link'])?sanitize_text_field($_POST['estimate_link']):'';
 			$estimate_attachment = isset($_FILES['estimate_attachment']) ? $_FILES['estimate_attachment'] : null;
 
+			//$estimate_require_content = isset($_POST['estimate_require_content']) ? sanitize_textarea_field($_POST['estimate_require_content']) : '';
 			$estimate_required = isset($_POST['estimate_required']) ? $_POST['estimate_required'] : '';
 			$estimate_received = isset($_POST['estimate_received']) ? $_POST['estimate_received'] : '';
 			$estimate_completed = isset($_POST['estimate_completed']) ? $_POST['estimate_completed'] : '';
@@ -157,6 +181,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>''];
 
 				$new_estimate = [
+					//'require_content' => $estimate_require_content,
 					'required' => $estimate_required,
 					'received' => $estimate_received,
 					'completed' => $estimate_completed,
@@ -209,7 +234,19 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$estimates = get_post_meta($contractor, '_estimates', true);
 			if(empty($estimates)) $estimates = [];
 			
-			$estimate = isset($estimates[$client])?$estimates[$client]:['required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
+			$default = [
+				//'require_content'=>'',
+				'required'=>'',
+				'received'=>'',
+				'completed'=>'',
+				'value'=>'',
+				'unit'=>'',
+				'zalo'=>'',
+				'link'=>'',
+				'attachment_id'=>'',
+				'quote'=>''
+			];
+			$estimate = isset($estimates[$client])?$estimates[$client]:$default;
 
 			$attachment_url = (isset($estimate['attachment_id']) && $estimate['attachment_id']!='')?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -218,8 +255,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				
-				<div class="mb-3">
+				<div class="mb-3<?php echo (!has_role('administrator'))?' hidden':''; ?>">
 					Gửi yêu cầu
 					<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
 				</div>
@@ -235,7 +271,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					Ngày gửi khách
 					<input class="form-control" type="date" value="<?php echo (isset($estimate['sent'])&&$estimate['sent']!='')?esc_html(date('Y-m-d', strtotime($estimate['sent']))):''; ?>" name="estimate_sent" id="estimate_sent">
 				</div>
-		
 				<div class="col mb-3">
 					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
 				</div>
@@ -274,7 +309,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						</label>
 					</div>
 				</div>
-				<div class="mb-3">
+				<div class="mb-3<?php echo (!has_role('administrator'))?' hidden':''; ?>">
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" value="yes" name="estimate_quote" id="estimate_quote" <?php checked( (isset($estimate['quote']) && $estimate['quote']=='yes'), true, true ); ?>>
 						<label class="form-check-label" for="estimate_quote">Được khách hàng lựa chọn?</label>
@@ -312,27 +347,42 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 			'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
 			'zalo' => fw_get_db_post_option($contractor_id,'estimate_zalo'),
+			'attachment_id' => (!empty($default_estimate_attachment))?$default_estimate_attachment['attachment_id']:'',
 		];
 
 		$default_link = fw_get_db_post_option($contractor_id, 'estimate_default_link');
+		$estimate_content = fw_get_db_post_option($contractor_id, 'estimate_content');
 
 		$estimates = get_post_meta($contractor_id, '_estimates', true);
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'require_content'=>'', 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
 		if(empty($estimate['zalo'])) $estimate['zalo'] = $default_estimate['zalo'];
+		if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 		$phone_number_label = fw_get_db_post_option($contractor_id, 'phone_number_label', '');
+		// $toggle_view = fw_get_db_post_option($contractor_id, 'toggle_view', 'no');
+		// $toggle_view_toggle = fw_get_db_term_option($client->term_id, 'passwords', 'toggle_view_toggle', 'show');
 		// $external_url = get_post_meta($contractor_id, '_external_url', true);
 		// $external_url = ($external_url!='')?esc_url($external_url):'#';
+
+		$client_hidden = fw_get_db_post_option($contractor_id, 'client_hidden', []);
 
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
 		$display = empty($progress) ? true : false;
 
 		if(!$display) {
+			$display_none = true;
+			if('none'==$progress) {
+				$display_none = false;
+				if(empty($estimate['required']) && empty($estimate['received']) && empty($estimate['completed']) && empty($estimate['sent']) && empty($estimate['quote'])) {
+					$display_none = true;
+				}
+			}
+
 			$display_required = true;
 			if('required'==$progress) {
 				$display_required = false;
@@ -377,18 +427,41 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		$item_class = '';
 
-		if(!$display && !($display_required && $display_received && $display_completed && $display_sent && $display_quote)) {
-			$item_class = 'hidden';
+		if(!$display) {
+			if( !($display_none && $display_required && $display_received && $display_completed && $display_sent && $display_quote )) {
+				$item_class .= ' hidden';
+			}
+			// else {
+			// 	if($estimate['required']!='' && $estimate['received']!='' && $estimate['completed']!='' && $estimate['sent']!='' && $estimate['quote']!='') {
+			// 		$item_class .= ' hidden';
+			// 	}
+			// }
 		}
+		
+		//empty($estimate['required']) && empty($estimate['received']) && empty($estimate['completed']) && empty($estimate['sent'])
+		
+		// if($toggle_view=='yes') {
+		// 	$item_class .= ' toggle-view';
+		// 	if($toggle_view_toggle=='hide') {
+		// 		$item_class .= ' hide';
+		// 	}
+		// }
+
+		if(in_array($client->term_id, $client_hidden)) {
+			$item_class .= ' hide';
+		}
+
+		$texture_images = fw_get_db_post_option($contractor_id, 'texture_images');
+		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
 		?>
-		<div class="col-lg-3 col-md-6 estimate-item mb-4 <?=$item_class?>">
+		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100 bg-black">
 				<div class="row g-0 estimate-progress text-center text-yellow">
 					<div class="col estimate-required<?php echo (isset($estimate['required']) && $estimate['required']!='')?' on':''; ?>">
 					<?php
 					if(isset($estimate['required']) && $estimate['required']!='') {
 						?>
-						<div title="Ngày gửi yêu cầu">
+						<div class="bg-danger" title="Ngày gửi yêu cầu">
 							<?php echo esc_html(date('d/m', strtotime($estimate['required']))); ?>
 						</div>
 						<?php
@@ -399,7 +472,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						<?php
 						if(isset($estimate['received']) && $estimate['received']!='') {
 							?>
-							<div title="Ngày nhận dự toán nhà thầu">
+							<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">
 								<?php echo esc_html(date('d/m', strtotime($estimate['received']))); ?>
 							</div>
 							<?php
@@ -410,7 +483,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						<?php
 						if(isset($estimate['completed']) && $estimate['completed']!='') {
 							?>
-							<div title="Ngày làm xong dự toán">
+							<div class="bg-danger" title="Ngày làm xong dự toán">
 								<?php echo esc_html(date('d/m', strtotime($estimate['completed']))); ?>
 							</div>
 							<?php
@@ -421,7 +494,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						<?php
 						if(isset($estimate['sent']) && $estimate['sent']!='') {
 							?>
-							<div title="Ngày gửi cho khách">
+							<div class="bg-danger" title="Ngày gửi cho khách">
 								<?php echo esc_html(date('d/m', strtotime($estimate['sent']))); ?>
 							</div>
 							<?php
@@ -430,19 +503,41 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 					</div>
 				</div>
 				<div class="contractor-thumbnail position-relative">
-					<div class="attachment-download position-absolute top-0 start-0 p-1 z-3">
-					<?php
-					if(isset($estimate['attachment_id']) && $estimate['attachment_id']!='') {
-						$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
-						if($attachment_url) {
-						?>
-						<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+					<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+						<div class="estimate-require-content">
 						<?php
+						if(isset($estimate_content) && $estimate_content!='') {
+							?>
+							<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($estimate_content))?>" data-bs-html="true">Đề bài</button>
+							<?php
 						}
-					}
-					?>
+						?>
+						</div>
+						<div class="attachment-download">
+						<?php
+						if(isset($estimate['attachment_id']) && $estimate['attachment_id']!='') {
+							$attachment_url = wp_get_attachment_url($estimate['attachment_id']);
+							if($attachment_url) {
+							?>
+							<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+							<?php
+							}
+						}
+						?>
+						</div>
 					</div>
-					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark" href="#"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
+					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark<?php echo (!empty($project_images))?' pswp-gallery':''?>">
+						<?php if(!empty($project_images)) { ?>
+							<?php foreach ($project_images as $key => $value) {
+							$src_full = wp_get_attachment_image_src( $value['attachment_id'], 'full' );
+							?>
+							<a class="<?php echo ($key>0)?'hidden':''; ?>" href="<?=esc_url($src_full[0])?>" data-pswp-width="<?=$src_full[1]?>" data-pswp-height="<?=$src_full[2]?>"><?php echo ($key==0)? get_the_post_thumbnail( $contractor_id, 'full' ):''; ?></a>
+							<?php
+							}
+						} else {
+							echo get_the_post_thumbnail( $contractor_id, 'full' );
+						} ?>
+					</div>
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 						<div class="estimate-quote<?php echo (isset($estimate['quote']) && $estimate['quote']=='yes')?' on':''; ?>">
 							<?php
@@ -453,21 +548,36 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							}
 							?>
 						</div>
-						<?php if(has_role('administrator')) { ?>
-						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						<?php } ?>
+						
 						<?php if(current_user_can('estimate_contractor_edit')) { ?>
+						<button class="estimate-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
+						
+						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+						
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 						<?php } ?>
 					</div>
-					<div class="zalo-link position-absolute top-0 end-0 p-2">
-					<?php if($estimate['zalo']) { ?>
-						<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
-					<?php } ?>
+					<div class="position-absolute top-0 end-0 p-1 d-flex">
+						<div class="zalo-link">
+						<?php if($estimate['zalo']) { ?>
+							<a class="btn btn-sm btn-shadow fw-bold ms-2" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
+						<?php } ?>
+						</div>
 					</div>
-					<?php if($default_link) { ?>
-						<a class="btn btn-sm btn-primary btn-shadow fw-bold position-absolute start-0 bottom-0 m-1 z-3" href="<?=esc_url($default_link)?>" target="_blank">Gốc</a>
-					<?php } ?>
+					<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+						<?php if($default_link) { ?>
+						<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_link)?>" target="_blank">Gốc</a>
+						<?php } ?>
+						<?php if(!empty($texture_images)) { ?>
+						<div class="position-relative texture-images pswp-gallery me-2">
+							<?php foreach ($texture_images as $key => $value) {
+							$src_full = wp_get_attachment_image_src( $value['attachment_id'], 'full' );
+							?>
+							<a class="btn btn-sm btn-info btn-shadow<?php echo ($key>0)?' hidden':''; ?> text-nowrap" href="<?=esc_url($src_full[0])?>" data-pswp-width="<?=$src_full[1]?>" data-pswp-height="<?=$src_full[2]?>"><?php echo ($key==0)?'Map vật liệu':''; ?></a>
+							<?php } ?>
+						</div>
+						<?php } ?>
+					</div>
 				</div>
 				<div class="contractor-info text-center px-1 pb-3">
 					<div class="contractor-title pt-3 mb-1">
@@ -487,7 +597,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							<?php
 							if($cats) {
 								foreach ($cats as $k => $cat) {
-									echo '<div>'.(($k>0)?', ':' ').esc_html($cat->name).'</div>';
+									$page = absint(get_term_meta($cat->term_id, '_page', true));
+									if($page) {
+										echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
+									} else {
+										echo '<span>'.(($key>0)?', ':' ').esc_html($cat->name).'</span>';
+									} 
 								}
 							}
 							?>

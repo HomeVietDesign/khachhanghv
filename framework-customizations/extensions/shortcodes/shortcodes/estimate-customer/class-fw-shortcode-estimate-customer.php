@@ -235,7 +235,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		global $current_password;
 		$default_term_password = get_option('default_term_passwords', -1);
 		
-		$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
+		$default_estimate_attachment = fw_get_db_post_option($contractor_id, 'estimate_attachment');
 		$default_estimate = [
 			'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
 			'unit' => fw_get_db_post_option($contractor_id,'estimate_unit'),
@@ -260,10 +260,13 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		if( !(current_user_can('estimate_customer_view')) && empty($estimate['attachment_id']) ) {
 			return;
 		}
+
+		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
+
 					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>"<?php echo ($external_url!='#')?' target="_blank"':''; ?>><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
 					
 					<?php if(current_user_can('estimate_customer_view')): ?>
@@ -282,12 +285,22 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 					<?php endif; // if(current_user_can('estimate_customer_view')) ?>
 
-					<div class="zalo-link position-absolute top-0 end-0 p-2">
+					<div class="zalo-link position-absolute top-0 end-0 p-1">
 					<?php if($estimate['zalo']) { ?>
 						<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 					<?php } ?>
 					</div>
-
+					<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+						<?php if(!empty($project_images)) { ?>
+						<div class="position-relative project-images pswp-gallery me-2">
+							<?php foreach ($project_images as $key => $value) {
+							$src_full = wp_get_attachment_image_src( $value['attachment_id'], 'full' );
+							?>
+							<a class="btn btn-sm btn-primary btn-shadow<?php echo ($key>0)?' hidden':''; ?> text-nowrap" href="<?=esc_url($src_full[0])?>" data-pswp-width="<?=$src_full[1]?>" data-pswp-height="<?=$src_full[2]?>"><?php echo ($key==0)?'Hình ảnh':''; ?></a>
+							<?php } ?>
+						</div>
+						<?php } ?>
+					</div>
 				</div>
 				<div class="contractor-info text-center px-1">
 					<div class="contractor-title pt-3 mb-1 fs-5">

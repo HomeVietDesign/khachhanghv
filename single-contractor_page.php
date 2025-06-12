@@ -13,7 +13,7 @@ while (have_posts()) {
 
 		$default_term_province = (int) get_option( 'default_term_province' );
 
-		if(current_user_can('contractor_viewer') || ($current_password_province && $current_password_province->term_id==$default_term_province)):
+		if(current_user_can('contractor_view') || ($current_password_province && $current_password_province->term_id==$default_term_province)):
 			$permalink = get_permalink();
 
 			$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
@@ -42,7 +42,7 @@ while (have_posts()) {
 
 		endif;
 
-	    if(current_user_can('contractor_viewer') || $current_password) {
+	    if(current_user_can('contractor_view') || $current_password) {
 		?>
 		<div class="contractor-search-wrap">
 			<div class="d-flex justify-content-center py-3">

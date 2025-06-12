@@ -3,6 +3,9 @@ window.addEventListener('DOMContentLoaded', function(){
 	// console.log(document.referrer);
 	// console.log(window.atob(getCookie('_ref')).split(','));
 
+	const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+	const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
 	jQuery(function($){
 
 		let debounced_contractor_search = debounce((event) => {
@@ -317,6 +320,11 @@ window.addEventListener('DOMContentLoaded', function(){
 								$('.estimate-'+formData.get('estimate_contractor')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .attachment-download').html(response['attachment']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
+								// $('.estimate-'+formData.get('estimate_contractor')+' .estimate-require-content').html(response['require_content']);
+								// let popover = $('.estimate-'+formData.get('estimate_contractor')+' .estimate-require-content').find('[data-bs-toggle="popover"]');
+								// if(popover.length>0){ 
+								// 	new bootstrap.Popover(popover.get(0));
+								// }
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-required').html(response['required']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-received').html(response['received']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-completed').html(response['completed']);
@@ -655,7 +663,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				$button = $(event.relatedTarget)
 				,$body = $modal.find('.modal-body')
 				,client = $button.data('client')
-				,document = $button.data('document')
+				,doc = $button.data('document')
 				,document_title = $button.data('document-title')
 				;
 
@@ -667,7 +675,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				data: {
 					action: 'get_edit_document_form',
 					client:client,
-					document:document
+					document:doc
 				},
 				beforeSend: function(xhr) {
 					$body.text('Đang tải..');
@@ -748,6 +756,106 @@ window.addEventListener('DOMContentLoaded', function(){
 		$(document).on('input', '#document_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="document_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		// edit contract
+		$('#edit-contract').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,contract = $button.data('contract')
+				,contract_title = $button.data('contract-title')
+				;
+
+			$('#edit-contract-label').text(contract_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_contract_form',
+					client:client,
+					contract:contract
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-contract-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-contract', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-contract-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_contract',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_contract_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('contract_client'), contract:formData.get('contract_id')},
+							success: function(response) {
+								$('.contract-'+formData.get('contract_id')+' .zalo-link').html(response['zalo']);
+								$('.contract-'+formData.get('contract_id')+' .contract-info').html(response['info']);
+								$('#edit-contract .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#contract_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#contract_attachment_id').val('');
+			$this.closest('.input-group').remove();
+		});
+
+		$(document).on('input', '#contract_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="contract_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
 		function getPageNumbers(currentPage, totalPages) {
@@ -841,6 +949,7 @@ window.addEventListener('DOMContentLoaded', function(){
 			renderPagination($paginationLink, p, totalPages);
 		});
 
+		/*
 		$('.contractor-cat-hide-toggle').on('change', function(e){
 			let $this = $(this),
 				cat = $this.val(),
@@ -866,6 +975,59 @@ window.addEventListener('DOMContentLoaded', function(){
 					}
 				}
 			});
+		});
+
+		
+		$('#estimate-toggle-view').on('change', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				checked = $this.prop('checked')?1:0,
+				$toggle_view_items = $('.estimate-item.toggle-view');
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'POST',
+				dataType: 'json',
+				data: {checked: checked, nonce: theme.nonce, action: 'estimate_toggle_view', client: client},
+				beforeSend: function() {
+
+				},
+				success: function(response) {
+					if(response) {
+						if(checked==1) {
+							$toggle_view_items.removeClass('hide');
+						} else {
+							$toggle_view_items.addClass('hide');
+						}
+					}
+				}
+			});
+		});
+		*/
+
+		$('.estimate-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('Ẩn nhà thầu "'+contractor_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_hide', client: client, contractor: contractor},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$estimate.addClass('hide');
+						}
+					}
+				});
+			}
 		});
 
 		$('.client-heading.position-sticky').each(function(index, el){
@@ -894,33 +1056,57 @@ window.addEventListener('DOMContentLoaded', function(){
 		});
 
 		if($('#estimate-filter-form').length) {
-			let required = 0, received = 0, completed = 0, sent = 0, quote = 0;
-			$('#estimate-filter-form').find('.estimate-item').each(function(i, el){
-				let $el = $(el);
+			let none = 0, required = 0, received = 0, completed = 0, sent = 0, quote = 0;
+			$('#estimate-filter-form').find('.estimate-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
 					
 				if($el.find('.estimate-required').hasClass('on')) {
 					required += 1;
+					isNone = false;
 				}
 				if($el.find('.estimate-received').hasClass('on')) {
 					received += 1;
+					isNone = false;
 				}
 				if($el.find('.estimate-completed').hasClass('on')) {
 					completed += 1;
+					isNone = false;
 				}
 				if($el.find('.estimate-sent').hasClass('on')) {
 					sent += 1;
+					isNone = false;
 				}
 				if($el.find('.estimate-quote').hasClass('on')) {
 					quote += 1;
+					isNone = false;
 				}
-				
+				if(isNone) {
+					none += 1;
+				}
 			});
+			$('label[for="progress-none"] span').text(none);
 			$('label[for="progress-required"] span').text(required);
 			$('label[for="progress-received"] span').text(received);
 			$('label[for="progress-completed"] span').text(completed);
 			$('label[for="progress-sent"] span').text(sent);
 			$('label[for="progress-quote"] span').text(quote);
 		}
+
+		var lightbox = new PhotoSwipeLightbox({
+			gallery: '.pswp-gallery',
+			children: 'a',
+			pswpModule: PhotoSwipe 
+		});
+		lightbox.init();
+
+		$('body').on('click', function (e) {
+			$('[data-bs-toggle="popover"]').each(function () {
+				// hide any open popovers when the anywhere else in the body is clicked
+				if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+					$(this).popover('hide');
+				}
+			});
+		});
 
 	});// jQuery
 	

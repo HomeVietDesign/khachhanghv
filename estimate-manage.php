@@ -11,18 +11,20 @@ if(has_role('administrator')) echo '<form id="estimate-filter-form" action="'.es
 
 while (have_posts()) {
 	the_post();
+	global $post;
 	if($current_client) {
 		?>
 		<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
 			<div class="container">
 				<?php
-				if(current_user_can('estimate_manage_view')) {
+				if(current_user_can('estimate_manage_'.$post->post_name.'_view')) {
 					$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 					?>
 					<input type="hidden" name="client" value="<?=$current_client->term_id?>">
 					<div class="d-flex justify-content-between align-items-center">
-						<div class="client-name text-uppercase">
-							<?=esc_html($current_client->description)?>
+						<div class="client-name text-uppercase d-flex align-items-center">
+							<div><?=esc_html($current_client->description)?></div>
+							<div class="fs-6 ms-3">( <?=esc_html($current_client->name)?> )</div>
 						</div>
 						<div class="filters d-flex justify-content-end align-items-center">
 							<div class="filter-progress d-flex justify-content-end align-items-center">
@@ -41,6 +43,10 @@ while (have_posts()) {
 								<div class="filter-progress-item m-1 d-flex">
 									<input type="checkbox" class="btn-check progress-checker" name="progress" value="sent" id="progress-sent" <?php checked( 'sent', $progress, true ); ?>>
 									<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-sent">Gửi: <span>0</span></label>
+								</div>
+								<div class="filter-progress-item m-1 d-flex">
+									<input type="checkbox" class="btn-check progress-checker" name="progress" value="quote" id="progress-quote" <?php checked( 'quote', $progress, true ); ?>>
+									<label class="btn btn-sm btn-outline-green fw-bold" for="progress-quote">Khách chọn: <span>0</span></label>
 								</div>
 							</div>
 						</div>

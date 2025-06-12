@@ -29,10 +29,12 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 		];
 
 		if($estimate_client && $estimate_id) {
+			$default_estimate_file = fw_get_db_post_option($estimate_id,'estimate_file');
 			$default_estimate = [
 				'value' => fw_get_db_post_option($estimate_id,'estimate_value'),
 				'unit' => fw_get_db_post_option($estimate_id,'estimate_unit'),
 				'zalo' => fw_get_db_post_option($estimate_id,'estimate_zalo'),
+				'file_id' => (!empty($default_estimate_file))?$default_estimate_file['attachment_id']:'',
 			];
 
 			$client_estimates = get_term_meta($estimate_client, '_estimates', true);
@@ -41,14 +43,15 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 			if(empty($client_estimate['value'])) $client_estimate['value'] = $default_estimate['value'];
 			if(empty($client_estimate['unit'])) $client_estimate['unit'] = $default_estimate['unit'];
 			if(empty($client_estimate['zalo'])) $client_estimate['zalo'] = $default_estimate['zalo'];
+			if(empty($client_estimate['file_id'])) $client_estimate['file_id'] = $default_estimate['file_id'];
 
 			$response['zalo'] = ($client_estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($client_estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['file'] = ($client_estimate['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($client_estimate['file_id'])).'" target="_blank">Tải</a>':'';
 			
-			$response['required'] = (isset($client_estimate['required']) && $client_estimate['required']!='')?'<div title="Ngày gửi yêu cầu">'.esc_html(date('d/m/y', strtotime($client_estimate['required']))).'</div>':'';
-			$response['received'] = (isset($client_estimate['received']) && $client_estimate['received']!='')?'<div title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m/y', strtotime($client_estimate['received']))).'</div>':'';
-			$response['completed'] = (isset($client_estimate['completed']) && $client_estimate['completed']!='')?'<div title="Ngày làm xong dự toán">'.esc_html(date('d/m/y', strtotime($client_estimate['completed']))).'</div>':'';
-			$response['sent'] = (isset($client_estimate['sent']) && $client_estimate['sent']!='')?'<div title="Ngày gửi khách">'.esc_html(date('d/m/y', strtotime($client_estimate['sent']))).'</div>':'';
+			$response['required'] = (isset($client_estimate['required']) && $client_estimate['required']!='')?'<div title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($client_estimate['required']))).'</div>':'';
+			$response['received'] = (isset($client_estimate['received']) && $client_estimate['received']!='')?'<div title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m', strtotime($client_estimate['received']))).'</div>':'';
+			$response['completed'] = (isset($client_estimate['completed']) && $client_estimate['completed']!='')?'<div title="Ngày làm xong dự toán">'.esc_html(date('d/m', strtotime($client_estimate['completed']))).'</div>':'';
+			$response['sent'] = (isset($client_estimate['sent']) && $client_estimate['sent']!='')?'<div title="Ngày gửi khách">'.esc_html(date('d/m', strtotime($client_estimate['sent']))).'</div>':'';
 			
 			$response['quote'] = (isset($client_estimate['quote']) && $client_estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
