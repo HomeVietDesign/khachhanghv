@@ -17,9 +17,9 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = false;
 		if(current_user_can('estimate_customer_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$client_hidden = fw_get_db_post_option($contractor_id, 'client_customer_hidden', []);
-			$client_hidden[] = $current_client->term_id;
-			fw_set_db_post_option($contractor_id, 'client_customer_hidden', $client_hidden);
+			$contractor_customer_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', []);
+			$contractor_customer_hide[] = $contractor_id;
+			fw_set_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', $contractor_customer_hide);
 			$response = true;
 		}
 		wp_send_json($response);
@@ -245,7 +245,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		<?php
 	}
 
-	public static function display_contractor($contractor_id, $client) {
+	public static function display_contractor($contractor_id, $client, $contractor_customer_hide=[]) {
 		global $current_password;
 		$default_term_password = get_option('default_term_passwords', -1);
 		
@@ -269,8 +269,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		// $external_url = get_post_meta($contractor_id, '_external_url', true);
 		// $external_url = ($external_url!='')?esc_url($external_url):'#';
 
-		$client_hidden = fw_get_db_post_option($contractor_id, 'client_customer_hidden', []);
-
+		
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
 		if( !(current_user_can('estimate_customer_view')) && empty($estimate['attachment_id']) ) {
@@ -279,7 +278,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
 
-		if(in_array($client->term_id, $client_hidden)) {
+		if(in_array($contractor_id, $contractor_customer_hide)) {
 			$item_class .= ' hide';
 		}
 		?>

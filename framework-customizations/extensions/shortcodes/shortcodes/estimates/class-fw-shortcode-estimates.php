@@ -17,9 +17,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = false;
 		if(current_user_can('estimate_contractor_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$client_hidden = fw_get_db_post_option($contractor_id, 'client_hidden', []);
-			$client_hidden[] = $current_client->term_id;
-			fw_set_db_post_option($contractor_id, 'client_hidden', $client_hidden);
+			$contractor_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_hide', []);
+			$contractor_hide[] = $contractor_id;
+			fw_set_db_term_option($current_client->term_id, 'passwords', 'contractor_hide', $contractor_hide);
 			$response = true;
 		}
 		wp_send_json($response);
@@ -341,7 +341,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		<?php
 	}
 
-	public static function display_contractor($contractor_id, $client, $progress) {
+	public static function display_contractor($contractor_id, $client, $progress='', $contractor_hide=[]) {
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
 		$default_estimate = [
 			'value' => fw_get_db_post_option($contractor_id,'estimate_value'),
@@ -363,8 +363,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 		$phone_number_label = fw_get_db_post_option($contractor_id, 'phone_number_label', '');
-	
-		$client_hidden = fw_get_db_post_option($contractor_id, 'client_hidden', []);
 
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
@@ -429,7 +427,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			}
 		}
 
-		if(in_array($client->term_id, $client_hidden)) {
+		if(in_array($contractor_id, $contractor_hide)) {
 			$item_class .= ' hide';
 		}
 

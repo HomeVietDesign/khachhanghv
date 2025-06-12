@@ -17,9 +17,9 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 		$estimate_id = isset($_POST['estimate']) ? absint($_POST['estimate']) : 0;
 		$response = false;
 		if(current_user_can('estimate_manage_edit') && $current_client && $estimate_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$client_hidden = fw_get_db_post_option($estimate_id, 'client_hidden', []);
-			$client_hidden[] = $current_client->term_id;
-			fw_set_db_post_option($estimate_id, 'client_hidden', $client_hidden);
+			$estimate_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'estimate_hide', []);
+			$estimate_hide[] = $estimate_id;
+			fw_set_db_term_option($current_client->term_id, 'passwords', 'estimate_hide', $estimate_hide);
 			$response = true;
 		}
 		wp_send_json($response);

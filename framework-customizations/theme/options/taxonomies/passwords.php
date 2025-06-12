@@ -31,11 +31,38 @@ $options = array(
 		// 'population' => 'taxonomy',
 		// 'source' => '',
 		'choices' => $contractor_cats,
-		'limit' => 100,
+		'limit' => 1000,
 		// 'fw-storage' => array(
 		// 	'type' => 'term-meta',
 		// 	'term-meta' => 'province',
 		// ),
+	),
+
+	'contractor_hide' => array(
+		'label' => 'Dự toán nhà thầu ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contractor',
+		'limit' => 1000
+	),
+
+	'contractor_customer_hide' => array(
+		'label' => 'Dự toán khách hàng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contractor',
+		'limit' => 1000
+	),
+
+	'estimate_hide' => array(
+		'label' => 'Dự toán XÂY DỰNG + ĐỒ GỖ ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'estimate',
+		'limit' => 1000
 	),
 	
 );

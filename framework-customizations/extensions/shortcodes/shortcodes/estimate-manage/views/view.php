@@ -38,6 +38,8 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 				$display = empty($progress) ? true : false;
 
+				$estimate_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'estimate_hide', []);
+
 				foreach($estimates as $estimate_id) {
 					$default_estimate_file = fw_get_db_post_option($estimate_id,'estimate_file');
 					$default_estimate = [
@@ -49,7 +51,6 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					$default_url = fw_get_db_post_option($estimate_id,'estimate_url');
 					$estimate_content = fw_get_db_post_option($estimate_id,'estimate_content');
-					$client_hidden = fw_get_db_post_option($estimate_id, 'client_hidden', []);
 
 					$client_estimate = isset($client_estimates[$estimate_id])?$client_estimates[$estimate_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
 
@@ -116,7 +117,7 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 						$item_class = ' hidden';
 					}
 
-					if(in_array($current_client->term_id, $client_hidden)) {
+					if(in_array($estimate_id, $estimate_hide)) {
 						$item_class .= ' hide';
 					}
 					
