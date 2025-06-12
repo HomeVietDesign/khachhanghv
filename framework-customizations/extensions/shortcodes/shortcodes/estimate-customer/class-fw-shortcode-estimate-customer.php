@@ -68,7 +68,12 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 					<?php
 					if($cats) {
 						foreach ($cats as $key => $cat) {
-							echo '<div>'.(($key>0)?', ':' ').esc_html($cat->name).'</div>';
+							$page = absint(get_term_meta($cat->term_id, '_page', true));
+							if($page) {
+								echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
+							} else {
+								echo '<span>'.(($key>0)?', ':' ').esc_html($cat->name).'</span>';
+							}
 						}
 					}
 					?>
@@ -317,7 +322,12 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 							<?php
 							if($cats) {
 								foreach ($cats as $k => $cat) {
-									echo '<div>'.(($k>0)?', ':' ').esc_html($cat->name).'</div>';
+									$page = absint(get_term_meta($cat->term_id, '_page', true));
+									if($page) {
+										echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
+									} else {
+										echo '<span>'.(($key>0)?', ':' ').esc_html($cat->name).'</span>';
+									}
 								}
 							}
 							?>
