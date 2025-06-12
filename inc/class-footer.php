@@ -94,7 +94,7 @@ class Footer {
 		global $popup;
 		if( !$popup ) {
 			add_action('wp_footer', [$this, 'site_footer'], 10);
-			add_action('wp_footer', [$this, 'logout_post_password'], 15);
+			//add_action('wp_footer', [$this, 'logout_post_password'], 15);
 		}
 	}
 

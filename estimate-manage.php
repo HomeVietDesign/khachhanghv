@@ -7,12 +7,11 @@ global $current_client;
 
 get_header();
 
-if(has_role('administrator')) echo '<form id="estimate-filter-form" action="'.esc_url(fw_current_url()).'" method="GET">';
-
 while (have_posts()) {
 	the_post();
 	global $post;
 	if($current_client) {
+		if(current_user_can('estimate_manage_'.$post->post_name.'_view')) echo '<form id="estimate-filter-form" action="'.esc_url(fw_current_url()).'" method="GET">';
 		?>
 		<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
 			<div class="container">
@@ -30,7 +29,7 @@ while (have_posts()) {
 							<div class="filter-progress d-flex justify-content-end align-items-center">
 								<div class="filter-progress-item m-1 d-flex">
 									<input type="checkbox" class="btn-check progress-checker" name="progress" value="none" id="progress-none" <?php checked( 'none', $progress, true ); ?>>
-									<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-none">Chưa có: <span>0</span></label>
+									<label class="btn btn-sm btn-outline-green fw-bold" for="progress-none">Chưa có: <span>0</span></label>
 								</div>
 								<div class="filter-progress-item m-1 d-flex">
 									<input type="checkbox" class="btn-check progress-checker" name="progress" value="required" id="progress-required" <?php checked( 'required', $progress, true ); ?>>
@@ -60,15 +59,16 @@ while (have_posts()) {
 				<?php } ?>
 			</div>
 		</div>
+
+		<div id="site-content">
+			<?php the_content(); ?>
+		</div>
+
 		<?php
+		if(current_user_can('estimate_manage_'.$post->post_name.'_view')) echo '</form>';
 	}
-	?>
-	<div id="site-content">
-		<?php the_content(); ?>
-	</div>
-	<?php
+	
 }
 
-if(has_role('administrator')) echo '</form>';
 
 get_footer();

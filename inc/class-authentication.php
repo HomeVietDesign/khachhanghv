@@ -7,12 +7,22 @@ class Authentication {
 
 	private function __construct() {
 
-		add_filter( 'the_password_form', [$this, 'the_password_form'], 10, 2 );
-		add_filter( 'post_password_required', [$this, 'post_password_required'], 10, 2 );
+		add_action( 'parse_request', [$this, 'require_login_use'] );
+
+		//add_filter( 'the_password_form', [$this, 'the_password_form'], 10, 2 );
+		//add_filter( 'post_password_required', [$this, 'post_password_required'], 10, 2 );
 
 		add_filter( 'nonce_life', [$this, 'nonce_life'] );
 
 		//add_action( 'init', [$this, 'custom_capability'] );
+	}
+
+	public function require_login_use($wp) {
+		if(!is_user_logged_in()) { // bắt buộc đăng nhập để truy cập hệ thống
+			// chuyển hướng sang trang đăng nhập
+			wp_redirect(wp_login_url(fw_current_url()));
+			exit;
+		}
 	}
 
 	public function custom_capability() {
@@ -49,7 +59,7 @@ class Authentication {
 	}
 
 	public function nonce_life() {
-		return 8 * DAY_IN_SECONDS;
+		return 2 * DAY_IN_SECONDS;
 	}
 
 	public function post_password_required($required, $post) {

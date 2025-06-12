@@ -7,8 +7,7 @@
  */
 $per = isset($atts['per'])?absint($atts['per']):0;
 
-global $current_password, $current_client;
-$default_term_password = get_option( 'default_term_passwords', -1 );
+global $current_client;
 
 if($current_client) {
 	$exclude = [get_option( 'default_term_contractor_cat', -1 )];

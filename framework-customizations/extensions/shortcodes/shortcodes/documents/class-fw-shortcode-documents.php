@@ -12,9 +12,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 	}
 
 	public function ajax_get_document_info() {
-		global $current_password;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
-
+		
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$document_id = isset($_GET['document'])?absint($_GET['document']):0;
 

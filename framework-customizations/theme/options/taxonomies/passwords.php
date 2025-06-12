@@ -24,19 +24,6 @@ $options = array(
 			'term-meta' => 'province',
 		),
 	),
-	'contractor_cat_hide' => array(
-		'label' => 'Hạng mục ẩn',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		// 'population' => 'taxonomy',
-		// 'source' => '',
-		'choices' => $contractor_cats,
-		'limit' => 1000,
-		// 'fw-storage' => array(
-		// 	'type' => 'term-meta',
-		// 	'term-meta' => 'province',
-		// ),
-	),
 
 	'contractor_hide' => array(
 		'label' => 'Dự toán nhà thầu ẩn',

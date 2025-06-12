@@ -27,8 +27,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 	public function ajax_get_estimate_info() {
 		global $current_client;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
-
+		
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
 		$response = [
@@ -72,8 +71,6 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($estimate['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
 
-			//$response['require_content'] = (isset($estimate['require_content']) && $estimate['require_content']!='')?'<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Dự toán yêu cầu" data-bs-content="'.esc_attr(wp_format_content($estimate['require_content'])).'" data-bs-html="true">Đề bài</button>':'';
-
 			$response['required'] = (isset($estimate['required']) && $estimate['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($estimate['required']))).'</div>':'';
 			$response['received'] = (isset($estimate['received']) && $estimate['received']!='')?'<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m', strtotime($estimate['received']))).'</div>':'';
 			$response['completed'] = (isset($estimate['completed']) && $estimate['completed']!='')?'<div class="bg-danger" title="Ngày làm xong dự toán">'.esc_html(date('d/m', strtotime($estimate['completed']))).'</div>':'';
@@ -86,14 +83,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			<div class="contractor-title pt-3 mb-1">
 				<a class="d-block fs-5" href="#" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
 				<?php
-				if(client_can_view()) {
-					if($phone_number) {
-					?>
-					<div class="d-flex flex-wrap justify-content-center contractor-links">
-						<span class="bg-primary px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($phone_number_label.' '.$phone_number)?></span>
-					</div>
-					<?php
-					}
+				if($phone_number) {
+				?>
+				<div class="d-flex flex-wrap justify-content-center contractor-links">
+					<span class="bg-primary px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($phone_number_label.' '.$phone_number)?></span>
+				</div>
+				<?php
 				}
 				?>
 				<div class="fs-6 text-yellow">
@@ -255,7 +250,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				<div class="mb-3<?php echo (!has_role('administrator'))?' hidden':''; ?>">
+				<div class="mb-3<?php echo (!current_user_can('edit_posts'))?' hidden':''; ?>">
 					Gửi yêu cầu
 					<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
 				</div>
@@ -309,7 +304,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						</label>
 					</div>
 				</div>
-				<div class="mb-3<?php echo (!has_role('administrator'))?' hidden':''; ?>">
+				<div class="mb-3<?php echo (!current_user_can('edit_posts'))?' hidden':''; ?>">
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" value="yes" name="estimate_quote" id="estimate_quote" <?php checked( (isset($estimate['quote']) && $estimate['quote']=='yes'), true, true ); ?>>
 						<label class="form-check-label" for="estimate_quote">Được khách hàng lựa chọn?</label>
@@ -529,11 +524,12 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							?>
 						</div>
 						
-						<?php if(current_user_can('estimate_contractor_edit')) { ?>
+						<?php if(current_user_can('edit_posts')) { ?>
 						<button class="estimate-contractor-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						
+						<?php } ?>
+						<?php if(current_user_can('estimate_contractor_edit')) { ?>
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 						<?php } ?>
 					</div>

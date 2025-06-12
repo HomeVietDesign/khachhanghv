@@ -26,7 +26,6 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 	}
 
 	public function ajax_get_estimate_manage_info() {
-		global $current_password;
 
 		$estimate_client = isset($_GET['estimate_client'])?absint($_GET['estimate_client']):0;
 		$estimate_id = isset($_GET['estimate_id'])?absint($_GET['estimate_id']):0;

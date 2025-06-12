@@ -120,19 +120,4 @@ $options = array(
 		),
     ),
 
-	// 'hidden' => array(
-	// 	'context' => 'advanced',
-	// 	'title'   => 'Đề bài yêu cầu',
-	// 	'type'    => 'box',
-    //     'options' => array(
-    //     	'client_hidden' => array(
-	// 			'label' => 'Ẩn với khách hàng',
-	// 			'desc'  => '',
-	// 			'type'  => 'multi-select',
-	// 			'population' => 'taxonomy',
-	// 			'source' => 'passwords',
-	// 			'limit' => 1000
-	// 		),
-	// 	),
-	// ),
 );

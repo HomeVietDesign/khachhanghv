@@ -5,8 +5,7 @@
 /**
  * @var array $atts
  */
-global $current_password, $current_client;
-$default_term_password = get_option( 'default_term_passwords', -1 );
+global $current_client;
 
 $document_cats = get_terms(['taxonomy' => 'document_cat','parent'=>0]);
 

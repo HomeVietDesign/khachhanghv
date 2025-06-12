@@ -5,8 +5,7 @@
 /**
  * @var array $atts
  */
-global $current_password, $current_client;
-//$default_term_password = get_option( 'default_term_passwords', -1 );
+global $current_client;
 
 $progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 

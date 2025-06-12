@@ -26,8 +26,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	}
 
 	public function ajax_get_estimate_customer_info() {
-		global $current_password, $current_client;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
+		global $current_client;
 
 		$contractor_id = isset($_GET['contractor'])?absint($_GET['contractor']):0;
 
@@ -88,7 +87,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 				<?php
-				if($phone_number && (current_user_can('estimate_customer_view') || ( $current_password && $current_password->term_id == $default_term_password ))) {
+				if($phone_number && current_user_can('estimate_customer_view')) {
 					?>
 					<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
 					<?php
@@ -246,8 +245,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	}
 
 	public static function display_contractor($contractor_id, $client, $contractor_customer_hide=[]) {
-		global $current_password;
-		$default_term_password = get_option('default_term_passwords', -1);
 		
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id, 'estimate_attachment');
 		$default_estimate = [
@@ -272,10 +269,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
-		if( !(current_user_can('estimate_customer_view')) && empty($estimate['attachment_id']) ) {
-			return;
-		}
-
 		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
 
 		if(in_array($contractor_id, $contractor_customer_hide)) {
@@ -288,8 +281,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></div>
 					
-					<?php if(current_user_can('estimate_customer_view')): ?>
-
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 						
 						<?php if(current_user_can('estimate_customer_edit')) { ?>
@@ -301,8 +292,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 						<?php } // if(current_user_can('estimate_customer_edit')) ?>
 
 					</div>
-
-					<?php endif; // if(current_user_can('estimate_customer_view')) ?>
 
 					<div class="zalo-link position-absolute top-0 end-0 p-1">
 					<?php if($estimate['zalo']) { ?>
@@ -347,7 +336,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 					<?php } ?>
 					<div class="d-flex flex-wrap justify-content-center contractor-links mb-3">
 						<?php
-						if($phone_number && (current_user_can('estimate_customer_view') || ( $current_password && $current_password->term_id == $default_term_password ))) {
+						if($phone_number) {
 							?>
 							<a class="btn btn-sm btn-danger my-1 mx-2" href="tel:<?=esc_attr($phone_number)?>"><?=esc_html($phone_number)?></a>
 							<?php

@@ -103,8 +103,8 @@ class Theme {
 		// $tanhv->add_cap('edit_others_pages');
 		// $tanhv->add_cap('edit_published_pages');
 		// $tanhv->add_cap('manage_categories');
-		$tanhv->add_cap('contractor_view');
-		$tanhv->add_cap('contractor_edit');
+		// $tanhv->add_cap('contractor_view');
+		// $tanhv->add_cap('contractor_edit');
 
 		// $thaotde = get_user_by( 'login', 'thaotde' );
 		// $thaotde->add_cap('estimate_contractor_view');
