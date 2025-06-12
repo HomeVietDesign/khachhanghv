@@ -949,63 +949,7 @@ window.addEventListener('DOMContentLoaded', function(){
 			renderPagination($paginationLink, p, totalPages);
 		});
 
-		/*
-		$('.contractor-cat-hide-toggle').on('change', function(e){
-			let $this = $(this),
-				cat = $this.val(),
-				client = $this.data('client'),
-				checked = $this.prop('checked')?1:0,
-				$section = $('.contractor-cat-section-'+cat);
-
-			$.ajax({
-				url: theme.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {cat: cat, checked: checked, nonce: theme.nonce, action: 'contractor_cat_hide_toggle', client: client},
-				beforeSend: function() {
-
-				},
-				success: function(response) {
-					if(response) {
-						if(checked==1) {
-							$section.removeClass('hidden');
-						} else {
-							$section.addClass('hidden');
-						}
-					}
-				}
-			});
-		});
-
-		
-		$('#estimate-toggle-view').on('change', function(e){
-			let $this = $(this),
-				client = $this.data('client'),
-				checked = $this.prop('checked')?1:0,
-				$toggle_view_items = $('.estimate-item.toggle-view');
-
-			$.ajax({
-				url: theme.ajax_url,
-				type: 'POST',
-				dataType: 'json',
-				data: {checked: checked, nonce: theme.nonce, action: 'estimate_toggle_view', client: client},
-				beforeSend: function() {
-
-				},
-				success: function(response) {
-					if(response) {
-						if(checked==1) {
-							$toggle_view_items.removeClass('hide');
-						} else {
-							$toggle_view_items.addClass('hide');
-						}
-					}
-				}
-			});
-		});
-		*/
-
-		$('.estimate-hide').on('click', function(e){
+		$('.estimate-contractor-hide').on('click', function(e){
 			let $this = $(this),
 				client = $this.data('client'),
 				contractor = $this.data('contractor'),
@@ -1017,7 +961,32 @@ window.addEventListener('DOMContentLoaded', function(){
 					url: theme.ajax_url,
 					type: 'POST',
 					dataType: 'json',
-					data: {nonce: theme.nonce, action: 'estimate_hide', client: client, contractor: contractor},
+					data: {nonce: theme.nonce, action: 'estimate_contractor_hide', client: client, contractor: contractor},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$estimate.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
+		$('.estimate-customer-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('Ẩn nhà thầu "'+contractor_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_customer_hide', client: client, contractor: contractor},
 					beforeSend: function() {
 
 					},

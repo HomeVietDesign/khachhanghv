@@ -13,66 +13,9 @@ class Ajax {
 		add_action('wp_ajax_contractor_search', [$this, 'ajax_contractor_search']);
 		add_action('wp_ajax_nopriv_contractor_search', [$this, 'ajax_contractor_search']);
 
-		// add_action('wp_ajax_statistic', [$this, 'ajax_statistic']);
-		// add_action('wp_ajax_nopriv_statistic', [$this, 'ajax_statistic']);
-
 		add_action('wp_ajax_estimate_paginate', [$this, 'ajax_estimate_paginate']);
 		add_action('wp_ajax_nopriv_estimate_paginate', [$this, 'ajax_estimate_paginate']);
 
-		add_action('wp_ajax_contractor_cat_hide_toggle', [$this, 'ajax_contractor_cat_hide_toggle']);
-		add_action('wp_ajax_estimate_toggle_view', [$this, 'ajax_estimate_toggle_view']);
-	}
-
-	public function ajax_estimate_toggle_view() {
-		global $current_client;
-
-		$response = false;
-
-		$checked = isset($_POST['checked']) ? absint($_POST['checked']) : 0;
-
-		if($current_client && check_ajax_referer( 'global', 'nonce', false )) {
-			
-			if($checked==1) {
-				fw_set_db_term_option($current_client->term_id, 'passwords', 'toggle_view_toggle', 'show');
-			} else {
-				fw_set_db_term_option($current_client->term_id, 'passwords', 'toggle_view_toggle', 'hide');
-			}
-			
-			$response = true;
-		}
-
-		wp_send_json($response);
-	}
-
-	public function ajax_contractor_cat_hide_toggle() {
-		global $current_client;
-
-		$response = false;
-
-		$cat = isset($_POST['cat']) ? absint($_POST['cat']) : 0;
-		$checked = isset($_POST['checked']) ? absint($_POST['checked']) : 0;
-
-		if($current_client && $cat && check_ajax_referer( 'global', 'nonce', false )) {
-			$contractor_cat_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_cat_hide', []);
-			if(empty($contractor_cat_hide)) {
-				$contractor_cat_hide = [];
-			}
-
-			if($checked==1) {
-				if(in_array($cat, $contractor_cat_hide)) {
-					unset($contractor_cat_hide[array_search($cat,$contractor_cat_hide)]);
-				}
-			} else {
-				if(!in_array($cat, $contractor_cat_hide)) {
-					$contractor_cat_hide[] = $cat;
-				}
-			}
-			fw_set_db_term_option($current_client->term_id, 'passwords', 'contractor_cat_hide', $contractor_cat_hide);
-
-			$response = true;
-		}
-
-		wp_send_json($response);
 	}
 
 	public function ajax_estimate_paginate() {
@@ -85,11 +28,6 @@ class Ajax {
 			}
 		}
 		exit;
-	}
-
-	public function ajax_statistic() {
-		debug_log($_REQUEST);
-		die;
 	}
 
 	public function ajax_contractor_search() {

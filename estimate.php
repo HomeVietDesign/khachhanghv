@@ -64,27 +64,7 @@ while (have_posts()) {
 
 						$toggle_view_toggle = fw_get_db_term_option($current_client->term_id, 'passwords', 'toggle_view_toggle', 'show');
 						?>
-						<!-- <div class="contractor-cat-hide">
-							<div class="dropdown lh-1">
-								<button class="btn btn-sm btn-warning ms-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><span class="dashicons dashicons-visibility"></span></button>
-								<ul class="dropdown-menu dropdown-menu-dark">
-									<?php if($contractor_cats) {
-										foreach ($contractor_cats as $id => $name) {
-											?>
-											<li>
-												<div class="dropdown-item">
-													<div class="form-check">
-														<input class="form-check-input contractor-cat-hide-toggle" type="checkbox" value="<?=$id?>" id="contractor-cat-hide-<?=$id?>" <?php checked( false, in_array($id, $contractor_cat_hide) ); ?> data-client="<?=$current_client->term_id?>">
-														<label class="form-check-label" for="contractor-cat-hide-<?=$id?>"><?=esc_html($name)?></label>
-													</div>
-												</div>
-											</li>
-											<?php
-										}
-									} ?>
-								</ul>
-							</div>
-						</div> -->
+						
 						<?php endif; ?>
 					</div>
 				</div>

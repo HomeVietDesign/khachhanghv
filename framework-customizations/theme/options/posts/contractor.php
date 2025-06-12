@@ -116,20 +116,7 @@ $options = array(
 					'post-meta' => '_best',
 				),
 			),
-			// 'toggle_view' => array(
-			// 	'label' => 'Khả năng ẩn/hiện?',
-			// 	'desc'  => '',
-			// 	'value'  => 'no',
-			// 	'type'  => 'switch',
-			// 	'left-choice' => array(
-			// 		'value' => 'yes',
-			// 		'label' => 'Có',
-			// 	),
-			// 	'right-choice' => array(
-			// 		'value' => 'no',
-			// 		'label' => 'Không',
-			// 	),
-			// ),
+			
 		),
     ),
 

@@ -9,10 +9,10 @@ class FW_Shortcode_Estimates extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_estimate_form', [$this, 'ajax_get_edit_estimate_form']);
       add_action( 'wp_ajax_update_estimate', [$this, 'ajax_update_estimate']);
       add_action( 'wp_ajax_get_estimate_info', [$this, 'ajax_get_estimate_info']);
-      add_action( 'wp_ajax_estimate_hide', [$this, 'ajax_estimate_hide']);
+      add_action( 'wp_ajax_estimate_contractor_hide', [$this, 'ajax_estimate_contractor_hide']);
 	}
 
-	public function ajax_estimate_hide() {
+	public function ajax_estimate_contractor_hide() {
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = false;
@@ -363,11 +363,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
 		$phone_number_label = fw_get_db_post_option($contractor_id, 'phone_number_label', '');
-		// $toggle_view = fw_get_db_post_option($contractor_id, 'toggle_view', 'no');
-		// $toggle_view_toggle = fw_get_db_term_option($client->term_id, 'passwords', 'toggle_view_toggle', 'show');
-		// $external_url = get_post_meta($contractor_id, '_external_url', true);
-		// $external_url = ($external_url!='')?esc_url($external_url):'#';
-
+	
 		$client_hidden = fw_get_db_post_option($contractor_id, 'client_hidden', []);
 
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
@@ -431,21 +427,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 			if( !($display_none && $display_required && $display_received && $display_completed && $display_sent && $display_quote )) {
 				$item_class .= ' hidden';
 			}
-			// else {
-			// 	if($estimate['required']!='' && $estimate['received']!='' && $estimate['completed']!='' && $estimate['sent']!='' && $estimate['quote']!='') {
-			// 		$item_class .= ' hidden';
-			// 	}
-			// }
 		}
-		
-		//empty($estimate['required']) && empty($estimate['received']) && empty($estimate['completed']) && empty($estimate['sent'])
-		
-		// if($toggle_view=='yes') {
-		// 	$item_class .= ' toggle-view';
-		// 	if($toggle_view_toggle=='hide') {
-		// 		$item_class .= ' hide';
-		// 	}
-		// }
 
 		if(in_array($client->term_id, $client_hidden)) {
 			$item_class .= ' hide';
@@ -550,7 +532,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						</div>
 						
 						<?php if(current_user_can('estimate_contractor_edit')) { ?>
-						<button class="estimate-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
+						<button class="estimate-contractor-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 						

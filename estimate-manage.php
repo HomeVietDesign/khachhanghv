@@ -29,6 +29,10 @@ while (have_posts()) {
 						<div class="filters d-flex justify-content-end align-items-center">
 							<div class="filter-progress d-flex justify-content-end align-items-center">
 								<div class="filter-progress-item m-1 d-flex">
+									<input type="checkbox" class="btn-check progress-checker" name="progress" value="none" id="progress-none" <?php checked( 'none', $progress, true ); ?>>
+									<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-none">Chưa có: <span>0</span></label>
+								</div>
+								<div class="filter-progress-item m-1 d-flex">
 									<input type="checkbox" class="btn-check progress-checker" name="progress" value="required" id="progress-required" <?php checked( 'required', $progress, true ); ?>>
 									<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-required">Yêu cầu: <span>0</span></label>
 								</div>

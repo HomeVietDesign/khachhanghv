@@ -59,6 +59,14 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					//debug($client_estimate);
 					if(!$display) {
+						$display_none = true;
+						if('none'==$progress) {
+							$display_none = false;
+							if(empty($client_estimate['required']) && empty($client_estimate['received']) && empty($client_estimate['completed']) && empty($client_estimate['sent']) && empty($client_estimate['quote'])) {
+								$display_none = true;
+							}
+						}
+
 						$display_required = true;
 						if('required'==$progress) {
 							$display_required = false;
@@ -103,7 +111,7 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 
 					$item_class = '';
 
-					if(!$display && !($display_required && $display_received && $display_completed && $display_sent && $display_quote)) {
+					if(!$display && !($display_none && $display_required && $display_received && $display_completed && $display_sent && $display_quote)) {
 						$item_class = 'hidden';
 					}
 					
@@ -192,10 +200,10 @@ if( $estimate_cat instanceof \WP_Term && $current_client ) {
 									}
 									?>
 									</div>
-									<?php if(has_role('administrator')) { ?>
-										<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-									<?php } ?>
 									<?php if(current_user_can('estimate_manage_edit')) { ?>
+										
+										<a href="<?php echo get_edit_post_link( $estimate_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+									
 										<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-manage" data-client="<?=$current_client->term_id?>" data-estimate="<?=$estimate_id?>" data-estimate-title="<?php echo esc_attr(get_the_title( $estimate_id )); ?>"><span class="dashicons dashicons-edit"></span></button>
 									<?php } ?>
 								</div>

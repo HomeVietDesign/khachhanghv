@@ -9,6 +9,20 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_estimate_customer_form', [$this, 'ajax_get_edit_estimate_customer_form']);
       add_action( 'wp_ajax_update_estimate_customer', [$this, 'ajax_update_estimate_customer']);
       add_action( 'wp_ajax_get_estimate_customer_info', [$this, 'ajax_get_estimate_customer_info']);
+      add_action( 'wp_ajax_estimate_customer_hide', [$this, 'ajax_estimate_customer_hide']);
+	}
+
+	public function ajax_estimate_customer_hide() {
+		global $current_client;
+		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
+		$response = false;
+		if(current_user_can('estimate_customer_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$client_hidden = fw_get_db_post_option($contractor_id, 'client_customer_hidden', []);
+			$client_hidden[] = $current_client->term_id;
+			fw_set_db_post_option($contractor_id, 'client_customer_hidden', $client_hidden);
+			$response = true;
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_get_estimate_customer_info() {
@@ -252,8 +266,10 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
-		$external_url = get_post_meta($contractor_id, '_external_url', true);
-		$external_url = ($external_url!='')?esc_url($external_url):'#';
+		// $external_url = get_post_meta($contractor_id, '_external_url', true);
+		// $external_url = ($external_url!='')?esc_url($external_url):'#';
+
+		$client_hidden = fw_get_db_post_option($contractor_id, 'client_customer_hidden', []);
 
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
@@ -262,22 +278,26 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		}
 
 		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
+
+		if(in_array($client->term_id, $client_hidden)) {
+			$item_class .= ' hide';
+		}
 		?>
-		<div class="col-lg-3 col-md-6 estimate-item mb-4">
+		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
 
-					<a class="thumbnail-image position-absolute w-100 h-100 start-0 top-0" href="<?=$external_url?>"<?php echo ($external_url!='#')?' target="_blank"':''; ?>><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></a>
+					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></div>
 					
 					<?php if(current_user_can('estimate_customer_view')): ?>
 
 					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 						
-						<?php if(has_role('administrator')) { ?>
-						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						<?php } // if(has_role('administrator')) ?>
-						
 						<?php if(current_user_can('estimate_customer_edit')) { ?>
+						<button class="estimate-customer-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
+						
+						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+						
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-customer" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 						<?php } // if(current_user_can('estimate_customer_edit')) ?>
 
