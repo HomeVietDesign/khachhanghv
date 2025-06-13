@@ -43,6 +43,7 @@ if($contract_cats && $current_client) {
 					]);
 					if($contracts) {
 						foreach($contracts as $contract_id) {
+							$contract_content = fw_get_db_post_option($contract_id, 'contract_content');
 							$default_url = fw_get_db_post_option($contract_id,'contract_url');
 							$default_data = [
 								'value' => fw_get_db_post_option($contract_id,'contract_value'),
@@ -171,6 +172,17 @@ if($contract_cats && $current_client) {
 										</div>
 									</div>
 									<div class="contract-thumbnail position-relative">
+										<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+											<div class="contract-require-content">
+											<?php
+											if(isset($contract_content) && $contract_content!='') {
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($contract_content))?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+										</div>
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
 
 										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
