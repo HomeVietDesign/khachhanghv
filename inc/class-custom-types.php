@@ -135,7 +135,8 @@ class Custom_Types {
 			'query_var'           => false,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'content_builder',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'editor',
@@ -179,7 +180,8 @@ class Custom_Types {
 			'can_export'          => true,
 			//'rewrite'             => ['slug'=>'nha-thau'],
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'contractor',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -223,7 +225,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => ['slug'=>'trang-nha-thau'],
-			'capability_type'     => 'page',
+			'capability_type'     => 'contractor_page',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'editor',
@@ -273,7 +276,8 @@ class Custom_Types {
 			'can_export'          => true,
 			//'rewrite'             => ['slug'=>'noi-that'],
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'estimate',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -317,7 +321,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'partner',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -361,7 +366,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'document',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -405,7 +411,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'contract',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -444,7 +451,7 @@ class Custom_Types {
 			// 	unset($submenu['edit.php'][16]);
 		}
 
-		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_categories', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 4 );
+		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_passwordss', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 4 );
 	}
 
 	public function _theme_action_register_taxonomy() {
@@ -478,7 +485,7 @@ class Custom_Types {
 			'show_in_nav_menus' => true,
 			'show_tagcloud' => false,
 		);
-		register_taxonomy( 'location', 'post', $args ); // our new 'format' taxonomy
+		//register_taxonomy( 'location', 'post', $args ); // our new 'format' taxonomy
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
@@ -500,6 +507,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_cats',
+				'edit_terms'   => 'edit_contractor_cats',
+				'delete_terms' => 'delete_contractor_cats',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -528,6 +541,12 @@ class Custom_Types {
 			'query_var'         => true,
 			//'rewrite'           => ['slug'=>'hang-muc'],
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_ratings',
+				'edit_terms'   => 'edit_contractor_ratings',
+				'delete_terms' => 'delete_contractor_ratings',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -553,6 +572,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => true,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_classs',
+				'edit_terms'   => 'edit_contractor_classs',
+				'delete_terms' => 'edit_contractor_classs',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -586,6 +611,12 @@ class Custom_Types {
 			'show_admin_column' => false,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_passwordss',
+				'edit_terms'   => 'edit_passwordss',
+				'delete_terms' => 'delete_passwordss',
+				'assign_terms' => 'edit_contractor_pages',
+			],
 			'public' => false,
 			'show_in_menu' => false,
 			'show_in_nav_menus' => false,
@@ -593,7 +624,7 @@ class Custom_Types {
 			'default_term' => ($default>0)?$default:$default_password
 			
 		);
-		register_taxonomy( 'passwords', ['contractor_page'], $args );
+		register_taxonomy( 'passwords', 'contractor_page', $args );
 		
 		// our new 'format' taxonomy
 
@@ -625,6 +656,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_provinces',
+				'edit_terms'   => 'edit_provinces',
+				'delete_terms' => 'delete_provinces',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -632,7 +669,7 @@ class Custom_Types {
 			
 		);
 		
-		register_taxonomy( 'province', ['contractor'], $args );
+		register_taxonomy( 'province', 'contractor', $args );
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
@@ -654,6 +691,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_estimate_cats',
+				'edit_terms'   => 'edit_estimate_cats',
+				'delete_terms' => 'delete_estimate_cats',
+				'assign_terms' => 'edit_estimates',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -680,6 +723,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_partner_cats',
+				'edit_terms'   => 'edit_partner_cats',
+				'delete_terms' => 'delete_partner_cats',
+				'assign_terms' => 'edit_partners',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -706,6 +755,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_document_cats',
+				'edit_terms'   => 'edit_document_cats',
+				'delete_terms' => 'delete_document_cats',
+				'assign_terms' => 'edit_documents',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -732,6 +787,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contract_cats',
+				'edit_terms'   => 'edit_contract_cats',
+				'delete_terms' => 'delete_contract_cats',
+				'assign_terms' => 'edit_contracts',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,

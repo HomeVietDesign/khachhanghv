@@ -10,13 +10,12 @@ get_header();
 while (have_posts()) {
 	the_post();
 	global $post;
-	if($current_client) {
-		if(current_user_can('estimate_manage_'.$post->post_name.'_view')) echo '<form id="estimate-filter-form" action="'.esc_url(fw_current_url()).'" method="GET">';
+	if($current_client && current_user_can('estimate_manage_'.$post->post_name.'_view')) {
 		?>
-		<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
-			<div class="container">
-				<?php
-				if(current_user_can('estimate_manage_'.$post->post_name.'_view')) {
+		<form id="estimate-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
+			<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
+				<div class="container">
+					<?php
 					$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 					?>
 					<input type="hidden" name="client" value="<?=$current_client->term_id?>">
@@ -54,18 +53,15 @@ while (have_posts()) {
 							</div>
 						</div>
 					</div>
-				<?php } else { ?>
-				<span><?=esc_html($current_client->description)?></span>
-				<?php } ?>
+				
+				</div>
 			</div>
-		</div>
 
-		<div id="site-content">
-			<?php the_content(); ?>
-		</div>
-
+			<div id="site-content">
+				<?php the_content(); ?>
+			</div>
+		</form>
 		<?php
-		if(current_user_can('estimate_manage_'.$post->post_name.'_view')) echo '</form>';
 	}
 	
 }

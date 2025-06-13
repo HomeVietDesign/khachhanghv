@@ -4,7 +4,6 @@
 /**
  * @var array $atts
  */
-global $current_password;
 
 $contractor_ratings = get_terms(['taxonomy'=>'contractor_rating', 'hide_empty'=>false]);
 

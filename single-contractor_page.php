@@ -1,49 +1,42 @@
 <?php
 get_header();
 
-global $current_province, $current_password, $current_password_province, $view;
+if(current_user_can('contractor_view')) {
 
-while (have_posts()) {
-	the_post();
-	global $post;
-	
-	if(!post_password_required($post)) {
-	
+	global $current_province, $view;
+
+	while (have_posts()) {
+		the_post();
+		global $post;
+
 		$cat = absint(get_post_meta( get_the_ID(), '_cat', true ));
 
 		$default_term_province = (int) get_option( 'default_term_province' );
 
-		if(current_user_can('contractor_view') || ($current_password_province && $current_password_province->term_id==$default_term_province)):
-			$permalink = get_permalink();
+		$permalink = get_permalink();
 
-			$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
+		$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
 
-			//debug($permalink);
-			
-			?>
-			<div class="provinces position-sticky text-center">
-				<div class="p-3 d-flex justify-content-center flex-wrap">
-					<a class="m-1 btn btn-sm btn-<?php echo empty($current_province)?'danger':'primary'; ?>" href="<?php echo esc_url(remove_query_arg( 'province', $permalink )); ?>"><?=esc_html(get_term_field( 'name', $default_term_province, 'province' ))?></a>
-				<?php
-				if($provinces) {
-					foreach ($provinces as $id) {
-
-						?>
-						<a class="m-1 btn btn-sm btn-<?php echo ($current_province && $id==$current_province->term_id)?'danger':'primary'; ?>" href="<?php echo esc_url(add_query_arg('province', $id, $permalink)); ?>"><?=esc_html(get_term_field( 'name', $id, 'province' ))?></a>
-
-						<?php
-					}
-				}
-				?>
-				</div>
-			</div>
-			<?php
-			
-
-		endif;
-
-	    if(current_user_can('contractor_view') || $current_password) {
+		//debug($permalink);
+		
 		?>
+		<div class="provinces position-sticky text-center">
+			<div class="p-3 d-flex justify-content-center flex-wrap">
+				<a class="m-1 btn btn-sm btn-<?php echo empty($current_province)?'danger':'primary'; ?>" href="<?php echo esc_url(remove_query_arg( 'province', $permalink )); ?>"><?=esc_html(get_term_field( 'name', $default_term_province, 'province' ))?></a>
+			<?php
+			if($provinces) {
+				foreach ($provinces as $id) {
+
+					?>
+					<a class="m-1 btn btn-sm btn-<?php echo ($current_province && $id==$current_province->term_id)?'danger':'primary'; ?>" href="<?php echo esc_url(add_query_arg('province', $id, $permalink)); ?>"><?=esc_html(get_term_field( 'name', $id, 'province' ))?></a>
+
+					<?php
+				}
+			}
+			?>
+			</div>
+		</div>
+		
 		<div class="contractor-search-wrap">
 			<div class="d-flex justify-content-center py-3">
 				<div class="d-flex align-items-center">
@@ -58,7 +51,7 @@ while (have_posts()) {
 				<div class="loading text-center invisible mb-3"></div>
 			</div>
 		</div>
-		<?php } ?>
+	
 		<div class="page-header bg-black py-3 mb-4">
 			<div class="container-xxl">
 				<h2 class="page-title text-center text-uppercase fw-bold p-0 m-0 d-flex justify-content-center align-items-center">
@@ -73,8 +66,6 @@ while (have_posts()) {
 		the_content();
 
 		//echo wp_do_shortcode('contractors', ['number'=>0, 'contractor_cat'=>[0]]);
-	} else {
-		echo get_the_password_form($post);
 	}
 }
 

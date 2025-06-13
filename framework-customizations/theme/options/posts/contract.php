@@ -25,11 +25,9 @@ $options = array(
 				'label' => 'Link nhóm zalo',
 				'type' => 'text'
 			),
-			'contract_attachment' => array(
-				'label' => 'File pdf dữ liệu',
-				'type' => 'upload',
-				'images_only' => false,
-				'files_ext' => array( 'pdf','rar','zip' ),
+			'contract_url' => array(
+				'label' => 'Link hợp đồng',
+				'type' => 'text'
 			),
 		),
 	),

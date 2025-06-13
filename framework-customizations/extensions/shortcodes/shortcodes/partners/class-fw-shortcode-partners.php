@@ -12,8 +12,6 @@ class FW_Shortcode_Partners extends FW_Shortcode
 	}
 
 	public function ajax_get_partner_info() {
-		global $current_password;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
 
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$partner_id = isset($_GET['partner'])?absint($_GET['partner']):0;

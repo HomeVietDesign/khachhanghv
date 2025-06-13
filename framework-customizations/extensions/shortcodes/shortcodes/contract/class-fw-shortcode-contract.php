@@ -24,21 +24,20 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		];
 		
 		if($client && $contract_id) {
-			$default_attachment = fw_get_db_post_option($contract_id,'contract_attachment');
 			$default_data = [
 				'value' => fw_get_db_post_option($contract_id,'contract_value'),
 				'unit' => fw_get_db_post_option($contract_id,'contract_unit'),
 				'zalo' => fw_get_db_post_option($contract_id,'contract_zalo'),
-				'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+				'url' => fw_get_db_post_option($contract_id,'contract_url'),
 			];
 
 			$data = get_post_meta($contract_id, '_data', true);
-			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
 			if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 			if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 			if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
-			if(empty($contract_data['attachment_id'])) $contract_data['attachment_id'] = $default_data['attachment_id'];
+			if(empty($contract_data['url'])) $contract_data['url'] = $default_data['url'];
 
 			$response['zalo'] = ($contract_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($contract_data['zalo']).'" target="_blank">Zalo</a>':'';
 
@@ -62,13 +61,10 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center contract-links mb-3">
 				<?php
-				if($contract_data['attachment_id']) {
-					$attachment_url = wp_get_attachment_url($contract_data['attachment_id']);
-					if($attachment_url) {
+				if($contract_data['url']) {
 					?>
-					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
+					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($contract_data['url'])?>" target="_blank">Xem chi tiết</a>
 					<?php
-					}
 				}
 				?>
 			</div>
@@ -89,41 +85,22 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		if(current_user_can('contract_edit') && check_ajax_referer( 'edit-contract', 'nonce', false )) {
 			$contract_client = isset($_POST['contract_client'])?absint($_POST['contract_client']):0;
 			$contract_id = isset($_POST['contract_id'])?absint($_POST['contract_id']):0;
-			$contract_attachment_id = isset($_POST['contract_attachment_id'])?absint($_POST['contract_attachment_id']):'';
 			$contract_value = isset($_POST['contract_value'])?sanitize_text_field($_POST['contract_value']):'';
 			$contract_unit = isset($_POST['contract_unit'])?sanitize_text_field($_POST['contract_unit']):'';
 			$contract_zalo = isset($_POST['contract_zalo'])?sanitize_text_field($_POST['contract_zalo']):'';
-			$contract_attachment = isset($_FILES['contract_attachment']) ? $_FILES['contract_attachment'] : null;
+			$contract_url = isset($_POST['contract_url'])?sanitize_url($_POST['contract_url']):'';
 
 			if($contract_client && $contract_id) {
 				$data = get_post_meta($contract_id, '_data', true);
 				if(empty($data)) $data = [];
-				$contract_data = isset($data[$contract_client])?$data[$contract_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+				$contract_data = isset($data[$contract_client])?$data[$contract_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
 				$new_contract_data = [
 					'value' => $contract_value,
 					'unit' => $contract_unit,
 					'zalo' => $contract_zalo,
-					'attachment_id' => $contract_attachment_id
+					'url' => $contract_url
 				];
-
-				// tải lên file dự toán
-				if ( ! function_exists( 'media_handle_upload' ) ) {
-					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
-				}
-
-				$contract_attachment_upload = media_handle_upload( 'contract_attachment', $contract_id );
-
-				if ($contract_attachment['error']==0 && $contract_attachment_upload && ! is_array( $contract_attachment_upload ) ) {
-					$new_contract_data['attachment_id'] = $contract_attachment_upload;
-					if($contract_attachment_id) wp_delete_attachment($contract_attachment_id, true);
-				}
-
-				if($new_contract_data['attachment_id']=='' || $new_contract_data['attachment_id']==0) {
-					if($contract_data['attachment_id']) wp_delete_attachment($contract_data['attachment_id'], true);
-				}
 
 				$data[$contract_client] = $new_contract_data;
 
@@ -144,11 +121,10 @@ class FW_Shortcode_Contract extends FW_Shortcode
 
 		if($client && $contract) {
 			$data = get_post_meta($contract, '_data', true);
-			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
-			$attachment_url = ($contract_data['attachment_id'])?wp_get_attachment_url($contract_data['attachment_id']):'';
 			?>
-			<form id="frm-edit-contract" method="POST" action="" enctype="multipart/form-data">
+			<form id="frm-edit-contract" method="POST" action="">
 				<input type="hidden" id="contract_client" name="contract_client" value="<?=$client?>">
 				<input type="hidden" id="contract_id" name="contract_id" value="<?=$contract?>">
 				<?php wp_nonce_field( 'edit-contract', 'nonce' ); ?>
@@ -163,27 +139,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 					<input type="text" id="contract_zalo" name="contract_zalo" placeholder="URL nhóm zalo" class="form-control" value="<?php echo esc_attr($contract_data['zalo']); ?>">
 				</div>
 				<div class="mb-3">
-					<div class="form-label mb-1">File dữ liệu</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="contract_attachment_id" name="contract_attachment_id" value="<?=esc_attr($contract_data['attachment_id'])?>">
-							<?php if($attachment_url) { ?>
-							<div class="input-group input-group-sm">
-								<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
-								<button class="btn btn-warning" id="contract_remove_attachment" type="button">Xóa file</button>
-							</div>
-							<?php } ?>
-						</div>
-						<label class="col d-block ps-5" for="contract_attachment">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
-							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="contract_attachment" name="contract_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
-							</div>
-						</label>
-					</div>
+					<input type="text" id="contract_url" name="contract_url" placeholder="Link hợp đồng" class="form-control" value="<?php echo ($contract_data['url'])?esc_url($contract_data['url']):''; ?>">
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-contract-submit">Lưu lại</button>

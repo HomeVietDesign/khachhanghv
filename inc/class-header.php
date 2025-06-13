@@ -23,8 +23,7 @@ class Header {
 	}
 
 	public static function contractor_menu($menu_html='') {
-		global $view, $current_password;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
+		global $view;
 		
 		$parent = null;
 		if($view->post_parent>0) {
@@ -46,7 +45,7 @@ class Header {
 			<div class="main-nav-inner">
 				<ul class="menu d-flex flex-wrap justify-content-center">
 				<?php
-				if( current_user_can('contractor_view') || $current_password ) {
+				if( current_user_can('contractor_view') ) {
 					foreach ($contractor_cats as $key => $value) {
 						$children = get_terms([
 							'taxonomy' => 'contractor_cat',
@@ -89,7 +88,7 @@ class Header {
 					}
 				}
 
-				if( has_role('administrator') || has_role('viewer') || ( $current_password && $current_password->term_id == $default_term_password ) ) {
+				if( has_role('administrator') || has_role('viewer') ) {
 					echo $menu_html;
 				}
 
@@ -104,7 +103,7 @@ class Header {
 	}
 
 	public static function extra_menu_html() {
-		global $current_password, $current_client;
+		global $current_client;
 
 		$object = get_queried_object();
 
@@ -118,9 +117,11 @@ class Header {
 		$menu_html = '';
 
 		if($passwords) {
-			
+			$current_user = wp_get_current_user();
+			$user_passwords = fw_get_db_settings_option('user_passwords');
+
 			$estimate_page = Common::get_custom_page('estimate.php');
-			if( $estimate_page && current_user_can('estimate_contractor_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if( $estimate_page && current_user_can('estimate_contractor_view') ) {
 				$estimate_page_url = get_permalink($estimate_page);
 				$this_template = is_page_template('estimate.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -132,6 +133,11 @@ class Header {
 				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
 				$menu_html .= '<ul class="sub-menu position-absolute">';
 				foreach ($passwords as $key => $value) {
+					if(has_role('viewer')&&(!isset($user_passwords[$current_user->user_login]) || !in_array($value->term_id, $user_passwords[$current_user->user_login]['passwords']))) {
+						// debug_log($value);
+						// debug_log($user_passwords[$current_user->user_login]['passwords']);
+						continue;
+					}
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
@@ -143,7 +149,7 @@ class Header {
 			}
 
 			$estimate_customer_page = Common::get_custom_page('estimate-customer.php');
-			if($estimate_customer_page && current_user_can('estimate_customer_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if($estimate_customer_page && current_user_can('estimate_customer_view') ) {
 				$estimate_customer_page_url = get_permalink($estimate_customer_page);
 				$this_template = is_page_template('estimate-customer.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -170,7 +176,7 @@ class Header {
 			if( $estimate_manage_pages ) {
 				$this_template = is_page_template('estimate-manage.php') ? true : false;
 				foreach ($estimate_manage_pages as $estimate_manage_page) {
-					if(current_user_can('estimate_manage_'.$estimate_manage_page->post_name.'_view') || ($current_password && $current_password->term_id == $default_term_password)) {
+					if(current_user_can('estimate_manage_'.$estimate_manage_page->post_name.'_view')) {
 						$estimate_manage_page_url = get_permalink($estimate_manage_page);
 						
 						$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -195,7 +201,7 @@ class Header {
 			}
 
 			$partner_page = Common::get_custom_page('partner.php');
-			if( $partner_page && current_user_can('partner_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if( $partner_page && current_user_can('partner_view') ) {
 				$partner_page_url = get_permalink($partner_page);
 				$this_template = is_page_template('partner.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -218,7 +224,7 @@ class Header {
 			}
 
 			$document_page = Common::get_custom_page('document.php');
-			if( $document_page && current_user_can('document_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if( $document_page && current_user_can('document_view') ) {
 				$document_page_url = get_permalink($document_page);
 				$this_template = is_page_template('document.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -241,7 +247,7 @@ class Header {
 			}
 
 			$contract_page = Common::get_custom_page('contract.php');
-			if( $contract_page && current_user_can('contract_view') || ($current_password && $current_password->term_id == $default_term_password) ) {
+			if( $contract_page && current_user_can('contract_view') ) {
 				$contract_page_url = get_permalink($contract_page);
 				$this_template = is_page_template('contract.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -269,8 +275,6 @@ class Header {
 	}
 
 	public static function primary_menu() {
-		$display_menu = 'yes';
-		$menu = false;
 		$nav_menu = '';
 		$object = get_queried_object();
 
@@ -294,28 +298,10 @@ class Header {
 
 			return;
 
-		} elseif(is_page() || is_single()) {
-			$display_menu = fw_get_db_post_option($object->ID, 'display_menu', 'yes');
-			$menu = fw_get_db_post_option($object->ID, 'apply_menu');
-		} else if(is_category() || is_tax()) {
-			$display_menu = fw_get_db_term_option($object->term_id, $object->taxonomy, 'display_menu', 'yes');
-			$menu = fw_get_db_term_option($object->term_id, $object->taxonomy, 'apply_menu');
 		}
 
-		if($display_menu = 'yes') {
-			$obj_menu = ($menu) ? wp_get_nav_menu_object( $menu[0] ): false;
-			if($obj_menu) {
-				$nav_menu = wp_nav_menu([
-					'menu' => $obj_menu,
-					'container' => false,
-					'echo' => false,
-					'fallback_cb' => '',
-					'depth' => 2,
-					'walker' => new \HomeViet\Walker_Primary_Menu(),
-					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.self::extra_menu_html().'</ul>',
-				]);
-
-			} else if(has_nav_menu('primary')) {
+		if(has_role('administrator')) {
+			if(has_nav_menu('primary')) {
 				$nav_menu = wp_nav_menu([
 					'theme_location' => 'primary',
 					'container' => false,
@@ -325,17 +311,20 @@ class Header {
 					'walker' => new \HomeViet\Walker_Primary_Menu(),
 					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.self::extra_menu_html().'</ul>',
 				]);
+			} else {
+				$nav_menu = '<ul class="menu d-flex flex-wrap justify-content-center">'.self::extra_menu_html().'</ul>';
 			}
-			
-			if($nav_menu!='') {
-				?>
-				<nav id="main-nav">
-					<div class="main-nav-inner"><?php echo $nav_menu; ?></div>
-				</nav>
-				<?php
-			}
-			
+		} elseif (has_role('viewer')) {
+			$nav_menu = '<ul class="menu d-flex flex-wrap justify-content-center">'.self::extra_menu_html().'</ul>';
 		}
+		
+		if($nav_menu!='') {
+			?>
+			<nav id="main-nav">
+				<div class="main-nav-inner"><?php echo $nav_menu; ?></div>
+			</nav>
+			<?php
+		}	
 	
 	}
 

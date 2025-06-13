@@ -5,8 +5,7 @@
 /**
  * @var array $atts
  */
-global $current_password, $current_client;
-$default_term_password = get_option( 'default_term_passwords', -1 );
+global $current_client;
 
 $contract_cats = get_terms(['taxonomy' => 'contract_cat','parent'=>0]);
 
@@ -40,21 +39,20 @@ if($contract_cats && $current_client) {
 					]);
 					if($contracts) {
 						foreach($contracts as $contract_id) {
-							$default_attachment = fw_get_db_post_option($contract_id,'contract_attachment');
 							$default_data = [
 								'value' => fw_get_db_post_option($contract_id,'contract_value'),
 								'unit' => fw_get_db_post_option($contract_id,'contract_unit'),
 								'zalo' => fw_get_db_post_option($contract_id,'contract_zalo'),
-								'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
+								'url' => fw_get_db_post_option($contract_id,'contract_url'),
 							];
 
 							$data = get_post_meta($contract_id, '_data', true);
-							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 							
 							if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 							if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
-							if(empty($contract_data['attachment_id'])) $contract_data['attachment_id'] = $default_data['attachment_id'];
+							if(empty($contract_data['url'])) $contract_data['url'] = $default_data['url'];
 							
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4">
@@ -95,13 +93,10 @@ if($contract_cats && $current_client) {
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center contract-links mb-3">
 											<?php
-											if($contract_data['attachment_id']) {
-												$attachment_url = wp_get_attachment_url($contract_data['attachment_id']);
-												if($attachment_url) {
+											if($contract_data['url']) {
 												?>
-												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
+												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($contract_data['url'])?>" target="_blank">Xem chi tiết</a>
 												<?php
-												}
 											}
 											?>
 										</div>

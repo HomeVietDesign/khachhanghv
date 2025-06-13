@@ -250,7 +250,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate', 'nonce' ); ?>
 				<div id="edit-estimate-response"></div>
-				<div class="mb-3<?php echo (!current_user_can('edit_posts'))?' hidden':''; ?>">
+				<div class="mb-3<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
 					Gửi yêu cầu
 					<input class="form-control" type="date" value="<?php echo (isset($estimate['required'])&&$estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_required" id="estimate_required">
 				</div>
@@ -304,7 +304,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 						</label>
 					</div>
 				</div>
-				<div class="mb-3<?php echo (!current_user_can('edit_posts'))?' hidden':''; ?>">
+				<div class="mb-3<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" value="yes" name="estimate_quote" id="estimate_quote" <?php checked( (isset($estimate['quote']) && $estimate['quote']=='yes'), true, true ); ?>>
 						<label class="form-check-label" for="estimate_quote">Được khách hàng lựa chọn?</label>
@@ -524,7 +524,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 							?>
 						</div>
 						
-						<?php if(current_user_can('edit_posts')) { ?>
+						<?php if(current_user_can('edit_contractors')) { ?>
 						<button class="estimate-contractor-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
@@ -575,9 +575,9 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 								foreach ($cats as $k => $cat) {
 									$page = absint(get_term_meta($cat->term_id, '_page', true));
 									if($page) {
-										echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
+										echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($k>0)?', ':' ').esc_html($cat->name).'</a>';
 									} else {
-										echo '<span>'.(($key>0)?', ':' ').esc_html($cat->name).'</span>';
+										echo '<span>'.(($k>0)?', ':' ').esc_html($cat->name).'</span>';
 									} 
 								}
 							}

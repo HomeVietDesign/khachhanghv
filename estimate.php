@@ -3,19 +3,18 @@
  * Template Name: Dự toán nhà thầu
  * 
  */
-global $current_client;
-
 get_header();
+if(current_user_can( 'estimate_contractor_view' )) {
+	global $current_client;
 
-while (have_posts()) {
-	the_post();
-	if($current_client) {
-		if(current_user_can( 'estimate_contractor_view' )) echo '<form id="estimate-filter-form" action="'.esc_url(fw_current_url()).'" method="GET">';
+	while (have_posts()) {
+		the_post();
+		if($current_client) {
 		?>
-		<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
-			<div class="container">
-				<?php
-				if(current_user_can( 'estimate_contractor_view' )) {
+		<form id="estimate-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
+			<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
+				<div class="container">
+					<?php
 					$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 					?>
 					<input type="hidden" name="client" value="<?=$current_client->term_id?>">
@@ -24,7 +23,6 @@ while (have_posts()) {
 							<div><?=esc_html($current_client->description)?></div>
 							<div class="fs-6 ms-3">( <?=esc_html($current_client->name)?> )</div>
 						</div>
-						
 						<div class="filters d-flex justify-content-end align-items-center">
 							<div class="filter-progress d-flex justify-content-end align-items-center">
 								<div class="filter-progress-item m-1 d-flex">
@@ -54,20 +52,15 @@ while (have_posts()) {
 							</div>
 						</div>
 					</div>
-				<?php } else { ?>
-				<span><?=esc_html($current_client->description)?></span>
-				<?php } ?>
+				</div>
 			</div>
-		</div>
-
-		<div id="site-content">
-			<?php the_content(); ?>
-		</div>
+			<div id="site-content">
+				<?php the_content(); ?>
+			</div>
+		</form>
 		<?php
-		if(current_user_can( 'estimate_contractor_view' )) echo '</form>';
+		}
 	}
 }
-
-
 
 get_footer();

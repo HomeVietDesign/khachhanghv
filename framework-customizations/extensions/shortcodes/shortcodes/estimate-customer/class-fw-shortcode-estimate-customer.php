@@ -271,6 +271,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		// $external_url = get_post_meta($contractor_id, '_external_url', true);
 		// $external_url = ($external_url!='')?esc_url($external_url):'#';
 
+		$item_class = '';
 		
 		$cats = get_the_terms( $contractor_id, 'contractor_cat' );
 
@@ -317,11 +318,11 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				</div>
 				<div class="contractor-info text-center px-1">
 					<div class="contractor-title pt-3 mb-1 fs-5">
-						<a class="d-block" href="<?=$external_url?>" target="_blank" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></a>
+						<div class="text-green" title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><?php echo esc_html(get_the_title( $contractor_id )); ?></div>
 						<div class="fs-6 text-yellow d-flex flex-wrap justify-content-center">
 							<?php
 							if($cats) {
-								foreach ($cats as $k => $cat) {
+								foreach ($cats as $key => $cat) {
 									$page = absint(get_term_meta($cat->term_id, '_page', true));
 									if($page) {
 										echo '<a class="text-yellow" href="'.esc_url(get_permalink( $page )).'" target="_blank">'.(($key>0)?', ':' ').esc_html($cat->name).'</a>';
