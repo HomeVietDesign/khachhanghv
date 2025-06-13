@@ -1024,6 +1024,56 @@ window.addEventListener('DOMContentLoaded', function(){
 			}
 		});
 
+		$('.document-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				doc = $this.data('document'),
+				doc_title = $this.data('documentTitle'),
+				$doc = $this.closest('.document-item');
+
+			if(confirm(doc_title)) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'document_hide', client: client, doc: doc},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$doc.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
+		$('.contract-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contract = $this.data('contract'),
+				contract_title = $this.data('contractTitle'),
+				$contract = $this.closest('.contract-item');
+
+			if(confirm(contract_title)) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'contract_hide', client: client, contract: contract},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$contract.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
 		$('.client-heading.position-sticky').each(function(index, el){
 			let $el = $(el);
 			let stickyObserver = new IntersectionObserver(([entry]) => {

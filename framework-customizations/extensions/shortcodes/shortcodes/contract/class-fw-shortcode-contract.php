@@ -9,6 +9,20 @@ class FW_Shortcode_Contract extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_contract_form', [$this, 'ajax_get_edit_contract_form']);
       add_action( 'wp_ajax_update_contract', [$this, 'ajax_update_contract']);
       add_action( 'wp_ajax_get_contract_info', [$this, 'ajax_get_contract_info']);
+      add_action( 'wp_ajax_contract_hide', [$this, 'ajax_contract_hide']);
+	}
+
+	public function ajax_contract_hide() {
+		global $current_client;
+		$contract_id = isset($_POST['contract']) ? absint($_POST['contract']) : 0;
+		$response = false;
+		if(current_user_can('contract_edit') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$contract_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contract_hide', []);
+			$contract_hide[] = $contract_id;
+			fw_set_db_term_option($current_client->term_id, 'passwords', 'contract_hide', $contract_hide);
+			$response = true;
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_get_contract_info() {

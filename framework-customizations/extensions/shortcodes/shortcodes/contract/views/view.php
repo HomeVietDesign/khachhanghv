@@ -10,6 +10,8 @@ global $current_client;
 $contract_cats = get_terms(['taxonomy' => 'contract_cat','parent'=>0]);
 
 if($contract_cats && $current_client) {
+
+	$contract_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contract_hide', []);
 	?>
 	<div class="fw-shortcode-contracts">
 		<div class="accordion">
@@ -53,8 +55,12 @@ if($contract_cats && $current_client) {
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 							if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
 							
+							$item_class = '';
+							if(in_array($contract_id, $contract_hide)) {
+								$item_class .= ' hide';
+							}
 							?>
-							<div class="col-lg-3 col-md-6 contract-item mb-4">
+							<div class="col-lg-3 col-md-6 contract-item mb-4<?=$item_class?>">
 								<div class="contract contract-<?=$contract_id?> border border-dark h-100 bg-black">
 									<div class="contract-thumbnail position-relative">
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
@@ -67,6 +73,8 @@ if($contract_cats && $current_client) {
 
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 											<?php if(current_user_can('edit_contracts')) { ?>
+											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="Ẩn hợp đồng <?php echo esc_attr('"'.get_the_title( $contract_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
+
 											<a href="<?php echo get_edit_post_link( $contract_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>
 											<?php if(current_user_can('contract_edit')) { ?>

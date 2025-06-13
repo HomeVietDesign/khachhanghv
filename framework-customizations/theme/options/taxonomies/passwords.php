@@ -44,7 +44,7 @@ $options = array(
 	),
 
 	'estimate_hide' => array(
-		'label' => 'Dự toán XÂY DỰNG + ĐỒ GỖ ẩn',
+		'label' => 'Dự toán Xây dựng, Đồ gỗ ẩn',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -52,4 +52,21 @@ $options = array(
 		'limit' => 1000
 	),
 	
+	'document_hide' => array(
+		'label' => 'Hồ sơ ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'document',
+		'limit' => 1000
+	),
+
+	'contract_hide' => array(
+		'label' => 'Hợp đồng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contract',
+		'limit' => 1000
+	),
 );

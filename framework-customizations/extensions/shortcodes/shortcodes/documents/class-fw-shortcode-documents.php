@@ -9,6 +9,20 @@ class FW_Shortcode_Documents extends FW_Shortcode
       add_action( 'wp_ajax_get_edit_document_form', [$this, 'ajax_get_edit_document_form']);
       add_action( 'wp_ajax_update_document', [$this, 'ajax_update_document']);
       add_action( 'wp_ajax_get_document_info', [$this, 'ajax_get_document_info']);
+      add_action( 'wp_ajax_document_hide', [$this, 'ajax_document_hide']);
+	}
+
+	public function ajax_document_hide() {
+		global $current_client;
+		$doc_id = isset($_POST['doc']) ? absint($_POST['doc']) : 0;
+		$response = false;
+		if(current_user_can('document_edit') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$document_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'document_hide', []);
+			$document_hide[] = $doc_id;
+			fw_set_db_term_option($current_client->term_id, 'passwords', 'document_hide', $document_hide);
+			$response = true;
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_get_document_info() {
