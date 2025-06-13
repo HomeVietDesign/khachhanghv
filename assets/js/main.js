@@ -831,6 +831,11 @@ window.addEventListener('DOMContentLoaded', function(){
 							success: function(response) {
 								$('.contract-'+formData.get('contract_id')+' .zalo-link').html(response['zalo']);
 								$('.contract-'+formData.get('contract_id')+' .contract-info').html(response['info']);
+								$('.contract-'+formData.get('contract_id')+' .contract-required').html(response['required']);
+								$('.contract-'+formData.get('contract_id')+' .contract-created').html(response['created']);
+								$('.contract-'+formData.get('contract_id')+' .contract-completed').html(response['completed']);
+								$('.contract-'+formData.get('contract_id')+' .contract-sent').html(response['sent']);
+								$('.contract-'+formData.get('contract_id')+' .contract-signed').html(response['signed']);
 								$('#edit-contract .btn-close').trigger('click');
 							}
 						});
@@ -1134,6 +1139,43 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('label[for="progress-completed"] span').text(completed);
 			$('label[for="progress-sent"] span').text(sent);
 			$('label[for="progress-quote"] span').text(quote);
+		}
+
+		if($('#contract-filter-form').length) {
+			let none = 0, required = 0, created = 0, completed = 0, sent = 0, signed = 0;
+			$('#contract-filter-form').find('.contract-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
+					
+				if($el.find('.contract-required').hasClass('on')) {
+					required += 1;
+					isNone = false;
+				}
+				if($el.find('.contract-created').hasClass('on')) {
+					created += 1;
+					isNone = false;
+				}
+				if($el.find('.contract-completed').hasClass('on')) {
+					completed += 1;
+					isNone = false;
+				}
+				if($el.find('.contract-sent').hasClass('on')) {
+					sent += 1;
+					isNone = false;
+				}
+				if($el.find('.contract-signed').hasClass('on')) {
+					signed += 1;
+					isNone = false;
+				}
+				if(isNone) {
+					none += 1;
+				}
+			});
+			$('label[for="progress-none"] span').text(none);
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-created"] span').text(created);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-signed"] span').text(signed);
 		}
 
 		var lightbox = new PhotoSwipeLightbox({

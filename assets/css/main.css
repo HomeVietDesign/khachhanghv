@@ -569,15 +569,18 @@ label[for="estimate_attachment"] {
 	background: #ff0;
 	color: #000;
 }
+.contract-progress,
 .estimate-progress {
 	font-weight: 600;
 	letter-spacing: 1px;
 }
+.contract-progress .col,
 .estimate-progress .col {
 	height: 40px;
 	line-height: 40px;
 	position: relative;
 }
+.contract-progress .col::after,
 .estimate-progress .col::after {
 	display: block;
 	content: "";
@@ -588,6 +591,7 @@ label[for="estimate_attachment"] {
 	top: 0;
 	right: 0;
 }
+.contract-progress .col:last-child::after,
 .estimate-progress .col:last-child::after {
 	display: none;
 }

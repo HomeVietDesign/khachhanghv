@@ -44,13 +44,19 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			];
 
 			$data = get_post_meta($contract_id, '_data', true);
-			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+			$contract_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'signed'=>''];
 
 			if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 			if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 			if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
 
 			$response['zalo'] = ($contract_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($contract_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['required'] = (isset($contract_data['required']) && $contract_data['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($contract_data['required']))).'</div>':'';
+			$response['created'] = (isset($contract_data['created']) && $contract_data['created']!='')?'<div class="bg-danger" title="Ngày tạo hợp đồng">'.esc_html(date('d/m', strtotime($contract_data['created']))).'</div>':'';
+			$response['completed'] = (isset($contract_data['completed']) && $contract_data['completed']!='')?'<div class="bg-danger" title="Ngày làm xong hợp đồng">'.esc_html(date('d/m', strtotime($contract_data['completed']))).'</div>':'';
+			$response['sent'] = (isset($contract_data['sent']) && $contract_data['sent']!='')?'<div class="bg-danger" title="Ngày gửi cho khách">'.esc_html(date('d/m', strtotime($contract_data['sent']))).'</div>':'';
+
+			$response['signed'] = (isset($contract_data['signed']) && $contract_data['signed']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 		?>
@@ -101,16 +107,27 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			$contract_zalo = isset($_POST['contract_zalo'])?sanitize_text_field($_POST['contract_zalo']):'';
 			$contract_url = isset($_POST['contract_url'])?sanitize_url($_POST['contract_url']):'';
 
+			$contract_required = isset($_POST['contract_required']) ? $_POST['contract_required'] : '';
+			$contract_created = isset($_POST['contract_created']) ? $_POST['contract_created'] : '';
+			$contract_completed = isset($_POST['contract_completed']) ? $_POST['contract_completed'] : '';
+			$contract_sent = isset($_POST['contract_sent']) ? $_POST['contract_sent'] : '';
+			$contract_signed = isset($_POST['contract_signed']) ? $_POST['contract_signed'] : '';
+
 			if($contract_client && $contract_id) {
 				$data = get_post_meta($contract_id, '_data', true);
 				if(empty($data)) $data = [];
 				$contract_data = isset($data[$contract_client])?$data[$contract_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
 
 				$new_contract_data = [
+					'required' => $contract_required,
+					'created' => $contract_created,
+					'completed' => $contract_completed,
+					'sent' => $contract_sent,
 					'value' => $contract_value,
 					'unit' => $contract_unit,
 					'zalo' => $contract_zalo,
-					'url' => $contract_url
+					'url' => $contract_url,
+					'signed' => $contract_signed,
 				];
 
 				$data[$contract_client] = $new_contract_data;
@@ -132,7 +149,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 
 		if($client && $contract) {
 			$data = get_post_meta($contract, '_data', true);
-			$contract_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+			$contract_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'signed'=>''];
 
 			?>
 			<form id="frm-edit-contract" method="POST" action="">
@@ -140,6 +157,22 @@ class FW_Shortcode_Contract extends FW_Shortcode
 				<input type="hidden" id="contract_id" name="contract_id" value="<?=$contract?>">
 				<?php wp_nonce_field( 'edit-contract', 'nonce' ); ?>
 				<div id="edit-contract-response"></div>
+				<div class="mb-3<?php echo (!current_user_can('edit_contracts'))?' hidden':''; ?>">
+					Gửi yêu cầu
+					<input class="form-control" type="date" value="<?php echo (isset($contract_data['required'])&&$contract_data['required']!='')?esc_html(date('Y-m-d', strtotime($contract_data['required']))):''; ?>" name="contract_required" id="contract_required">
+				</div>
+				<div class="mb-3">
+					Tạo hợp đồng
+					<input class="form-control" type="date" value="<?php echo (isset($contract_data['created'])&&$contract_data['created']!='')?esc_html(date('Y-m-d', strtotime($contract_data['created']))):''; ?>" name="contract_created" id="contract_created">
+				</div>
+				<div class="mb-3">
+					Xong hợp đồng
+					<input class="form-control" type="date" value="<?php echo (isset($contract_data['completed'])&&$contract_data['completed']!='')?esc_html(date('Y-m-d', strtotime($contract_data['completed']))):''; ?>" name="contract_completed" id="contract_completed">
+				</div>
+				<div class="mb-3">
+					Ngày gửi khách
+					<input class="form-control" type="date" value="<?php echo (isset($contract_data['sent'])&&$contract_data['sent']!='')?esc_html(date('Y-m-d', strtotime($contract_data['sent']))):''; ?>" name="contract_sent" id="contract_sent">
+				</div>
 				<div class="mb-3">
 					<input type="text" id="contract_value" name="contract_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($contract_data['value']); ?>">
 				</div>
@@ -151,6 +184,12 @@ class FW_Shortcode_Contract extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<input type="text" id="contract_url" name="contract_url" placeholder="Link hợp đồng" class="form-control" value="<?php echo ($contract_data['url'])?esc_url($contract_data['url']):''; ?>">
+				</div>
+				<div class="mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="yes" name="contract_signed" id="contract_signed" <?php checked( (isset($contract_data['signed']) && $contract_data['signed']=='yes'), true, true ); ?>>
+						<label class="form-check-label" for="contract_signed">Đã ký?</label>
+					</div>
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-contract-submit">Lưu lại</button>

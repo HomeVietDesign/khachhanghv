@@ -248,7 +248,7 @@ class FW_Shortcode_Estimate_Manage extends FW_Shortcode
 				<div class="mb-3">
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" value="yes" name="estimate_client_quote" id="estimate_client_quote" <?php checked( (isset($client_estimate['quote']) && $client_estimate['quote']=='yes'), true, true ); ?>>
-						<label class="form-check-label" for="estimate_client_quote">Đã gửi cho khách hàng?</label>
+						<label class="form-check-label" for="estimate_client_quote">Được khách hàng lựa chọn?</label>
 					</div>
 				</div>
 				<div class="mb-3">

@@ -31,4 +31,20 @@ $options = array(
 			),
 		),
 	),
+	'contract_content' => array(
+		'context' => 'advanced',
+		'title'   => 'Nội dung yêu cầu',
+		'type'    => 'box',
+        'options' => array(
+        	'contract_content' => array(
+				'label' => '',
+				'desc'  => '',
+				'type'  => 'wp-editor',
+				'value' => '',
+				'size' => 'large',
+				'editor_height' => '400',
+				'media_buttons' => false
+			),
+		),
+	),
 );

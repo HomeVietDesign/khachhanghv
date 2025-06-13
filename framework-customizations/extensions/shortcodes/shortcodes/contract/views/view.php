@@ -8,10 +8,12 @@
 global $current_client;
 
 $contract_cats = get_terms(['taxonomy' => 'contract_cat','parent'=>0]);
+$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($contract_cats && $current_client) {
 
 	$contract_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contract_hide', []);
+
 	?>
 	<div class="fw-shortcode-contracts">
 		<div class="accordion">
@@ -54,14 +56,120 @@ if($contract_cats && $current_client) {
 							if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 							if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
+
+							$display = empty($progress) ? true : false;
+
+							if(!$display) {
+								$display_none = true;
+								if('none'==$progress) {
+									$display_none = false;
+									if(empty($contract_data['required']) && empty($contract_data['created']) && empty($contract_data['completed']) && empty($contract_data['sent']) && empty($contract_data['signed'])) {
+										$display_none = true;
+									}
+								}
+
+								$display_required = true;
+								if('required'==$progress) {
+									$display_required = false;
+									if(isset($contract_data['required']) && $contract_data['required']!='' ) {
+										$display_required = true;
+									}
+								}
+
+								$display_created = true;
+								if('created'==$progress) {
+									$display_created = false;
+									if(isset($contract_data['created']) && $contract_data['created']!='' ) {
+										$display_created = true;
+									}
+								}
+
+								$display_completed = true;
+								if('completed'==$progress) {
+									$display_completed = false;
+									if(isset($contract_data['completed']) && $contract_data['completed']!='' ) {
+										$display_completed = true;
+									}
+								}
+
+								$display_sent = true;
+								if('sent'==$progress) {
+									$display_sent = false;
+									if(isset($contract_data['sent']) && $contract_data['sent']!='' ) {
+										$display_sent = true;
+									}
+								}
+
+								$display_signed = true;
+								if('signed'==$progress) {
+									$display_signed = false;
+									if(isset($contract_data['signed']) && $contract_data['signed']!='' ) {
+										$display_signed = true;
+									}
+								}
+
+							}
 							
 							$item_class = '';
+
+							if(!$display) {
+								if( !($display_none && $display_required && $display_created && $display_completed && $display_sent && $display_signed )) {
+									$item_class .= ' hidden';
+								}
+							}
+
 							if(in_array($contract_id, $contract_hide)) {
 								$item_class .= ' hide';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4<?=$item_class?>">
 								<div class="contract contract-<?=$contract_id?> border border-dark h-100 bg-black">
+									<div class="row g-0 contract-progress text-center text-yellow">
+										<div class="col contract-required<?php echo (isset($contract_data['required']) && $contract_data['required']!='')?' on':''; ?>">
+										<?php
+										if(isset($contract_data['required']) && $contract_data['required']!='') {
+											?>
+											<div class="bg-danger" title="Ngày gửi yêu cầu">
+												<?php echo esc_html(date('d/m', strtotime($contract_data['required']))); ?>
+											</div>
+											<?php
+										}
+										?>
+										</div>
+										<div class="col contract-created<?php echo (isset($contract_data['created']) && $contract_data['created']!='')?' on':''; ?>">
+											<?php
+											if(isset($contract_data['created']) && $contract_data['created']!='') {
+												?>
+												<div class="bg-danger" title="Ngày tạo hợp đồng">
+													<?php echo esc_html(date('d/m', strtotime($contract_data['created']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+										<div class="col contract-completed<?php echo (isset($contract_data['completed']) && $contract_data['completed']!='')?' on':''; ?>">
+											<?php
+											if(isset($contract_data['completed']) && $contract_data['completed']!='') {
+												?>
+												<div class="bg-danger" title="Ngày làm xong hợp đồng">
+													<?php echo esc_html(date('d/m', strtotime($contract_data['completed']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+										<div class="col contract-sent<?php echo (isset($contract_data['sent']) && $contract_data['sent']!='')?' on':''; ?>">
+											<?php
+											if(isset($contract_data['sent']) && $contract_data['sent']!='') {
+												?>
+												<div class="bg-danger" title="Ngày gửi cho khách">
+													<?php echo esc_html(date('d/m', strtotime($contract_data['sent']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+									</div>
 									<div class="contract-thumbnail position-relative">
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
 
@@ -72,6 +180,15 @@ if($contract_cats && $current_client) {
 										</div>
 
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+											<div class="contract-signed<?php echo (isset($contract_data['signed']) && $contract_data['signed']=='yes')?' on':''; ?>">
+												<?php
+												if(isset($contract_data['signed']) && $contract_data['signed']=='yes') {
+													?>
+													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>
+													<?php
+												}
+												?>
+											</div>
 											<?php if(current_user_can('edit_contracts')) { ?>
 											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="Ẩn hợp đồng <?php echo esc_attr('"'.get_the_title( $contract_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
 
