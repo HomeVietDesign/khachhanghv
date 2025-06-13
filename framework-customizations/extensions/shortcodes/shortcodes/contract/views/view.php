@@ -39,11 +39,11 @@ if($contract_cats && $current_client) {
 					]);
 					if($contracts) {
 						foreach($contracts as $contract_id) {
+							$default_url = fw_get_db_post_option($contract_id,'contract_url');
 							$default_data = [
 								'value' => fw_get_db_post_option($contract_id,'contract_value'),
 								'unit' => fw_get_db_post_option($contract_id,'contract_unit'),
 								'zalo' => fw_get_db_post_option($contract_id,'contract_zalo'),
-								'url' => fw_get_db_post_option($contract_id,'contract_url'),
 							];
 
 							$data = get_post_meta($contract_id, '_data', true);
@@ -52,15 +52,21 @@ if($contract_cats && $current_client) {
 							if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 							if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
-							if(empty($contract_data['url'])) $contract_data['url'] = $default_data['url'];
 							
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4">
 								<div class="contract contract-<?=$contract_id?> border border-dark h-100 bg-black">
 									<div class="contract-thumbnail position-relative">
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
+
+										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+											<?php if($default_url) { ?>
+											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
+											<?php } ?>
+										</div>
+
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-											<?php if(has_role('administrator')) { ?>
+											<?php if(current_user_can('edit_contracts')) { ?>
 											<a href="<?php echo get_edit_post_link( $contract_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>
 											<?php if(current_user_can('contract_edit')) { ?>

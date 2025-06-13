@@ -55,13 +55,21 @@ $options = array(
 $wp_users = get_users(['role__in'=>['viewer']]);
 $picker_choices = [];
 $choices = [];
-if(!empty($wp_users)) {
+$_passwords = get_terms(['taxonomy'=>'passwords', 'hide_empty'=>false]);
+//debug_log($_passwords);
+if(!empty($wp_users) && !empty($_passwords)) {
+	$passwords = [];
+	foreach ($_passwords as $key => $value) {
+		$passwords[$value->term_id] = $value->description.' ( '.$value->name.' )';
+	}
+
 	$option = [
 		'label' => 'Khách hàng được quản lý',
 		'desc'  => '',
 		'type'  => 'multi-select',
-		'population' => 'taxonomy',
-		'source' => 'passwords',
+		'population' => 'array',
+		'source' => '',
+		'choices' => $passwords,
 		'limit' => 1000,
 	];
 	foreach ($wp_users as $user) {

@@ -12,8 +12,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 	}
 
 	public function ajax_get_contract_info() {
-		global $current_password;
-		$default_term_password = get_option( 'default_term_passwords', -1 );
 
 		$client = isset($_GET['client'])?absint($_GET['client']):0;
 		$contract_id = isset($_GET['contract'])?absint($_GET['contract']):0;
@@ -24,11 +22,11 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		];
 		
 		if($client && $contract_id) {
+			//$default_url = fw_get_db_post_option($contract_id,'contract_url');
 			$default_data = [
 				'value' => fw_get_db_post_option($contract_id,'contract_value'),
 				'unit' => fw_get_db_post_option($contract_id,'contract_unit'),
 				'zalo' => fw_get_db_post_option($contract_id,'contract_zalo'),
-				'url' => fw_get_db_post_option($contract_id,'contract_url'),
 			];
 
 			$data = get_post_meta($contract_id, '_data', true);
@@ -37,7 +35,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 			if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
 			if(empty($contract_data['zalo'])) $contract_data['zalo'] = $default_data['zalo'];
-			if(empty($contract_data['url'])) $contract_data['url'] = $default_data['url'];
 
 			$response['zalo'] = ($contract_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($contract_data['zalo']).'" target="_blank">Zalo</a>':'';
 

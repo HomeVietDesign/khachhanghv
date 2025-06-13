@@ -21,7 +21,18 @@ class Custom_Types {
 
 		// đặt thứ tự hook là 9999 để có thể đảm bảo lần chỉnh cuối nhất
 		add_action( 'init', [$this, '_theme_action_change_object_content_labels'], 9999 );
+
+		add_filter( 'get_terms', [$this, '_theme_action_change_passwords_term_name'], 10, 4 );
 	
+	}
+
+	public function _theme_action_change_passwords_term_name($terms, $taxonomy, $query_vars, $term_query) {
+
+		if($taxonomy=='passwords') {
+			debug_log($terms);
+		}
+
+		return $terms;
 	}
 
 	public function admin_menu_highlight($parent_file) {

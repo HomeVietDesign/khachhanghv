@@ -51,7 +51,7 @@ class Theme {
 		// add_action('after_switch_theme', [$this, 'theme_activation']);
 		// add_action('switch_theme', [$this, 'theme_deactivation']);
 
-		add_action('after_setup_theme', [$this, 'theme_activation']);
+		//add_action('after_setup_theme', [$this, 'theme_activation']);
 		//add_action('after_setup_theme', [$this, 'theme_deactivation']);
 	}
 
@@ -232,20 +232,21 @@ class Theme {
 		// $ngochv->add_cap('estimate_manage_du-toan-do-go_view');
 		// $ngochv->add_cap('estimate_manage_du-toan-do-go_edit');
 
+		/*
 		$tanhv = get_user_by( 'login', 'tanhv' );
-		// $tanhv->add_cap('edit_contractor');
-		// $tanhv->add_cap('read_contractor');
+		$tanhv->add_cap('edit_contractor');
+		$tanhv->add_cap('read_contractor');
 		// $tanhv->add_cap('delete_contractor');
-		// $tanhv->add_cap('edit_contractors');
-		// $tanhv->add_cap('edit_others_contractors');
+		$tanhv->add_cap('edit_contractors');
+		$tanhv->add_cap('edit_others_contractors');
 		// $tanhv->add_cap('delete_contractors');
-		// $tanhv->add_cap('publish_contractors');
+		$tanhv->add_cap('publish_contractors');
 		// $tanhv->add_cap('read_private_contractors');
 		// $tanhv->add_cap('delete_private_contractors');
 		// $tanhv->add_cap('delete_published_contractors');
 		// $tanhv->add_cap('delete_others_contractors');
 		// $tanhv->add_cap('edit_private_contractors');
-		// $tanhv->add_cap('edit_published_contractors');
+		$tanhv->add_cap('edit_published_contractors');
 
 		// $tanhv->add_cap('estimate_contractor_view');
 		// $tanhv->add_cap('estimate_contractor_edit');
@@ -258,7 +259,8 @@ class Theme {
 		// $tanhv->add_cap('manage_categories');
 		// $tanhv->add_cap('contractor_view');
 		// $tanhv->add_cap('contractor_edit');
-
+		*/
+		
 		// $thaotde = get_user_by( 'login', 'thaotde' );
 		// $thaotde->add_cap('estimate_contractor_view');
 		// $thaotde->add_cap('estimate_contractor_edit');
