@@ -57,146 +57,187 @@ class Theme {
 
 	public function theme_activation() {
 		
-		//add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
+		// add_role( 'viewer', 'Xem một phần', array( 'read' => true, 'level_0' => true ) );
 
-		/*
+		
 		$admin_role = get_role( 'administrator' );
 
-		$admin_role->add_cap('edit_content_builder');
-		$admin_role->add_cap('read_content_builder');
-		$admin_role->add_cap('delete_content_builder');
-		$admin_role->add_cap('edit_content_builders');
-		$admin_role->add_cap('edit_others_content_builders');
-		$admin_role->add_cap('delete_content_builders');
-		$admin_role->add_cap('publish_content_builders');
-		$admin_role->add_cap('read_private_content_builders');
-		$admin_role->add_cap('delete_private_content_builders');
-		$admin_role->add_cap('delete_published_content_builders');
-		$admin_role->add_cap('delete_others_content_builders');
-		$admin_role->add_cap('edit_private_content_builders');
-		$admin_role->add_cap('edit_published_content_builders');
+		$admin_role->add_cap('edit_econstruction');
+		$admin_role->add_cap('read_econstruction');
+		$admin_role->add_cap('delete_econstruction');
+		$admin_role->add_cap('edit_econstructions');
+		$admin_role->add_cap('edit_others_econstructions');
+		$admin_role->add_cap('delete_econstructions');
+		$admin_role->add_cap('publish_econstructions');
+		$admin_role->add_cap('read_private_econstructions');
+		$admin_role->add_cap('delete_private_econstructions');
+		$admin_role->add_cap('delete_published_econstructions');
+		$admin_role->add_cap('delete_others_econstructions');
+		$admin_role->add_cap('edit_private_econstructions');
+		$admin_role->add_cap('edit_published_econstructions');
 
-		$admin_role->add_cap('edit_contractor');
-		$admin_role->add_cap('read_contractor');
-		$admin_role->add_cap('delete_contractor');
-		$admin_role->add_cap('edit_contractors');
-		$admin_role->add_cap('edit_others_contractors');
-		$admin_role->add_cap('delete_contractors');
-		$admin_role->add_cap('publish_contractors');
-		$admin_role->add_cap('read_private_contractors');
-		$admin_role->add_cap('delete_private_contractors');
-		$admin_role->add_cap('delete_published_contractors');
-		$admin_role->add_cap('delete_others_contractors');
-		$admin_role->add_cap('edit_private_contractors');
-		$admin_role->add_cap('edit_published_contractors');
+		$admin_role->add_cap('manage_econstruction_cats');
+		$admin_role->add_cap('edit_econstruction_cats');
+		$admin_role->add_cap('delete_econstruction_cats');
 
-		$admin_role->add_cap('edit_contractor_page');
-		$admin_role->add_cap('read_contractor_page');
-		$admin_role->add_cap('delete_contractor_page');
-		$admin_role->add_cap('edit_contractor_pages');
-		$admin_role->add_cap('edit_others_contractor_pages');
-		$admin_role->add_cap('delete_contractor_pages');
-		$admin_role->add_cap('publish_contractor_pages');
-		$admin_role->add_cap('read_private_contractor_pages');
-		$admin_role->add_cap('delete_private_contractor_pages');
-		$admin_role->add_cap('delete_published_contractor_pages');
-		$admin_role->add_cap('delete_others_contractor_pages');
-		$admin_role->add_cap('edit_private_contractor_pages');
-		$admin_role->add_cap('edit_published_contractor_pages');
+		$admin_role->add_cap('econstruction_view');
+		$admin_role->add_cap('econstruction_edit');
 
-		$admin_role->add_cap('edit_estimate');
-		$admin_role->add_cap('read_estimate');
-		$admin_role->add_cap('delete_estimate');
-		$admin_role->add_cap('edit_estimates');
-		$admin_role->add_cap('edit_others_estimates');
-		$admin_role->add_cap('delete_estimates');
-		$admin_role->add_cap('publish_estimates');
-		$admin_role->add_cap('read_private_estimates');
-		$admin_role->add_cap('delete_private_estimates');
-		$admin_role->add_cap('delete_published_estimates');
-		$admin_role->add_cap('delete_others_estimates');
-		$admin_role->add_cap('edit_private_estimates');
-		$admin_role->add_cap('edit_published_estimates');
-
-		$admin_role->add_cap('edit_partner');
-		$admin_role->add_cap('read_partner');
-		$admin_role->add_cap('delete_partner');
-		$admin_role->add_cap('edit_partners');
-		$admin_role->add_cap('edit_others_partners');
-		$admin_role->add_cap('delete_partners');
-		$admin_role->add_cap('publish_partners');
-		$admin_role->add_cap('read_private_partners');
-		$admin_role->add_cap('delete_private_partners');
-		$admin_role->add_cap('delete_published_partners');
-		$admin_role->add_cap('delete_others_partners');
-		$admin_role->add_cap('edit_private_partners');
-		$admin_role->add_cap('edit_published_partners');
-
-		$admin_role->add_cap('edit_document');
-		$admin_role->add_cap('read_document');
-		$admin_role->add_cap('delete_document');
-		$admin_role->add_cap('edit_documents');
-		$admin_role->add_cap('edit_others_documents');
-		$admin_role->add_cap('delete_documents');
-		$admin_role->add_cap('publish_documents');
-		$admin_role->add_cap('read_private_documents');
-		$admin_role->add_cap('delete_private_documents');
-		$admin_role->add_cap('delete_published_documents');
-		$admin_role->add_cap('delete_others_documents');
-		$admin_role->add_cap('edit_private_documents');
-		$admin_role->add_cap('edit_published_documents');
-
-		$admin_role->add_cap('edit_contract');
-		$admin_role->add_cap('read_contract');
-		$admin_role->add_cap('delete_contract');
-		$admin_role->add_cap('edit_contracts');
-		$admin_role->add_cap('edit_others_contracts');
-		$admin_role->add_cap('delete_contracts');
-		$admin_role->add_cap('publish_contracts');
-		$admin_role->add_cap('read_private_contracts');
-		$admin_role->add_cap('delete_private_contracts');
-		$admin_role->add_cap('delete_published_contracts');
-		$admin_role->add_cap('delete_others_contracts');
-		$admin_role->add_cap('edit_private_contracts');
-		$admin_role->add_cap('edit_published_contracts');
-
-		$admin_role->add_cap('manage_contractor_cats');
-		$admin_role->add_cap('edit_contractor_cats');
-		$admin_role->add_cap('delete_contractor_cats');
-
-		$admin_role->add_cap('manage_contractor_ratings');
-		$admin_role->add_cap('edit_contractor_ratings');
-		$admin_role->add_cap('delete_contractor_ratings');
-
-		$admin_role->add_cap('manage_contractor_classs');
-		$admin_role->add_cap('edit_contractor_classs');
-		$admin_role->add_cap('delete_contractor_classs');
-
-		$admin_role->add_cap('manage_passwordss');
-		$admin_role->add_cap('edit_passwordss');
-		$admin_role->add_cap('delete_passwordss');
-
-		$admin_role->add_cap('manage_provinces');
-		$admin_role->add_cap('edit_provinces');
-		$admin_role->add_cap('delete_provinces');
-
-		$admin_role->add_cap('manage_estimate_cats');
-		$admin_role->add_cap('edit_estimate_cats');
-		$admin_role->add_cap('delete_estimate_cats');
-
-		$admin_role->add_cap('manage_partner_cats');
-		$admin_role->add_cap('edit_partner_cats');
-		$admin_role->add_cap('delete_partner_cats');
-
-		$admin_role->add_cap('manage_document_cats');
-		$admin_role->add_cap('edit_document_cats');
-		$admin_role->add_cap('delete_document_cats');
-
-		$admin_role->add_cap('manage_contract_cats');
-		$admin_role->add_cap('edit_contract_cats');
-		$admin_role->add_cap('delete_contract_cats');
+		$admin_role->add_cap('edit_efurniture');
+		$admin_role->add_cap('read_efurniture');
+		$admin_role->add_cap('delete_efurniture');
+		$admin_role->add_cap('edit_efurnitures');
+		$admin_role->add_cap('edit_others_efurnitures');
+		$admin_role->add_cap('delete_efurnitures');
+		$admin_role->add_cap('publish_efurnitures');
+		$admin_role->add_cap('read_private_efurnitures');
+		$admin_role->add_cap('delete_private_efurnitures');
+		$admin_role->add_cap('delete_published_efurnitures');
+		$admin_role->add_cap('delete_others_efurnitures');
+		$admin_role->add_cap('edit_private_efurnitures');
+		$admin_role->add_cap('edit_published_efurnitures');
 		
-		*/
+		$admin_role->add_cap('manage_efurniture_cats');
+		$admin_role->add_cap('edit_efurniture_cats');
+		$admin_role->add_cap('delete_efurniture_cats');
+
+		$admin_role->add_cap('efurniture_view');
+		$admin_role->add_cap('efurniture_edit');
+
+		// $admin_role->add_cap('edit_content_builder');
+		// $admin_role->add_cap('read_content_builder');
+		// $admin_role->add_cap('delete_content_builder');
+		// $admin_role->add_cap('edit_content_builders');
+		// $admin_role->add_cap('edit_others_content_builders');
+		// $admin_role->add_cap('delete_content_builders');
+		// $admin_role->add_cap('publish_content_builders');
+		// $admin_role->add_cap('read_private_content_builders');
+		// $admin_role->add_cap('delete_private_content_builders');
+		// $admin_role->add_cap('delete_published_content_builders');
+		// $admin_role->add_cap('delete_others_content_builders');
+		// $admin_role->add_cap('edit_private_content_builders');
+		// $admin_role->add_cap('edit_published_content_builders');
+
+		// $admin_role->add_cap('edit_contractor');
+		// $admin_role->add_cap('read_contractor');
+		// $admin_role->add_cap('delete_contractor');
+		// $admin_role->add_cap('edit_contractors');
+		// $admin_role->add_cap('edit_others_contractors');
+		// $admin_role->add_cap('delete_contractors');
+		// $admin_role->add_cap('publish_contractors');
+		// $admin_role->add_cap('read_private_contractors');
+		// $admin_role->add_cap('delete_private_contractors');
+		// $admin_role->add_cap('delete_published_contractors');
+		// $admin_role->add_cap('delete_others_contractors');
+		// $admin_role->add_cap('edit_private_contractors');
+		// $admin_role->add_cap('edit_published_contractors');
+
+		// $admin_role->add_cap('edit_contractor_page');
+		// $admin_role->add_cap('read_contractor_page');
+		// $admin_role->add_cap('delete_contractor_page');
+		// $admin_role->add_cap('edit_contractor_pages');
+		// $admin_role->add_cap('edit_others_contractor_pages');
+		// $admin_role->add_cap('delete_contractor_pages');
+		// $admin_role->add_cap('publish_contractor_pages');
+		// $admin_role->add_cap('read_private_contractor_pages');
+		// $admin_role->add_cap('delete_private_contractor_pages');
+		// $admin_role->add_cap('delete_published_contractor_pages');
+		// $admin_role->add_cap('delete_others_contractor_pages');
+		// $admin_role->add_cap('edit_private_contractor_pages');
+		// $admin_role->add_cap('edit_published_contractor_pages');
+
+		// $admin_role->add_cap('edit_estimate');
+		// $admin_role->add_cap('read_estimate');
+		// $admin_role->add_cap('delete_estimate');
+		// $admin_role->add_cap('edit_estimates');
+		// $admin_role->add_cap('edit_others_estimates');
+		// $admin_role->add_cap('delete_estimates');
+		// $admin_role->add_cap('publish_estimates');
+		// $admin_role->add_cap('read_private_estimates');
+		// $admin_role->add_cap('delete_private_estimates');
+		// $admin_role->add_cap('delete_published_estimates');
+		// $admin_role->add_cap('delete_others_estimates');
+		// $admin_role->add_cap('edit_private_estimates');
+		// $admin_role->add_cap('edit_published_estimates');
+
+		// $admin_role->add_cap('edit_partner');
+		// $admin_role->add_cap('read_partner');
+		// $admin_role->add_cap('delete_partner');
+		// $admin_role->add_cap('edit_partners');
+		// $admin_role->add_cap('edit_others_partners');
+		// $admin_role->add_cap('delete_partners');
+		// $admin_role->add_cap('publish_partners');
+		// $admin_role->add_cap('read_private_partners');
+		// $admin_role->add_cap('delete_private_partners');
+		// $admin_role->add_cap('delete_published_partners');
+		// $admin_role->add_cap('delete_others_partners');
+		// $admin_role->add_cap('edit_private_partners');
+		// $admin_role->add_cap('edit_published_partners');
+
+		// $admin_role->add_cap('edit_document');
+		// $admin_role->add_cap('read_document');
+		// $admin_role->add_cap('delete_document');
+		// $admin_role->add_cap('edit_documents');
+		// $admin_role->add_cap('edit_others_documents');
+		// $admin_role->add_cap('delete_documents');
+		// $admin_role->add_cap('publish_documents');
+		// $admin_role->add_cap('read_private_documents');
+		// $admin_role->add_cap('delete_private_documents');
+		// $admin_role->add_cap('delete_published_documents');
+		// $admin_role->add_cap('delete_others_documents');
+		// $admin_role->add_cap('edit_private_documents');
+		// $admin_role->add_cap('edit_published_documents');
+
+		// $admin_role->add_cap('edit_contract');
+		// $admin_role->add_cap('read_contract');
+		// $admin_role->add_cap('delete_contract');
+		// $admin_role->add_cap('edit_contracts');
+		// $admin_role->add_cap('edit_others_contracts');
+		// $admin_role->add_cap('delete_contracts');
+		// $admin_role->add_cap('publish_contracts');
+		// $admin_role->add_cap('read_private_contracts');
+		// $admin_role->add_cap('delete_private_contracts');
+		// $admin_role->add_cap('delete_published_contracts');
+		// $admin_role->add_cap('delete_others_contracts');
+		// $admin_role->add_cap('edit_private_contracts');
+		// $admin_role->add_cap('edit_published_contracts');
+
+		// $admin_role->add_cap('manage_contractor_cats');
+		// $admin_role->add_cap('edit_contractor_cats');
+		// $admin_role->add_cap('delete_contractor_cats');
+
+		// $admin_role->add_cap('manage_contractor_ratings');
+		// $admin_role->add_cap('edit_contractor_ratings');
+		// $admin_role->add_cap('delete_contractor_ratings');
+
+		// $admin_role->add_cap('manage_contractor_classs');
+		// $admin_role->add_cap('edit_contractor_classs');
+		// $admin_role->add_cap('delete_contractor_classs');
+
+		// $admin_role->add_cap('manage_passwordss');
+		// $admin_role->add_cap('edit_passwordss');
+		// $admin_role->add_cap('delete_passwordss');
+
+		// $admin_role->add_cap('manage_provinces');
+		// $admin_role->add_cap('edit_provinces');
+		// $admin_role->add_cap('delete_provinces');
+
+		// $admin_role->add_cap('manage_estimate_cats');
+		// $admin_role->add_cap('edit_estimate_cats');
+		// $admin_role->add_cap('delete_estimate_cats');
+
+		// $admin_role->add_cap('manage_partner_cats');
+		// $admin_role->add_cap('edit_partner_cats');
+		// $admin_role->add_cap('delete_partner_cats');
+
+		// $admin_role->add_cap('manage_document_cats');
+		// $admin_role->add_cap('edit_document_cats');
+		// $admin_role->add_cap('delete_document_cats');
+
+		// $admin_role->add_cap('manage_contract_cats');
+		// $admin_role->add_cap('edit_contract_cats');
+		// $admin_role->add_cap('delete_contract_cats');
+		
 
 		// $admin_role->add_cap('contractor_view');
 		// $admin_role->add_cap('contractor_edit');
@@ -232,21 +273,21 @@ class Theme {
 		// $ngochv->add_cap('estimate_manage_du-toan-do-go_view');
 		// $ngochv->add_cap('estimate_manage_du-toan-do-go_edit');
 
-		/*
-		$tanhv = get_user_by( 'login', 'tanhv' );
-		$tanhv->add_cap('edit_contractor');
-		$tanhv->add_cap('read_contractor');
+		
+		// $tanhv = get_user_by( 'login', 'tanhv' );
+		// $tanhv->add_cap('edit_contractor');
+		// $tanhv->add_cap('read_contractor');
 		// $tanhv->add_cap('delete_contractor');
-		$tanhv->add_cap('edit_contractors');
-		$tanhv->add_cap('edit_others_contractors');
+		// $tanhv->add_cap('edit_contractors');
+		// $tanhv->add_cap('edit_others_contractors');
 		// $tanhv->add_cap('delete_contractors');
-		$tanhv->add_cap('publish_contractors');
+		// $tanhv->add_cap('publish_contractors');
 		// $tanhv->add_cap('read_private_contractors');
 		// $tanhv->add_cap('delete_private_contractors');
 		// $tanhv->add_cap('delete_published_contractors');
 		// $tanhv->add_cap('delete_others_contractors');
 		// $tanhv->add_cap('edit_private_contractors');
-		$tanhv->add_cap('edit_published_contractors');
+		// $tanhv->add_cap('edit_published_contractors');
 
 		// $tanhv->add_cap('estimate_contractor_view');
 		// $tanhv->add_cap('estimate_contractor_edit');
@@ -259,7 +300,7 @@ class Theme {
 		// $tanhv->add_cap('manage_categories');
 		// $tanhv->add_cap('contractor_view');
 		// $tanhv->add_cap('contractor_edit');
-		*/
+		
 		
 		// $thaotde = get_user_by( 'login', 'thaotde' );
 		// $thaotde->add_cap('estimate_contractor_view');
@@ -268,33 +309,77 @@ class Theme {
 	}
 
 	public function theme_deactivation() {
-		/*
-		remove_role( 'viewer' );
+		
+		// remove_role( 'viewer' );
 
-		$admin_role = get_role( 'administrator' );
-		$admin_role->remove_cap('contractor_view');
-		$admin_role->remove_cap('contractor_edit');
-		$admin_role->remove_cap('estimate_contractor_view');
-		$admin_role->remove_cap('estimate_contractor_edit');
-		$admin_role->remove_cap('estimate_customer_view');
-		$admin_role->remove_cap('estimate_customer_edit');
-		$admin_role->remove_cap('estimate_manage_view');
-		$admin_role->remove_cap('estimate_manage_edit');
-		$admin_role->remove_cap('partner_view');
-		$admin_role->remove_cap('partner_edit');
-		$admin_role->remove_cap('document_view');
-		$admin_role->remove_cap('document_edit');
+		// $admin_role = get_role( 'administrator' );
 
-		$tanhv = get_user_by( 'login', 'tanhv' );
-		$tanhv->remove_cap('estimate_contractor_view');
-		$tanhv->remove_cap('estimate_contractor_edit');
+		// $admin_role->remove_cap('edit_estimate_con');
+		// $admin_role->remove_cap('read_estimate_con');
+		// $admin_role->remove_cap('delete_estimate_con');
+		// $admin_role->remove_cap('edit_estimate_cons');
+		// $admin_role->remove_cap('edit_others_estimate_cons');
+		// $admin_role->remove_cap('delete_estimate_cons');
+		// $admin_role->remove_cap('publish_estimate_cons');
+		// $admin_role->remove_cap('read_private_estimate_cons');
+		// $admin_role->remove_cap('delete_private_estimate_cons');
+		// $admin_role->remove_cap('delete_published_estimate_cons');
+		// $admin_role->remove_cap('delete_others_estimate_cons');
+		// $admin_role->remove_cap('edit_private_estimate_cons');
+		// $admin_role->remove_cap('edit_published_estimate_cons');
 
-		$thaotde = get_user_by( 'login', 'thaotde' );
-		$thaotde->remove_cap('estimate_contractor_view');
-		$thaotde->remove_cap('estimate_contractor_edit');
-		*/
+		// $admin_role->remove_cap('edit_estimate_construction');
+		// $admin_role->remove_cap('read_estimate_construction');
+		// $admin_role->remove_cap('delete_estimate_construction');
+		// $admin_role->remove_cap('edit_estimate_constructions');
+		// $admin_role->remove_cap('edit_others_estimate_constructions');
+		// $admin_role->remove_cap('delete_estimate_constructions');
+		// $admin_role->remove_cap('publish_estimate_constructions');
+		// $admin_role->remove_cap('read_private_estimate_constructions');
+		// $admin_role->remove_cap('delete_private_estimate_constructions');
+		// $admin_role->remove_cap('delete_published_estimate_constructions');
+		// $admin_role->remove_cap('delete_others_estimate_constructions');
+		// $admin_role->remove_cap('edit_private_estimate_constructions');
+		// $admin_role->remove_cap('edit_published_estimate_constructions');
 
-		$ngochv = get_user_by( 'login', 'ngochv' );debug_log($ngochv);
+	
+		// $admin_role->remove_cap('edit_estimate_furniture');
+		// $admin_role->remove_cap('read_estimate_furniture');
+		// $admin_role->remove_cap('delete_estimate_furniture');
+		// $admin_role->remove_cap('edit_estimate_furnitures');
+		// $admin_role->remove_cap('edit_others_estimate_furnitures');
+		// $admin_role->remove_cap('delete_estimate_furnitures');
+		// $admin_role->remove_cap('publish_estimate_furnitures');
+		// $admin_role->remove_cap('read_private_estimate_furnitures');
+		// $admin_role->remove_cap('delete_private_estimate_furnitures');
+		// $admin_role->remove_cap('delete_published_estimate_furnitures');
+		// $admin_role->remove_cap('delete_others_estimate_furnitures');
+		// $admin_role->remove_cap('edit_private_estimate_furnitures');
+		// $admin_role->remove_cap('edit_published_estimate_furnitures');
+
+		// $admin_role->remove_cap('contractor_view');
+		// $admin_role->remove_cap('contractor_edit');
+		// $admin_role->remove_cap('estimate_contractor_view');
+		// $admin_role->remove_cap('estimate_contractor_edit');
+		// $admin_role->remove_cap('estimate_customer_view');
+		// $admin_role->remove_cap('estimate_customer_edit');
+		// $admin_role->remove_cap('estimate_manage_view');
+		// $admin_role->remove_cap('estimate_manage_edit');
+		// $admin_role->remove_cap('partner_view');
+		// $admin_role->remove_cap('partner_edit');
+		// $admin_role->remove_cap('document_view');
+		// $admin_role->remove_cap('document_edit');
+
+		// $tanhv = get_user_by( 'login', 'tanhv' );
+		// $tanhv->remove_cap('estimate_contractor_view');
+		// $tanhv->remove_cap('estimate_contractor_edit');
+
+		// $thaotde = get_user_by( 'login', 'thaotde' );
+		// $thaotde->remove_cap('estimate_contractor_view');
+		// $thaotde->remove_cap('estimate_contractor_edit');
+		
+
+		// $ngochv = get_user_by( 'login', 'ngochv' );debug_log($ngochv);
 		// $ngochv->remove_cap('contractor_view');
 		// $ngochv->remove_cap('contractor_edit');
 		// $ngochv->remove_cap('estimate_manage_edit');

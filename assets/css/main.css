@@ -442,6 +442,8 @@ video {
 	transform: translateY(-50%);
 }
 
+.fw-shortcode-efurnitures .accordion,
+.fw-shortcode-econstructions .accordion,
 .fw-shortcode-contracts .accordion,
 .fw-shortcode-documents .accordion,
 .fw-shortcode-partners .accordion,
@@ -460,6 +462,8 @@ video {
 	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button,
+.fw-shortcode-econstructions .accordion .accordion-button,
 .fw-shortcode-contracts .accordion .accordion-button,
 .fw-shortcode-documents .accordion .accordion-button,
 .fw-shortcode-partners .accordion .accordion-button,
@@ -470,6 +474,8 @@ video {
 	justify-content: center;
 	text-align: center;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button:not(.collapsed),
+.fw-shortcode-econstructions .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-contracts .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-documents .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-partners .accordion .accordion-button:not(.collapsed),
@@ -477,6 +483,8 @@ video {
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button::after,
+.fw-shortcode-econstructions .accordion .accordion-button::after,
 .fw-shortcode-contracts .accordion .accordion-button::after,
 .fw-shortcode-documents .accordion .accordion-button::after,
 .fw-shortcode-partners .accordion .accordion-button::after,
@@ -484,6 +492,8 @@ video {
 .fw-shortcode-estimates .accordion .accordion-button::after {
 	display: none;
 }
+.fw-shortcode-efurnitures .accordion .accordion-item:not(:first-of-type),
+.fw-shortcode-econstrucions .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-contracts .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-documents .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-partners .accordion .accordion-item:not(:first-of-type),
@@ -491,6 +501,8 @@ video {
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button:focus,
+.fw-shortcode-econstructions .accordion .accordion-button:focus,
 .fw-shortcode-contracts .accordion .accordion-button:focus,
 .fw-shortcode-documents .accordion .accordion-button:focus,
 .fw-shortcode-partners .accordion .accordion-button:focus,
@@ -498,6 +510,8 @@ video {
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }
+.fw-shortcode-efurnitures .efurniture-thumbnail,
+.fw-shortcode-econstructions .econstruction-thumbnail,
 .fw-shortcode-contracts .contract-thumbnail,
 .fw-shortcode-documents .document-thumbnail,
 .fw-shortcode-partners .partner-thumbnail,
@@ -506,6 +520,8 @@ video {
 	padding-bottom: 60%;
 	overflow: hidden;
 }
+.fw-shortcode-efurnitures .thumbnail-image,
+.fw-shortcode-econstructions .thumbnail-image,
 .fw-shortcode-contracts .thumbnail-image,
 .fw-shortcode-documents .thumbnail-image,
 .fw-shortcode-partners .thumbnail-image,
@@ -513,6 +529,8 @@ video {
 .fw-shortcode-estimates .thumbnail-image {
 	background: #0e0d0d;
 }
+.fw-shortcode-efurnitures .thumbnail-image img,
+.fw-shortcode-econstructions .thumbnail-image img,
 .fw-shortcode-contracts .thumbnail-image img,
 .fw-shortcode-documents .thumbnail-image img,
 .fw-shortcode-partners .thumbnail-image img,
@@ -534,22 +552,24 @@ video {
 	border-color: rgb(33 37 41);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
 }
-.contractor-cat-hide .dropdown-toggle::after {
+/*.contractor-cat-hide .dropdown-toggle::after {
 	display: none;
 }
-.contractor-cat-hide .form-check-input {
-	/*margin-top: 0;*/
-}
+
 .contractor-cat-hide .form-check {
 	min-height: 0;
 	line-height: 1.5;
-}
+}*/
+label[for="efurniture_attachment"],
+label[for="econstruction_attachment"],
 label[for="document_attachment"],
 label[for="partner_attachment"],
 label[for="estimate_attachment"] {
 	cursor: pointer;
 }
 #edit-estimate-customer.modal,
+#edit-efurniture.modal,
+#edit-econstruction.modal,
 #edit-contract.modal,
 #edit-document.modal,
 #edit-partner.modal,
@@ -569,17 +589,23 @@ label[for="estimate_attachment"] {
 	background: #ff0;
 	color: #000;
 }
+.efurniture-progress,
+.econstruction-progress,
 .contract-progress,
 .estimate-progress {
 	font-weight: 600;
 	letter-spacing: 1px;
 }
+.efurniture-progress .col,
+.econstruction-progress .col,
 .contract-progress .col,
 .estimate-progress .col {
 	height: 40px;
 	line-height: 40px;
 	position: relative;
 }
+.efurniture-progress .col::after,
+.econstruction-progress .col::after,
 .contract-progress .col::after,
 .estimate-progress .col::after {
 	display: block;
@@ -591,13 +617,13 @@ label[for="estimate_attachment"] {
 	top: 0;
 	right: 0;
 }
+.efurniture-progress .col:last-child::after,
+.econstruction-progress .col:last-child::after,
 .contract-progress .col:last-child::after,
 .estimate-progress .col:last-child::after {
 	display: none;
 }
-/*.filter-progress-item label {
-	vertical-align: middle;
-}*/
+
 .popover-header {
 	color: #212529;
 }

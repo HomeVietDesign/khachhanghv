@@ -51,6 +51,24 @@ $options = array(
 		'source' => 'estimate',
 		'limit' => 1000
 	),
+
+	'econstruction_hide' => array(
+		'label' => 'Xây dựng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'econstruction',
+		'limit' => 1000
+	),
+
+	'efurniture_hide' => array(
+		'label' => 'Đồ gỗ ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'efurniture',
+		'limit' => 1000
+	),
 	
 	'document_hide' => array(
 		'label' => 'Hồ sơ ẩn',
@@ -69,4 +87,5 @@ $options = array(
 		'source' => 'contract',
 		'limit' => 1000
 	),
+
 );

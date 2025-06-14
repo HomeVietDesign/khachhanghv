@@ -1,16 +1,16 @@
 <?php
 namespace HomeViet;
 
-class Admin_Estimate_Cat {
+class Admin_Efurniture_Cat {
 	
 	private static $instance = null;
 
 	protected function __construct() {
 		if(is_admin()) {
 			add_action( 'admin_enqueue_scripts', [$this, 'enqueue_scripts'] );
-			add_filter( 'manage_edit-estimate_cat_columns', [$this, 'manage_edit_column_header'] );
+			add_filter( 'manage_edit-efurniture_cat_columns', [$this, 'manage_edit_column_header'] );
 
-			add_action( 'created_estimate_cat', [$this, 'auto_slug'] );
+			add_action( 'created_efurniture_cat', [$this, 'auto_slug'] );
 		}
 	}
 
@@ -35,11 +35,10 @@ class Admin_Estimate_Cat {
 
 	public function enqueue_scripts($hook) {
 		global $taxonomy;
-		// debug_log($hook);
-		// debug_log($taxonomy);
-		if(($hook=='edit-tags.php' || $hook=='term.php') && $taxonomy=='estimate_cat') {
-			wp_enqueue_style( 'manage-estimate_cat', THEME_URI.'/assets/css/manage-estimate_cat.css', [], '' );
-			wp_enqueue_script('manage-estimate_cat', THEME_URI.'/assets/js/manage-estimate_cat.js', array('jquery'), '');
+
+		if(($hook=='edit-tags.php' || $hook=='term.php') && $taxonomy=='efurniture_cat') {
+			wp_enqueue_style( 'manage-efurniture_cat', THEME_URI.'/assets/css/manage-efurniture_cat.css', [], '' );
+			//wp_enqueue_script('manage-efurniture_cat', THEME_URI.'/assets/js/manage-efurniture_cat.js', array('jquery'), '');
 		}
 	}
 
@@ -50,4 +49,4 @@ class Admin_Estimate_Cat {
 		return self::$instance;
 	}
 }
-Admin_Estimate_Cat::instance();
+Admin_Efurniture_Cat::instance();

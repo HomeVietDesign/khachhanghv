@@ -556,6 +556,215 @@ window.addEventListener('DOMContentLoaded', function(){
 			$input.closest('[for="estimate_file"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
+		// econstruction
+		$('#edit-econstruction').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,econstruction = $button.data('econstruction')
+				,econstruction_title = $button.data('econstruction-title')
+				;
+
+			$('#edit-econstruction-label').text(econstruction_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_econstruction_form',
+					client:client,
+					econstruction:econstruction
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-econstruction-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-econstruction', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-econstruction-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_econstruction',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_econstruction_info',
+							type: 'GET',
+							dataType: 'json',
+							cache: false,
+							data: {client:formData.get('client'), econstruction:formData.get('econstruction')},
+							success: function(response) {
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-info').html(response['info']);
+								$('.econstruction-'+formData.get('econstruction')+' .zalo-link').html(response['zalo']);
+								$('.econstruction-'+formData.get('econstruction')+' .file-download').html(response['file']);
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-required').html(response['required']);
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-received').html(response['received']);
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-completed').html(response['completed']);
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-sent').html(response['sent']);
+								$('.econstruction-'+formData.get('econstruction')+' .econstruction-quote').html(response['quote']);
+								$('#edit-econstruction .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#econstruction_remove_file', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#econstruction_file_id').val('');
+			$this.closest('.input-group').remove();
+		});
+		$(document).on('input', '#econstruction_file', function() {
+			let $input = $(this);
+			$input.closest('[for="econstruction_file"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		// efurniture
+		$('#edit-efurniture').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,efurniture = $button.data('efurniture')
+				,efurniture_title = $button.data('efurniture-title')
+				;
+
+			$('#edit-efurniture-label').text(efurniture_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_efurniture_form',
+					client:client,
+					efurniture:efurniture
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-efurniture-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-efurniture', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-efurniture-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_efurniture',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_efurniture_info',
+							type: 'GET',
+							dataType: 'json',
+							cache: false,
+							data: {client:formData.get('client'), efurniture:formData.get('efurniture')},
+							success: function(response) {
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-info').html(response['info']);
+								$('.efurniture-'+formData.get('efurniture')+' .zalo-link').html(response['zalo']);
+								$('.efurniture-'+formData.get('efurniture')+' .file-download').html(response['file']);
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-required').html(response['required']);
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-received').html(response['received']);
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-completed').html(response['completed']);
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-sent').html(response['sent']);
+								$('.efurniture-'+formData.get('efurniture')+' .efurniture-quote').html(response['quote']);
+								$('#edit-efurniture .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#efurniture_remove_file', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#efurniture_file_id').val('');
+			$this.closest('.input-group').remove();
+		});
+		$(document).on('input', '#efurniture_file', function() {
+			let $input = $(this);
+			$input.closest('[for="efurniture_file"]').find('.form-control').text($input.val().split('\\').pop());
+		});
 		// edit partner
 		$('#edit-partner').on('show.bs.modal', function (event) {
 			let $modal = $(this),
@@ -1029,6 +1238,56 @@ window.addEventListener('DOMContentLoaded', function(){
 			}
 		});
 
+		$('.econstruction-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				econstruction = $this.data('econstruction'),
+				econstruction_title = $this.data('econstructionTitle'),
+				$econstruction = $this.closest('.econstruction-item');
+
+			if(confirm(econstruction_title)) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'econstruction_hide', client: client, econstruction: econstruction},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$econstruction.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
+		$('.efurniture-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				efurniture = $this.data('efurniture'),
+				efurniture_title = $this.data('efurnitureTitle'),
+				$efurniture = $this.closest('.efurniture-item');
+
+			if(confirm(efurniture_title)) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'efurniture_hide', client: client, efurniture: efurniture},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$efurniture.addClass('hide');
+						}
+					}
+				});
+			}
+		});
+
 		$('.document-hide').on('click', function(e){
 			let $this = $(this),
 				client = $this.data('client'),
@@ -1078,6 +1337,8 @@ window.addEventListener('DOMContentLoaded', function(){
 				});
 			}
 		});
+
+
 
 		$('.client-heading.position-sticky').each(function(index, el){
 			let $el = $(el);
@@ -1176,6 +1437,80 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('label[for="progress-completed"] span').text(completed);
 			$('label[for="progress-sent"] span').text(sent);
 			$('label[for="progress-signed"] span').text(signed);
+		}
+
+		if($('#econstruction-filter-form').length) {
+			let none = 0, required = 0, received = 0, completed = 0, sent = 0, quote = 0;
+			$('#econstruction-filter-form').find('.econstruction-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
+					
+				if($el.find('.econstruction-required').hasClass('on')) {
+					required += 1;
+					isNone = false;
+				}
+				if($el.find('.econstruction-received').hasClass('on')) {
+					received += 1;
+					isNone = false;
+				}
+				if($el.find('.econstruction-completed').hasClass('on')) {
+					completed += 1;
+					isNone = false;
+				}
+				if($el.find('.econstruction-sent').hasClass('on')) {
+					sent += 1;
+					isNone = false;
+				}
+				if($el.find('.econstruction-quote').hasClass('on')) {
+					quote += 1;
+					isNone = false;
+				}
+				if(isNone) {
+					none += 1;
+				}
+			});
+			$('label[for="progress-none"] span').text(none);
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-received"] span').text(received);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-quote"] span').text(quote);
+		}
+
+		if($('#efurniture-filter-form').length) {
+			let none = 0, required = 0, received = 0, completed = 0, sent = 0, quote = 0;
+			$('#efurniture-filter-form').find('.efurniture-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
+					
+				if($el.find('.efurniture-required').hasClass('on')) {
+					required += 1;
+					isNone = false;
+				}
+				if($el.find('.efurniture-received').hasClass('on')) {
+					received += 1;
+					isNone = false;
+				}
+				if($el.find('.efurniture-completed').hasClass('on')) {
+					completed += 1;
+					isNone = false;
+				}
+				if($el.find('.efurniture-sent').hasClass('on')) {
+					sent += 1;
+					isNone = false;
+				}
+				if($el.find('.efurniture-quote').hasClass('on')) {
+					quote += 1;
+					isNone = false;
+				}
+				if(isNone) {
+					none += 1;
+				}
+			});
+			$('label[for="progress-none"] span').text(none);
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-received"] span').text(received);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-quote"] span').text(quote);
 		}
 
 		var lightbox = new PhotoSwipeLightbox({
