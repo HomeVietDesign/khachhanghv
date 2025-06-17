@@ -567,14 +567,7 @@ label[for="partner_attachment"],
 label[for="estimate_attachment"] {
 	cursor: pointer;
 }
-#edit-estimate-customer.modal,
-#edit-efurniture.modal,
-#edit-econstruction.modal,
-#edit-contract.modal,
-#edit-document.modal,
-#edit-partner.modal,
-#edit-estimate-manage.modal,
-#edit-estimate.modal {
+.modal {
 	color: #333;
 }
 .btn-shadow {
@@ -589,25 +582,16 @@ label[for="estimate_attachment"] {
 	background: #ff0;
 	color: #000;
 }
-.efurniture-progress,
-.econstruction-progress,
-.contract-progress,
-.estimate-progress {
+.progressing-bar {
 	font-weight: 600;
 	letter-spacing: 1px;
 }
-.efurniture-progress .col,
-.econstruction-progress .col,
-.contract-progress .col,
-.estimate-progress .col {
+.progressing-bar .col {
 	height: 40px;
 	line-height: 40px;
 	position: relative;
 }
-.efurniture-progress .col::after,
-.econstruction-progress .col::after,
-.contract-progress .col::after,
-.estimate-progress .col::after {
+.progressing-bar .col::after {
 	display: block;
 	content: "";
 	position: absolute;
@@ -617,10 +601,7 @@ label[for="estimate_attachment"] {
 	top: 0;
 	right: 0;
 }
-.efurniture-progress .col:last-child::after,
-.econstruction-progress .col:last-child::after,
-.contract-progress .col:last-child::after,
-.estimate-progress .col:last-child::after {
+.progressing-bar .col:last-child::after {
 	display: none;
 }
 

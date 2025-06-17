@@ -52,7 +52,7 @@ if($contract_cats && $current_client) {
 							];
 
 							$data = get_post_meta($contract_id, '_data', true);
-							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>''];
+							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'signed'=>''];
 							
 							if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
@@ -125,7 +125,7 @@ if($contract_cats && $current_client) {
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4<?=$item_class?>">
 								<div class="contract contract-<?=$contract_id?> border border-dark h-100 bg-black">
-									<div class="row g-0 contract-progress text-center text-yellow">
+									<div class="row g-0 progressing-bar contract-progress text-center text-yellow">
 										<div class="col contract-required<?php echo (isset($contract_data['required']) && $contract_data['required']!='')?' on':''; ?>">
 										<?php
 										if(isset($contract_data['required']) && $contract_data['required']!='') {
@@ -183,7 +183,7 @@ if($contract_cats && $current_client) {
 											?>
 											</div>
 										</div>
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
+										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
 
 										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>

@@ -3,10 +3,9 @@
  * Template Name: Dự toán Đồ gỗ
  * 
  */
+get_header();
 global $current_client;
 if($current_client && current_user_can('efurniture_view')) {
-	get_header();
-
 	while (have_posts()) {
 		the_post();
 		global $post;
@@ -62,6 +61,5 @@ if($current_client && current_user_can('efurniture_view')) {
 		</form>
 		<?php
 	}
-
-	get_footer();
 }
+get_footer();

@@ -62,47 +62,47 @@ class Theme {
 		
 		$admin_role = get_role( 'administrator' );
 
-		$admin_role->add_cap('edit_econstruction');
-		$admin_role->add_cap('read_econstruction');
-		$admin_role->add_cap('delete_econstruction');
-		$admin_role->add_cap('edit_econstructions');
-		$admin_role->add_cap('edit_others_econstructions');
-		$admin_role->add_cap('delete_econstructions');
-		$admin_role->add_cap('publish_econstructions');
-		$admin_role->add_cap('read_private_econstructions');
-		$admin_role->add_cap('delete_private_econstructions');
-		$admin_role->add_cap('delete_published_econstructions');
-		$admin_role->add_cap('delete_others_econstructions');
-		$admin_role->add_cap('edit_private_econstructions');
-		$admin_role->add_cap('edit_published_econstructions');
+		// $admin_role->add_cap('edit_econstruction');
+		// $admin_role->add_cap('read_econstruction');
+		// $admin_role->add_cap('delete_econstruction');
+		// $admin_role->add_cap('edit_econstructions');
+		// $admin_role->add_cap('edit_others_econstructions');
+		// $admin_role->add_cap('delete_econstructions');
+		// $admin_role->add_cap('publish_econstructions');
+		// $admin_role->add_cap('read_private_econstructions');
+		// $admin_role->add_cap('delete_private_econstructions');
+		// $admin_role->add_cap('delete_published_econstructions');
+		// $admin_role->add_cap('delete_others_econstructions');
+		// $admin_role->add_cap('edit_private_econstructions');
+		// $admin_role->add_cap('edit_published_econstructions');
 
-		$admin_role->add_cap('manage_econstruction_cats');
-		$admin_role->add_cap('edit_econstruction_cats');
-		$admin_role->add_cap('delete_econstruction_cats');
+		// $admin_role->add_cap('manage_econstruction_cats');
+		// $admin_role->add_cap('edit_econstruction_cats');
+		// $admin_role->add_cap('delete_econstruction_cats');
 
-		$admin_role->add_cap('econstruction_view');
-		$admin_role->add_cap('econstruction_edit');
+		// $admin_role->add_cap('econstruction_view');
+		// $admin_role->add_cap('econstruction_edit');
 
-		$admin_role->add_cap('edit_efurniture');
-		$admin_role->add_cap('read_efurniture');
-		$admin_role->add_cap('delete_efurniture');
-		$admin_role->add_cap('edit_efurnitures');
-		$admin_role->add_cap('edit_others_efurnitures');
-		$admin_role->add_cap('delete_efurnitures');
-		$admin_role->add_cap('publish_efurnitures');
-		$admin_role->add_cap('read_private_efurnitures');
-		$admin_role->add_cap('delete_private_efurnitures');
-		$admin_role->add_cap('delete_published_efurnitures');
-		$admin_role->add_cap('delete_others_efurnitures');
-		$admin_role->add_cap('edit_private_efurnitures');
-		$admin_role->add_cap('edit_published_efurnitures');
+		// $admin_role->add_cap('edit_efurniture');
+		// $admin_role->add_cap('read_efurniture');
+		// $admin_role->add_cap('delete_efurniture');
+		// $admin_role->add_cap('edit_efurnitures');
+		// $admin_role->add_cap('edit_others_efurnitures');
+		// $admin_role->add_cap('delete_efurnitures');
+		// $admin_role->add_cap('publish_efurnitures');
+		// $admin_role->add_cap('read_private_efurnitures');
+		// $admin_role->add_cap('delete_private_efurnitures');
+		// $admin_role->add_cap('delete_published_efurnitures');
+		// $admin_role->add_cap('delete_others_efurnitures');
+		// $admin_role->add_cap('edit_private_efurnitures');
+		// $admin_role->add_cap('edit_published_efurnitures');
 		
-		$admin_role->add_cap('manage_efurniture_cats');
-		$admin_role->add_cap('edit_efurniture_cats');
-		$admin_role->add_cap('delete_efurniture_cats');
+		// $admin_role->add_cap('manage_efurniture_cats');
+		// $admin_role->add_cap('edit_efurniture_cats');
+		// $admin_role->add_cap('delete_efurniture_cats');
 
-		$admin_role->add_cap('efurniture_view');
-		$admin_role->add_cap('efurniture_edit');
+		// $admin_role->add_cap('efurniture_view');
+		// $admin_role->add_cap('efurniture_edit');
 
 		// $admin_role->add_cap('edit_content_builder');
 		// $admin_role->add_cap('read_content_builder');
@@ -250,10 +250,10 @@ class Theme {
 
 		// $admin_role->add_cap('estimate_manage_view');
 		// $admin_role->add_cap('estimate_manage_edit');
-		// $admin_role->add_cap('estimate_manage_du-toan-xay-dung_view'); // Xây dựng
-		// $admin_role->add_cap('estimate_manage_du-toan-xay-dung_edit'); // Xây dựng
-		// $admin_role->add_cap('estimate_manage_du-toan-do-go_view'); // đồ gỗ
-		// $admin_role->add_cap('estimate_manage_du-toan-do-go_edit'); // đồ gỗ
+		$admin_role->add_cap('estimate_manage_du-toan-xay-dung-bo_view'); // Xây dựng
+		$admin_role->add_cap('estimate_manage_du-toan-xay-dung-bo_edit'); // Xây dựng
+		$admin_role->add_cap('estimate_manage_du-toan-do-go-bo_view'); // đồ gỗ
+		$admin_role->add_cap('estimate_manage_du-toan-do-go-bo_edit'); // đồ gỗ
 
 		// $admin_role->add_cap('partner_view');
 		// $admin_role->add_cap('partner_edit');

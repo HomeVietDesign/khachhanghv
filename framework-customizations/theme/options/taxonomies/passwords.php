@@ -43,14 +43,14 @@ $options = array(
 		'limit' => 1000
 	),
 
-	'estimate_hide' => array(
-		'label' => 'Dự toán Xây dựng, Đồ gỗ ẩn',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		'population' => 'posts',
-		'source' => 'estimate',
-		'limit' => 1000
-	),
+	// 'estimate_hide' => array(
+	// 	'label' => 'Dự toán Xây dựng, Đồ gỗ ẩn',
+	// 	'desc'  => '',
+	// 	'type'  => 'multi-select',
+	// 	'population' => 'posts',
+	// 	'source' => 'estimate',
+	// 	'limit' => 1000
+	// ),
 
 	'econstruction_hide' => array(
 		'label' => 'Xây dựng ẩn',

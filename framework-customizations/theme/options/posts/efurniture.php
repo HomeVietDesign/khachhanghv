@@ -8,28 +8,28 @@
  */
 
 $options = array(
-	'econstruction' => array(
+	'efurniture' => array(
 		'context' => 'advanced',
 		'title'   => 'Thông mặc định',
 		'type'    => 'box',
         'options' => array(
-        	'econstruction_value' => array(
+        	'efurniture_value' => array(
 				'label' => 'Giá trị',
 				'type' => 'text'
 			),
-			'econstruction_unit' => array(
+			'efurniture_unit' => array(
 				'label' => 'Ghi chú',
 				'type' => 'text'
 			),
-			'econstruction_zalo' => array(
+			'efurniture_zalo' => array(
 				'label' => 'Link nhóm zalo',
 				'type' => 'text'
 			),
-			'econstruction_url' => array(
+			'efurniture_url' => array(
 				'label' => 'Link dự toán gốc',
 				'type' => 'text'
 			),
-			'econstruction_file' => array(
+			'efurniture_file' => array(
 				'label' => 'File pdf dự toán',
 				'type' => 'upload',
 				'images_only' => false,
@@ -37,12 +37,12 @@ $options = array(
 			),
 		),
 	),
-	'econstruction_content' => array(
+	'efurniture_content' => array(
 		'context' => 'advanced',
 		'title'   => 'Đề bài yêu cầu',
 		'type'    => 'box',
         'options' => array(
-        	'econstruction_content' => array(
+        	'efurniture_content' => array(
 				'label' => '',
 				'desc'  => '',
 				'type'  => 'wp-editor',

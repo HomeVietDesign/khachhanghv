@@ -127,7 +127,7 @@ if($econstruction_cats && $current_client) {
 							?>
 							<div class="col-lg-3 col-md-6 econstruction-item mb-4<?=$item_class?>">
 								<div class="econstruction econstruction-<?=$econstruction_id?> border border-dark h-100 bg-black">
-									<div class="row g-0 econstruction-progress text-center text-yellow">
+									<div class="row g-0 progressing-bar econstruction-progress text-center text-yellow">
 										<div class="col econstruction-required<?php echo (isset($econstruction_data['required']) && $econstruction_data['required']!='')?' on':''; ?>">
 										<?php
 										if(isset($econstruction_data['required']) && $econstruction_data['required']!='') {

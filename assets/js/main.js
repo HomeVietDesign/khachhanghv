@@ -940,6 +940,11 @@ window.addEventListener('DOMContentLoaded', function(){
 							success: function(response) {
 								$('.document-'+formData.get('document_id')+' .zalo-link').html(response['zalo']);
 								$('.document-'+formData.get('document_id')+' .document-info').html(response['info']);
+								$('.document-'+formData.get('document_id')+' .document-required').html(response['required']);
+								$('.document-'+formData.get('document_id')+' .document-created').html(response['created']);
+								$('.document-'+formData.get('document_id')+' .document-completed').html(response['completed']);
+								$('.document-'+formData.get('document_id')+' .document-sent').html(response['sent']);
+								$('.document-'+formData.get('document_id')+' .document-selected').html(response['selected']);
 								$('#edit-document .btn-close').trigger('click');
 							}
 						});
@@ -1437,6 +1442,43 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('label[for="progress-completed"] span').text(completed);
 			$('label[for="progress-sent"] span').text(sent);
 			$('label[for="progress-signed"] span').text(signed);
+		}
+
+		if($('#document-filter-form').length) {
+			let none = 0, required = 0, created = 0, completed = 0, sent = 0, selected = 0;
+			$('#document-filter-form').find('.document-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
+					
+				if($el.find('.document-required').hasClass('on')) {
+					required += 1;
+					isNone = false;
+				}
+				if($el.find('.document-created').hasClass('on')) {
+					created += 1;
+					isNone = false;
+				}
+				if($el.find('.document-completed').hasClass('on')) {
+					completed += 1;
+					isNone = false;
+				}
+				if($el.find('.document-sent').hasClass('on')) {
+					sent += 1;
+					isNone = false;
+				}
+				if($el.find('.document-selected').hasClass('on')) {
+					selected += 1;
+					isNone = false;
+				}
+				if(isNone) {
+					none += 1;
+				}
+			});
+			$('label[for="progress-none"] span').text(none);
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-created"] span').text(created);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-selected"] span').text(selected);
 		}
 
 		if($('#econstruction-filter-form').length) {

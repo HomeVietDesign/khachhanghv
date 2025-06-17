@@ -127,7 +127,7 @@ if($efurniture_cats && $current_client) {
 							?>
 							<div class="col-lg-3 col-md-6 efurniture-item mb-4<?=$item_class?>">
 								<div class="efurniture efurniture-<?=$efurniture_id?> border border-dark h-100 bg-black">
-									<div class="row g-0 efurniture-progress text-center text-yellow">
+									<div class="row g-0 progressing-bar efurniture-progress text-center text-yellow">
 										<div class="col efurniture-required<?php echo (isset($efurniture_data['required']) && $efurniture_data['required']!='')?' on':''; ?>">
 										<?php
 										if(isset($efurniture_data['required']) && $efurniture_data['required']!='') {

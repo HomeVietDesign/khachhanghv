@@ -53,6 +53,12 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['required'] = (isset($document_data['required']) && $document_data['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
+			$response['created'] = (isset($document_data['created']) && $document_data['created']!='')?'<div class="bg-danger" title="Ngày tạo hợp đồng">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
+			$response['completed'] = (isset($document_data['completed']) && $document_data['completed']!='')?'<div class="bg-danger" title="Ngày làm xong hợp đồng">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
+			$response['sent'] = (isset($document_data['sent']) && $document_data['sent']!='')?'<div class="bg-danger" title="Ngày gửi cho khách">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
+
+			$response['selected'] = (isset($document_data['selected']) && $document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 		?>
@@ -107,16 +113,27 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_zalo = isset($_POST['document_zalo'])?sanitize_text_field($_POST['document_zalo']):'';
 			$document_attachment = isset($_FILES['document_attachment']) ? $_FILES['document_attachment'] : null;
 
+			$document_required = isset($_POST['document_required']) ? $_POST['document_required'] : '';
+			$document_created = isset($_POST['document_created']) ? $_POST['document_created'] : '';
+			$document_completed = isset($_POST['document_completed']) ? $_POST['document_completed'] : '';
+			$document_sent = isset($_POST['document_sent']) ? $_POST['document_sent'] : '';
+			$document_selected = isset($_POST['document_selected']) ? $_POST['document_selected'] : '';
+
 			if($document_client && $document_id) {
 				$data = get_post_meta($document_id, '_data', true);
 				if(empty($data)) $data = [];
 				$document_data = isset($data[$document_client])?$data[$document_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
 				$new_document_data = [
+					'required' => $document_required,
+					'created' => $document_created,
+					'completed' => $document_completed,
+					'sent' => $document_sent,
 					'value' => $document_value,
 					'unit' => $document_unit,
 					'zalo' => $document_zalo,
-					'attachment_id' => $document_attachment_id
+					'attachment_id' => $document_attachment_id,
+					'selected' => $document_selected,
 				];
 
 				// tải lên file dự toán
@@ -156,7 +173,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 
 		if($client && $document) {
 			$data = get_post_meta($document, '_data', true);
-			$document_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$document_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>'', 'selected'=>''];
 
 			$attachment_url = ($document_data['attachment_id'])?wp_get_attachment_url($document_data['attachment_id']):'';
 			?>
@@ -165,6 +182,22 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				<input type="hidden" id="document_id" name="document_id" value="<?=$document?>">
 				<?php wp_nonce_field( 'edit-document', 'nonce' ); ?>
 				<div id="edit-document-response"></div>
+				<div class="mb-3<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
+					Gửi yêu cầu
+					<input class="form-control" type="date" value="<?php echo (isset($document_data['required'])&&$document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
+				</div>
+				<div class="mb-3">
+					Ngày bắt đầu
+					<input class="form-control" type="date" value="<?php echo (isset($document_data['created'])&&$document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
+				</div>
+				<div class="mb-3">
+					Ngày làm xong
+					<input class="form-control" type="date" value="<?php echo (isset($document_data['completed'])&&$document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
+				</div>
+				<div class="mb-3">
+					Ngày gửi khách
+					<input class="form-control" type="date" value="<?php echo (isset($document_data['sent'])&&$document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
+				</div>
 				<div class="mb-3">
 					<input type="text" id="document_value" name="document_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($document_data['value']); ?>">
 				</div>
@@ -195,6 +228,12 @@ class FW_Shortcode_Documents extends FW_Shortcode
 								<input type="file" id="document_attachment" name="document_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
 							</div>
 						</label>
+					</div>
+				</div>
+				<div class="mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( (isset($document_data['selected']) && $document_data['selected']=='yes'), true, true ); ?>>
+						<label class="form-check-label" for="document_selected">Được chọn?</label>
 					</div>
 				</div>
 				<div class="mb-3">

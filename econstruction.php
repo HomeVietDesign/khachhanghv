@@ -4,9 +4,9 @@
  * 
  */
 global $current_client;
-if($current_client && current_user_can('econstruction_view')) {
-	get_header();
 
+get_header();
+if($current_client && current_user_can('econstruction_view')) {
 	while (have_posts()) {
 		the_post();
 		global $post;
@@ -62,6 +62,5 @@ if($current_client && current_user_can('econstruction_view')) {
 		</form>
 		<?php
 	}
-
-	get_footer();
 }
+get_footer();

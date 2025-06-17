@@ -431,7 +431,7 @@ class FW_Shortcode_Estimates extends FW_Shortcode
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100 bg-black">
-				<div class="row g-0 estimate-progress text-center text-yellow">
+				<div class="row g-0 progressing-bar estimate-progress text-center text-yellow">
 					<div class="col estimate-required<?php echo (isset($estimate['required']) && $estimate['required']!='')?' on':''; ?>">
 					<?php
 					if(isset($estimate['required']) && $estimate['required']!='') {

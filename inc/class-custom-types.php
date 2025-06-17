@@ -266,7 +266,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Dự toán nào',
 			'not_found_in_trash' => 'Không có Dự toán nào trong Thùng rác',
 			'parent_item_colon'  => 'Dự toán cấp trên:',
-			'menu_name'          => 'Dự toán',
+			'menu_name'          => 'Dự toán (bỏ)',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -298,7 +298,7 @@ class Custom_Types {
 				//'page-attributes',
 			),
 		);
-		register_post_type( 'estimate', $args );
+		//register_post_type( 'estimate', $args );
 
 		$labels = array(
 			'name'               => 'Xây dựng',
