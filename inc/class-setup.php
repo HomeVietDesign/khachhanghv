@@ -108,58 +108,18 @@ class Setup {
 
 	public function ajax_set_global_vars() {
 		if(defined('DOING_AJAX') && DOING_AJAX) {
-			global $view, $current_client;
-			
-			$view_id = isset($_REQUEST['view'])?absint($_REQUEST['view']):0;
-			if($view_id) {
-				$view = get_post($view_id);
-			}
-
+			global $current_client;
 			$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
 		}
 	}
 
 	public function wp_loaded() {
-		global $current_password, $current_password_province, $current_province, $current_client;
-
-		$current_password = null;
-		if(isset($_COOKIE[ 'wp-postpass_' . COOKIEHASH ])) {
-			$passwords = get_terms( ['taxonomy'=>'passwords', 'hide_empty'=>false] );
-			//debug_log($passwords);
-			if(is_array($passwords) && !empty($passwords)) {
-			    require_once ABSPATH . WPINC . '/class-phpass.php';
-			    $hasher = new \PasswordHash( 8, true );
-			    $hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
-			    if ( str_starts_with( $hash, '$P$B' ) ) {
-			        foreach ($passwords as $key => $value) {
-			            if($hasher->CheckPassword( $value->name, $hash )) {
-			                $current_password = $value;
-			                break;
-			            }
-			        }
-			    }
-			}
-		}
+		global $current_province, $current_client;
 		
 		$province = isset($_REQUEST['province'])?absint($_REQUEST['province']):0;
 		$current_province = get_term_by( 'term_id', $province, 'province' );
-
-		$view_province = false;
-
-		if($current_password) {
-			$password_province = get_term_meta( $current_password->term_id, 'province', true );
-			if($password_province) {
-				$current_password_province = get_term_by( 'term_id', $password_province[0], 'province' );
-				if($current_password_province instanceof \WP_Term) {
-					$default_province = (int) get_option( 'default_term_province', 0 );
-					if($current_password_province->term_id==$default_province) $view_province = true;
-				} else {
-					$current_password_province = null;
-				}
-			}
-		}
 		
-		if(current_user_can('contractor_view') || $view_province) {
+		if(current_user_can('contractor_view')) {
 			add_filter('post_type_link', [$this, 'contractor_page_link'], 10, 2);
 		}
 
@@ -253,18 +213,6 @@ class Setup {
 
 		add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
-		//add_action( 'pre_get_posts', [$this, 'query_post_type_for_search'] );
-
-	}
-
-	public function query_post_type_for_search( $query ) {
-		if(!is_admin() && $query->is_main_query()) {
-
-			if(isset($_GET['s'])) {
-				$query->set('post_type', 'post');
-			}
-
-		}
 	}
 
 	public static function instance() {

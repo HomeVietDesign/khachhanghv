@@ -65,5 +65,37 @@ window.addEventListener('DOMContentLoaded', function(){
 		phone_number_el.on('keyup change', function(e){
 			check_contractor_exists();
 		});
+
+		$(document).on('click', '.row-actions .editinline', function(e){
+			let _this = $(this),
+				tr = _this.parents('tr'),
+				id = tr.find('input[name="post[]"]').val();
+
+			setTimeout(function(){
+				let $contractor_cat_checklist = $('body').find('tr#edit-'+id).find('ul.contractor_cat-checklist');
+
+				$('<span class="input-text-wrap"><input class="find-list-contractor_cat" type="text" placeholder="Tìm..."></span>').insertBefore($contractor_cat_checklist);
+
+			}, 100);
+		});
+
+		$(document).on('keyup change click', 'input.find-list-contractor_cat', function(e){
+			let that = $(this),
+				s = that.val().toLowerCase();
+			$('ul.contractor_cat-checklist li').filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(s) > -1);
+			});
+
+		});
+
+		// $('<input id="find-categorychecklist" type="text" placeholder="Tìm..." style="width:100%">').insertBefore($('#category-tabs'));
+
+		// $(document).on('keyup', '#find-categorychecklist', function(){
+		// 	let that = $(this),
+		// 		s = that.val().toLowerCase();
+		// 	$('#categorychecklist li').filter(function() {
+		// 		$(this).toggle($(this).text().toLowerCase().indexOf(s) > -1);
+		// 	});
+		// });
 	});
 });

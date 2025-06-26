@@ -250,10 +250,6 @@ class Theme {
 
 		// $admin_role->add_cap('estimate_manage_view');
 		// $admin_role->add_cap('estimate_manage_edit');
-		$admin_role->add_cap('estimate_manage_du-toan-xay-dung-bo_view'); // Xây dựng
-		$admin_role->add_cap('estimate_manage_du-toan-xay-dung-bo_edit'); // Xây dựng
-		$admin_role->add_cap('estimate_manage_du-toan-do-go-bo_view'); // đồ gỗ
-		$admin_role->add_cap('estimate_manage_du-toan-do-go-bo_edit'); // đồ gỗ
 
 		// $admin_role->add_cap('partner_view');
 		// $admin_role->add_cap('partner_edit');

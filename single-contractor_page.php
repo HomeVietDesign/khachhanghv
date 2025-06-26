@@ -3,7 +3,7 @@ get_header();
 
 if(current_user_can('contractor_view')) {
 
-	global $current_province, $view;
+	global $current_province;
 
 	while (have_posts()) {
 		the_post();
@@ -17,8 +17,9 @@ if(current_user_can('contractor_view')) {
 
 		$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
 
+		$page_on_front = absint(get_option('page_on_front', 0));
 		//debug($permalink);
-		
+		if($post->ID!=$page_on_front) {
 		?>
 		<div class="provinces position-sticky text-center">
 			<div class="p-3 d-flex justify-content-center flex-wrap">
@@ -36,13 +37,12 @@ if(current_user_can('contractor_view')) {
 			?>
 			</div>
 		</div>
-		
+		<?php } ?>
 		<div class="contractor-search-wrap">
 			<div class="d-flex justify-content-center py-3">
 				<div class="d-flex align-items-center">
-						<div class="btn btn-primary d-none d-lg-block text-nowrap rounded-0">Tra cứu nhà thầu</div>
-						<input type="hidden" id="contractor-search-province" value="<?php echo ($current_province)?$current_province->term_id:0; ?>">
-					<input type="hidden" id="contractor-search-view" value="<?php echo $view?$view->ID:0; ?>">
+					<div class="btn btn-primary d-none d-lg-block text-nowrap rounded-0">Tra cứu nhà thầu</div>
+					<input type="hidden" id="contractor-search-province" value="<?php echo ($current_province)?$current_province->term_id:0; ?>">
 					<input type="search" id="contractor-search-input" class="form-control rounded-0" placeholder="Nhập từ khóa tìm kiếm..." title="Nhập số điện thoại, tên, hoặc mô tả dịch vụ.">
 				</div>
 			</div>
@@ -64,8 +64,6 @@ if(current_user_can('contractor_view')) {
 			echo wp_do_shortcode('ratings_contractors', ['number'=>4, 'contractor_cat'=>[$cat]]);
 		}
 		the_content();
-
-		//echo wp_do_shortcode('contractors', ['number'=>0, 'contractor_cat'=>[0]]);
 	}
 }
 

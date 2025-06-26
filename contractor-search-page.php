@@ -1,11 +1,9 @@
 <?php
 get_header();
-global $current_password;
 ?>
-<div class="contractor-search-response py-3 container-xxl">
+<div class="contractor-search-response pb-3 container-xxl">
 <?php
-if(has_role('administrator') || $current_password) {
-//if(has_role('administrator')) {
+if(current_user_can('contractor_view')) {
 	$kw = isset($_GET['kw'])?sanitize_text_field($_GET['kw']):'';
 	if($kw) {
 		$search_result = wp_do_shortcode('ratings_contractors', ['number'=>12]);

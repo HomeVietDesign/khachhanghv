@@ -21,18 +21,7 @@ class Custom_Types {
 
 		// đặt thứ tự hook là 9999 để có thể đảm bảo lần chỉnh cuối nhất
 		add_action( 'init', [$this, '_theme_action_change_object_content_labels'], 9999 );
-
-		add_filter( 'get_terms', [$this, '_theme_action_change_passwords_term_name'], 10, 4 );
 	
-	}
-
-	public function _theme_action_change_passwords_term_name($terms, $taxonomy, $query_vars, $term_query) {
-
-		if($taxonomy=='passwords') {
-			debug_log($terms);
-		}
-
-		return $terms;
 	}
 
 	public function admin_menu_highlight($parent_file) {
@@ -181,7 +170,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 4,
+			'menu_position'       => 3,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -277,7 +266,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 5,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -323,7 +312,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 5,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -368,7 +357,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 5,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -413,7 +402,7 @@ class Custom_Types {
 			'show_ui'             => false,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -458,7 +447,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -503,7 +492,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -537,20 +526,18 @@ class Custom_Types {
 
 		remove_menu_page( 'edit-comments.php' ); // ẩn menu Comments
 		remove_menu_page( 'edit.php' ); // ẩn menu Blog posts
+		remove_menu_page( 'fw-extensions' ); // ẩn menu Unyson
+		remove_menu_page( 'separator1' ); // ẩn menu divider
 
-		// if ( isset( $menu[5] ) ) {
-		// 	// $menu[5][0] = 'Sản phẩm';
-		// }
-		
 		//debug_log($submenu);
 
-		if ( isset( $submenu['edit.php'] ) ) {
+		// if ( isset( $submenu['edit.php'] ) ) {
 			
 			// $submenu['edit.php'][5][0] = 'Xem tất cả';
 			// $submenu['edit.php'][10][0] = 'Tạo Sản phẩm mới';
-		}
+		// }
 
-		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_passwordss', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 4 );
+		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_passwordss', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 2 );
 	}
 
 	public function _theme_action_register_taxonomy() {

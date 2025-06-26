@@ -3,11 +3,12 @@
  * Template Name: Hồ sơ
  * 
  */
-global $current_client;
 
 get_header();
 
 if(current_user_can('document_view')) {
+	global $current_client;
+
 	while (have_posts()) {
 		the_post();
 		if($current_client) {

@@ -5,7 +5,7 @@
 /**
  * @var array $atts
  */
-global $current_province, $view;
+global $current_province;
 
 $contractor_cat_id = 0;
 if ( ! empty( $atts['contractor_cat'] ) ) {
@@ -120,8 +120,6 @@ if($allow_query) {
 	<div id="<?=$shortcode_html_id?>" class="fw-shortcode-contractors position-relative is-general-<?php echo esc_html($is_general); ?>">
 		<div class="fw-shortcode-contractors-inner">
 			<input type="hidden" name="paged" value="1">
-			<input type="hidden" name="view" value="<?=($view?$view->ID:0)?>">
-			<input type="hidden" name="uri" value="<?php echo empty($kw)?esc_attr($_SERVER['REQUEST_URI']):''; ?>">
 	        <input type="hidden" name="query" value="<?=esc_attr(json_encode($query->query))?>">
 
 	        <div class="contractors-container container-xxl p-0 position-relative">

@@ -98,8 +98,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 		$(document).on('change', '.toggle-best', function(e){
 			let $this = $(this),
 				$section = $this.closest('.fw-shortcode-contractors'),
-				uri = $section.find('[name="uri"]').val(),
-				view = parseInt($section.find('[name="view"]').val()),
 				id = parseInt($this.data('id')),
 				best = $this.prop('checked'),
 				nonce = $this.data('nonce');
@@ -107,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 			$.ajax({
 				url: theme.ajax_url+'?action=toggle_best',
 				method:'POST',
-				data:{id: id, best: best, nonce: nonce, uri: uri, view: view},
+				data:{id: id, best: best, nonce: nonce},
 				dataType:'json',
 				beforeSend:function(){
 					$this.prop('disabled', true);
@@ -139,8 +137,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				$pagination_links_el = $section.find('.contractor-paginate-links'),
 				$paged_el = $section.find('[name="paged"]'),
 				
-				query = JSON.parse($section.find('[name="query"]').val()),
-				view = parseInt($section.find('[name="view"]').val());
+				query = JSON.parse($section.find('[name="query"]').val());
 
 			$.ajax({
 				url:theme.ajax_url+'?action=contractors_paginate',
@@ -148,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 				data:{
 					query:query
 					,paged:paged
-					,view:view
 				},
 				beforeSend:function(){
 					$section.find('.overlay').removeClass('invisible');
@@ -187,8 +183,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 		$(document).on('change', ".change-province", function(e){
 			let $this = $(this),
 				$section = $this.closest('.fw-shortcode-contractors'),
-				uri = $section.find('[name="uri"]').val(),
-				view = parseInt($section.find('[name="view"]').val()),
 				id = parseInt($this.data('id')),
 				nonce = $this.data('nonce'),
 				provinces = $this.val();
@@ -198,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 			ajax_change_province['ajax'+id] = $.ajax({
 				url: theme.ajax_url+'?action=change_provinces',
 				method:'POST',
-				data:{id: id, provinces: provinces, uri: uri, view: view, nonce: nonce},
+				data:{id: id, provinces: provinces, nonce: nonce},
 				dataType:'json',
 				beforeSend:function(){
 
@@ -227,14 +221,12 @@ document.addEventListener('DOMContentLoaded', function(e){
 				arrange = $this.data('arrange'),
 				id = parseInt($this.data('id')),
 				nonce = $this.data('nonce'),
-				uri = $section.find('[name="uri"]').val(),
-				paged = parseInt($section.find('[name="paged"]').val()),
-				view = parseInt($section.find('[name="view"]').val());
+				paged = parseInt($section.find('[name="paged"]').val());
 
 			$.ajax({
 				url: theme.ajax_url+'?action=contractor_arrange',
 				method:'POST',
-				data:{id: id, arrange: arrange, nonce: nonce, view: view, uri: uri},
+				data:{id: id, arrange: arrange, nonce: nonce},
 				dataType:'json',
 				beforeSend:function(){
 					$this.prop('disabled', true);

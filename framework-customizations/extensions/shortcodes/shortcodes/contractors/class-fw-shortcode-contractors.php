@@ -19,8 +19,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 	}
 
     public function ajax_change_provinces() {
-         global $view, $current_province;
-
+        
         $response = [
             'code' => false,
             'terms' => ''
@@ -39,17 +38,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
             $response['terms'] = $terms;
 
             wp_cache_delete( $id, 'posts' );
-            
-            // if($current_province) {
-            //     clean_term_cache( $current_province->term_id, $current_province->taxonomy );
-            // }
-            
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
+           
         }
 
         wp_send_json($response);
@@ -77,7 +66,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
     }
 
     public function ajax_contractor_arrange() {
-        global $wpdb, $view;
+        global $wpdb;
         $response = [
             'code' => false,
             'arrange' => '',
@@ -121,22 +110,12 @@ class FW_Shortcode_Contractors extends FW_Shortcode
                     break;
             }
 
-            // litespeed purge cache with url
-            // need RewriteCond %{REQUEST_METHOD} ^HEAD|GET|PURGE$ in .htaccess
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
-            
         }
 
         wp_send_json( $response );
     }
 
     public function ajax_toggle_best() {
-        global $view;
 
         $response = [
             'code' => false,
@@ -151,20 +130,12 @@ class FW_Shortcode_Contractors extends FW_Shortcode
             update_post_meta( $id, '_best', $best );
             wp_cache_delete( $id, 'posts' );
             $response['code'] = true;
-
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
         }
 
         wp_send_json( $response );
     }
 
     public function ajax_contractors_paginate() {
-        global $current_password, $current_province, $view;
 
         $response = [
             'items' => '',
@@ -173,18 +144,8 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
         $paged = isset($_REQUEST['paged']) ? absint($_REQUEST['paged']) : 1;
         $args = isset($_REQUEST['query']) ? $_REQUEST['query'] : [];
-        //debug_log($args);
-        $allow_query = false;
 
-        if( !is_user_logged_in() || $current_password) {
-            if($current_password) {
-                $allow_query = true;
-            }
-        } elseif(current_user_can('contractor_view')) {
-            $allow_query = true;
-        }
-
-        if($allow_query) {
+        if(current_user_can('contractor_view')) {
 
             $args['paged'] = $paged;
 
@@ -198,7 +159,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
                     self::loop_contractors($query);
                 $response['items'] = ob_get_clean();
 
-               $response['paginate_links'] = self::pagination($query, 3, 2);
+                $response['paginate_links'] = self::pagination($query, 3, 2);
 
             }
         }

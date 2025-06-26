@@ -11,7 +11,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		let debounced_contractor_search = debounce((event) => {
 			let kw = $('#contractor-search-input').val().trim(),
 				province = parseInt($('#contractor-search-province').val()),
-				view = parseInt($('#contractor-search-view').val()),
 				$result_wrap_el = $('#contractor-search-result-wrap'),
 				$result_el = $result_wrap_el.find('.contractor-search-result'),
 				$loading = $result_wrap_el.find('.loading');
@@ -24,7 +23,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				$.ajax({
 					url: theme.ajax_url+'?action=contractor_search',
 					method:'POST',
-					data:{kw: kw, view: view, province: province},
+					data:{kw: kw, province: province},
 					//dataType:'json',
 					beforeSend:function(){
 						
@@ -59,27 +58,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
 		$(document).on('input', '#contractor-search-input', function(event) {
 			debounced_contractor_search(event);
-		});
-		
-		$('.logout-post-password').on('click', function(e){
-			e.preventDefault();
-			let $this = $(this),
-				url = $this.data('url');
-
-			$.ajax({
-				url:theme.ajax_url+'?action=url_delete_cache',
-				method:'GET',
-				data:{url:url},
-				beforeSend:function(){
-					$this.prop('disabled', true);
-				},
-				success:function(){
-					deleteCookie('wp-postpass_'+$this.data('hash'));
-					$this.remove();
-					location.href = url;
-				}
-			});
-			
 		});
 
 		function set_vh_size() {

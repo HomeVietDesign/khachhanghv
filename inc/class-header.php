@@ -65,7 +65,9 @@ class Header {
 						}
 						?>">
 							<a href="<?php echo esc_url(get_permalink($page_id)); ?>"><?=esc_html($value->name)?></a>
-							<a href="javascript:void(0);" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>
+							<a href="javascript:void(0);" class="toggle-sub-menu d-flex align-items-center">
+								<span class="dashicons dashicons-arrow-down-alt2"></span>
+							</a>
 							<ul class="sub-menu position-absolute">
 							<?php
 							foreach ($children as $child) {

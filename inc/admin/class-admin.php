@@ -73,7 +73,7 @@ class Admin {
 		<style type="text/css">
 			<?php //if(post_type_supports( $post_type, 'thumbnail' )) { ?>
 			.column-thumbnail {
-				width: 150px;
+				width: 320px;
 			}
 			<?php //} ?>
 		</style>
@@ -88,7 +88,7 @@ class Admin {
 		switch ($column) {
 			case 'thumbnail':
 				if ( has_post_thumbnail( $post_id ) ) {
-					the_post_thumbnail( 'medium',['style'=>'width:100%;max-width:200px;height:auto;'] );
+					the_post_thumbnail( 'medium',['style'=>'width:100%;max-width:320px;height:auto;'] );
 				}
 				break;
 

@@ -1,11 +1,9 @@
 <?php
-global $post, $current_password, $current_password_province, $current_province, $view;
+global $post;
 
 $best = get_post_meta($post->ID, '_best', true);
 $phone_number = get_post_meta($post->ID, '_phone_number', true);
 $external_url = get_post_meta($post->ID, '_external_url', true);
-
-$view_id = $view?$view->ID:0;
 
 $class = get_the_terms( $post, 'contractor_class' );
 
@@ -15,8 +13,8 @@ if($class) {
     $index = absint(get_term_meta($class[0]->term_id, 'order', true));
 }
 
-if( (current_user_can('contractor_view') && !current_user_can('contractor_edit')) || $current_password ) {
-    $default_province = (int) get_option( 'default_term_province', 0 );
+if( current_user_can('contractor_view') && !current_user_can('contractor_edit') ) {
+
     ?>
     <div class="contractor col-md-6 col-lg-3">
         <div class="inner d-flex flex-column">
@@ -58,10 +56,7 @@ if( (current_user_can('contractor_view') && !current_user_can('contractor_edit')
                     <?php the_title(); ?>
                 </h3>
             </div>
-            <?php
-            // debug($current_password_province);
-            // debug($default_province);
-            if( has_role('viewer') || ($current_password_province && $current_password_province->term_id == $default_province)) { ?>
+
             <div class="provinces px-2 pb-1 d-flex flex-wrap justify-content-center">
                 <?php
                 $provinces = get_the_terms( $post, 'province' );
@@ -74,7 +69,6 @@ if( (current_user_can('contractor_view') && !current_user_can('contractor_edit')
                 }
                 ?>
             </div>
-            <?php } ?>
         </div>
     </div>
     <?php

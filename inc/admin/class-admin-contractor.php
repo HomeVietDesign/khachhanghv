@@ -30,10 +30,20 @@ class Admin_Contractor {
 			add_action( 'manage_contractor_posts_custom_column', [ $this, 'custom_columns_value' ], 2, 2 );
 			add_filter( 'manage_contractor_posts_columns', [ $this, 'add_custom_columns_header' ] );
 
+			add_filter( 'quick_edit_show_taxonomy', [$this, 'hide_tags_from_quick_edit'], 10, 3 );
+
 		}
 
 		//add_action( 'create_default_contractor_order_terms', [$this, 'async_create_default_contractor_order_terms'] );
 
+	}
+
+	public function hide_tags_from_quick_edit($show_in_quick_edit, $taxonomy_name, $post_type) {
+		if( in_array($taxonomy_name, ['contractor_rating', 'contractor_class', 'province']) && $post_type=='contractor') {
+			$show_in_quick_edit = false;
+		}
+
+		return $show_in_quick_edit;
 	}
 
 	public function async_create_default_contractor_order_terms($post_id) {
@@ -140,7 +150,7 @@ class Admin_Contractor {
 
 	public function enqueue_scripts($hook) {
 		global $post_type;
-		if($hook=='post.php' && $post_type=='contractor') {
+		if(($hook=='post.php' || $hook=='edit.php') && $post_type=='contractor') {
 			wp_enqueue_style( 'contractor', THEME_URI.'/assets/css/admin-contractor.css', [], '' );
 			wp_enqueue_script( 'contractor', THEME_URI.'/assets/js/admin-contractor.js', array('jquery'), '', false );
 			wp_localize_script( 'contractor', 'adminContractor', [

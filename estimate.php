@@ -4,6 +4,7 @@
  * 
  */
 get_header();
+
 if(current_user_can( 'estimate_contractor_view' )) {
 	global $current_client;
 

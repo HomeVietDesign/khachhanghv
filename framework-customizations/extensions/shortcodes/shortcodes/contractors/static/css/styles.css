@@ -41,15 +41,6 @@
     color: #0f0;
     transition: color .2s ease-in-out;
 }
-.contractor .post-edit-link {
-    bottom: auto !important;
-    right: auto !important;
-    padding-top: .25rem;
-    padding-bottom: .25rem;
-}
-/*.contractor .best {
-    background: rgba(0, 0, 0, .7);
-}*/
 .contractor .contractor-summary .entry-excerpt {
 	padding: 10px;
 }
@@ -60,16 +51,7 @@
 .fw-shortcode-contractors .paginate-links {
 	border: #333 1px solid;
 }
-#manage-drawing-url-modal,
-#manage-requirement-modal,
-#manage-document-url-modal,
-#view-contractor-modal {
-    z-index: 100000;
-    color: #333;
-}
-#view-requirement-modal .modal-body {
-    color: #333;
-}
+
 body .mce-container {
     color: #595959!important;
 }

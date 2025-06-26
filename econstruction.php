@@ -3,13 +3,13 @@
  * Template Name: Dự toán Xây dựng
  * 
  */
-global $current_client;
-
 get_header();
-if($current_client && current_user_can('econstruction_view')) {
+if(current_user_can('econstruction_view')) {
+	global $current_client;
+	
 	while (have_posts()) {
 		the_post();
-		global $post;
+		if($current_client) {
 		?>
 		<form id="econstruction-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
 			<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
@@ -61,6 +61,7 @@ if($current_client && current_user_can('econstruction_view')) {
 			</div>
 		</form>
 		<?php
+		}
 	}
 }
 get_footer();

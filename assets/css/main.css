@@ -336,11 +336,6 @@ img.aligncenter {
 	font-weight: 600;
 }
 .post-edit-link {
-	display: block;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	padding: 8px;
 	color: #fff;
 	z-index: 2;
 }
@@ -552,22 +547,11 @@ video {
 	border-color: rgb(33 37 41);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
 }
-/*.contractor-cat-hide .dropdown-toggle::after {
-	display: none;
-}
-
-.contractor-cat-hide .form-check {
-	min-height: 0;
-	line-height: 1.5;
-}*/
-label[for="efurniture_attachment"],
-label[for="econstruction_attachment"],
-label[for="document_attachment"],
-label[for="partner_attachment"],
-label[for="estimate_attachment"] {
+label {
 	cursor: pointer;
 }
 .modal {
+	z-index: 100000;
 	color: #333;
 }
 .btn-shadow {

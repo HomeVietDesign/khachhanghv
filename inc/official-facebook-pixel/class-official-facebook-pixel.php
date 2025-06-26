@@ -7,7 +7,7 @@ final class Official_Facebook_Pixel {
 
 	private function __construct() {
 	
-		include_once THEME_DIR.'/inc/official-facebook-pixel/class-facebook-timer.php';
+		//include_once THEME_DIR.'/inc/official-facebook-pixel/class-facebook-timer.php';
 	}
 
 
