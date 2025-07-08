@@ -165,9 +165,9 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 					if($efurniture_data['file_id']) wp_delete_attachment($efurniture_data['file_id'], true);
 				}
 
-				$efurniture_data[$efurniture_id] = $new_efurniture_data;
+				$data[$efurniture_id] = $new_efurniture_data;
 
-				fw_set_db_term_option($client, 'passwords', 'efurniture', $efurniture_data);
+				fw_set_db_term_option($client, 'passwords', 'efurniture', $data);
 
 				$response['code'] = 1;
 				$response['msg'] = '<p class="text-success">Đã lưu</p>';

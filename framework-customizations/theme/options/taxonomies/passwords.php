@@ -34,6 +34,24 @@ $options = array(
 		'limit' => 1000
 	),
 
+	'contractor_construction_hide' => array(
+		'label' => 'Xây dựng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contractor',
+		'limit' => 1000
+	),
+
+	'contractor_furniture_hide' => array(
+		'label' => 'Đồ gỗ ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contractor',
+		'limit' => 1000
+	),
+
 	'contractor_customer_hide' => array(
 		'label' => 'Dự toán khách hàng ẩn',
 		'desc'  => '',
@@ -53,7 +71,7 @@ $options = array(
 	// ),
 
 	'econstruction_hide' => array(
-		'label' => 'Xây dựng ẩn',
+		'label' => 'Xây dựng ẩn(bỏ)',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -62,7 +80,7 @@ $options = array(
 	),
 
 	'efurniture_hide' => array(
-		'label' => 'Đồ gỗ ẩn',
+		'label' => 'Đồ gỗ ẩn(bỏ)',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',

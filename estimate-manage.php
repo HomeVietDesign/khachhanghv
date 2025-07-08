@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dự toán Xây dựng - Đồ gỗ
+ * Template Name: Dự toán Xây dựng - Đồ gỗ (bỏ)
  * 
  */
 global $current_client;

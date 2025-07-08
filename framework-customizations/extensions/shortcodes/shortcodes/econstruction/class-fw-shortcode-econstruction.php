@@ -165,9 +165,9 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 					if($econstruction_data['file_id']) wp_delete_attachment($econstruction_data['file_id'], true);
 				}
 
-				$econstruction_data[$econstruction_id] = $new_econstruction_data;
+				$data[$econstruction_id] = $new_econstruction_data;
 
-				fw_set_db_term_option($client, 'passwords', 'econstruction', $econstruction_data);
+				fw_set_db_term_option($client, 'passwords', 'econstruction', $data);
 
 				$response['code'] = 1;
 				$response['msg'] = '<p class="text-success">Đã lưu</p>';

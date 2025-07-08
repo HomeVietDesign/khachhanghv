@@ -1,17 +1,18 @@
 <?php
 /**
- * Template Name: Dự toán Xây dựng (bỏ)
+ * Template Name: Dự toán Xây dựng
  * 
  */
 get_header();
-if(current_user_can('econstruction_view')) {
+
+if(current_user_can( 'estimate_construction_view' )) {
 	global $current_client;
-	
+
 	while (have_posts()) {
 		the_post();
 		if($current_client) {
 		?>
-		<form id="econstruction-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
+		<form id="estimate-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
 			<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
 				<div class="container">
 					<?php
@@ -52,10 +53,8 @@ if(current_user_can('econstruction_view')) {
 							</div>
 						</div>
 					</div>
-				
 				</div>
 			</div>
-
 			<div id="site-content">
 				<?php the_content(); ?>
 			</div>
@@ -64,4 +63,5 @@ if(current_user_can('econstruction_view')) {
 		}
 	}
 }
+
 get_footer();

@@ -301,7 +301,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Xây dựng nào',
 			'not_found_in_trash' => 'Không có Xây dựng nào trong Thùng rác',
 			'parent_item_colon'  => 'Xây dựng cấp trên:',
-			'menu_name'          => 'Xây dựng',
+			'menu_name'          => 'Xây dựng (bỏ)',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -346,7 +346,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Đồ gỗ nào',
 			'not_found_in_trash' => 'Không có Đồ gỗ nào trong Thùng rác',
 			'parent_item_colon'  => 'Đồ gỗ cấp trên:',
-			'menu_name'          => 'Đồ gỗ',
+			'menu_name'          => 'Đồ gỗ (bỏ)',
 		);
 		$args = array(
 			'labels'              => $labels,

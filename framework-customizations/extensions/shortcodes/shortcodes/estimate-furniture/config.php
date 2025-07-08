@@ -5,7 +5,7 @@
 $cfg = array();
 
 $cfg['page_builder'] = array(
-	'title'       => 'Xây dựng (bỏ)',
+	'title'       => 'Dự toán Đồ gỗ',
 	'description' => '',
 	'tab'         => __( 'Content Elements', 'fw' ),
 	'popup_size'  => 'small'

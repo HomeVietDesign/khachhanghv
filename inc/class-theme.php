@@ -51,7 +51,7 @@ class Theme {
 		// add_action('after_switch_theme', [$this, 'theme_activation']);
 		// add_action('switch_theme', [$this, 'theme_deactivation']);
 
-		//add_action('after_setup_theme', [$this, 'theme_activation']);
+		add_action('after_setup_theme', [$this, 'theme_activation']);
 		//add_action('after_setup_theme', [$this, 'theme_deactivation']);
 	}
 
@@ -61,6 +61,12 @@ class Theme {
 
 		
 		$admin_role = get_role( 'administrator' );
+
+		$admin_role->add_cap('estimate_construction_view');
+		$admin_role->add_cap('estimate_construction_edit');
+
+		$admin_role->add_cap('estimate_furniture_view');
+		$admin_role->add_cap('estimate_furniture_edit');
 
 		// $admin_role->add_cap('edit_econstruction');
 		// $admin_role->add_cap('read_econstruction');
@@ -296,7 +302,39 @@ class Theme {
 		// $tanhv->add_cap('manage_categories');
 		// $tanhv->add_cap('contractor_view');
 		// $tanhv->add_cap('contractor_edit');
-		
+
+		// $nhanhv = get_user_by( 'login', 'nhanhv' );
+		// $nhanhv->add_cap('edit_contractor');
+		// $nhanhv->add_cap('read_contractor');
+		// $nhanhv->add_cap('delete_contractor');
+		// $nhanhv->add_cap('edit_contractors');
+		// $nhanhv->add_cap('edit_others_contractors');
+		// $nhanhv->add_cap('delete_contractors');
+		// $nhanhv->add_cap('publish_contractors');
+		// $nhanhv->add_cap('read_private_contractors');
+		// $nhanhv->add_cap('delete_private_contractors');
+		// $nhanhv->add_cap('delete_published_contractors');
+		// $nhanhv->add_cap('delete_others_contractors');
+		// $nhanhv->add_cap('edit_private_contractors');
+		// $nhanhv->add_cap('edit_published_contractors');
+
+		// $nhanhv->add_cap('estimate_contractor_view');
+		// $nhanhv->add_cap('estimate_contractor_edit');
+
+		// $nhanhv->add_cap('edit_posts');
+		// $nhanhv->add_cap('edit_others_posts');
+		// $nhanhv->add_cap('edit_published_posts');
+		// $nhanhv->add_cap('edit_pages');
+		// $nhanhv->add_cap('edit_others_pages');
+		// $nhanhv->add_cap('edit_published_pages');
+
+		// $nhanhv->add_cap('manage_categories');
+
+		// $nhanhv->add_cap('contractor_view');
+		// $nhanhv->add_cap('contractor_edit');
+
+		// $nhanhv->add_cap('estimate_customer_view');
+		// $nhanhv->add_cap('estimate_customer_edit');
 		
 		// $thaotde = get_user_by( 'login', 'thaotde' );
 		// $thaotde->add_cap('estimate_contractor_view');
