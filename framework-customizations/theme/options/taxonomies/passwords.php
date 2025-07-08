@@ -35,7 +35,7 @@ $options = array(
 	),
 
 	'contractor_construction_hide' => array(
-		'label' => 'Xây dựng ẩn',
+		'label' => 'Dự toán Xây dựng ẩn',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -44,7 +44,7 @@ $options = array(
 	),
 
 	'contractor_furniture_hide' => array(
-		'label' => 'Đồ gỗ ẩn',
+		'label' => 'Dự toán Đồ gỗ ẩn',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',

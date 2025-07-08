@@ -62,11 +62,11 @@ class Theme {
 		
 		$admin_role = get_role( 'administrator' );
 
-		$admin_role->add_cap('estimate_construction_view');
-		$admin_role->add_cap('estimate_construction_edit');
+		// $admin_role->add_cap('estimate_construction_view');
+		// $admin_role->add_cap('estimate_construction_edit');
 
-		$admin_role->add_cap('estimate_furniture_view');
-		$admin_role->add_cap('estimate_furniture_edit');
+		// $admin_role->add_cap('estimate_furniture_view');
+		// $admin_role->add_cap('estimate_furniture_edit');
 
 		// $admin_role->add_cap('edit_econstruction');
 		// $admin_role->add_cap('read_econstruction');
