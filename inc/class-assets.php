@@ -11,7 +11,6 @@ class Assets {
 
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 50);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 50);
-		//add_action('wp_enqueue_scripts', [$this, 'recaptcha_script'], 21);
 
 	}
 
@@ -30,37 +29,18 @@ class Assets {
 
 		wp_dequeue_style( 'font-awesome' );
 
-		//wp_register_style( 'google-fonts', 'https://fonts.googleapis.com/css2?family=Arizonia&family=Fahkwang:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=Marmelad&family=Mea+Culpa&family=Water+Brush&display=swap' );
-		
 		wp_register_style( 'bootstrap', THEME_URI.'/libs/bootstrap/css/bootstrap.min.css', [], '5.1.3' );
 
 		wp_register_style( 'owlcarousel', THEME_URI.'/libs/owlcarousel/assets/owl.carousel.min.css', [], '2.3.4' );
 		wp_register_style( 'select2', THEME_URI.'/libs/select2/dist/css/select2.min.css', [], '4.0.13' );
+		wp_register_style( 'photoswipe', THEME_URI.'/libs/PhotoSwipe/photoswipe.css', [], '5.4.3' );
 
-		$deps = ['bootstrap','dashicons','select2'];
+		$deps = ['bootstrap','dashicons','select2','photoswipe'];
 		if(is_single()) {
 			$deps[] = 'owlcarousel';
 		}
 
-		wp_enqueue_style( 'TranSon', THEME_URI.'/assets/css/main.css', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/css/main.css')) );
-	}
-
-	public static function recaptcha_script() {
-		$recaptcha_keys = Common::get_recaptcha_keys();
-
-		if(!$recaptcha_keys['ctf7'] && $recaptcha_keys['sitekey']!='' && !wp_script_is('google-recaptcha', 'registered')) {
-			wp_enqueue_script( 'google-recaptcha',
-				add_query_arg(
-					[ 'render' => $recaptcha_keys['sitekey'] ],
-					'https://www.google.com/recaptcha/api.js'
-				),
-				[],
-				'3.0',
-				true
-			);
-		}
-
-
+		wp_enqueue_style( 'khhv', THEME_URI.'/assets/css/main.css', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/css/main.css')) );
 	}
 
 	public static function enqueue_scripts() {
@@ -74,14 +54,14 @@ class Assets {
 
 	    //wp_enqueue_script('lodash');
 
-		//$recaptcha_keys = Common::get_recaptcha_keys();
-
 		wp_register_script( 'bootstrap', THEME_URI.'/libs/bootstrap/js/bootstrap.bundle.min.js', ['jquery'], '5.1.3', true);
 
 		wp_register_script( 'owlcarousel', THEME_URI.'/libs/owlcarousel/owl.carousel.min.js', ['jquery'], '2.3.4', true);
 		wp_register_script( 'select2', THEME_URI.'/libs/select2/dist/js/select2.full.min.js', ['jquery'], '4.0.13', true);
 		wp_register_script( 'isotope', THEME_URI.'/libs/isotope/isotope.pkgd.min.js', ['jquery'], '3.0.6', true);
 		wp_register_script( 'jquery-input-number', THEME_URI.'/libs/jquery-input-number/jquery-input-number.js', ['jquery'], '', true);
+		wp_register_script( 'photoswipe', THEME_URI.'/libs/PhotoSwipe/photoswipe.umd.min.js', ['jquery'], '5.4.3', true);
+		wp_register_script( 'photoswipe-lightbox', THEME_URI.'/libs/PhotoSwipe/photoswipe-lightbox.umd.min.js', ['photoswipe'], '5.4.3', true);
 
 		$deps = [
 			'jquery',
@@ -89,14 +69,15 @@ class Assets {
 			'imagesloaded',
 			'isotope',
 			'select2',
-			'jquery-input-number',
+			'photoswipe-lightbox',
+			//'jquery-input-number',
 			//'lodash',
 		];
 		if(is_single()) {
 			$deps[] = 'owlcarousel';
 		}
 	
-		wp_enqueue_script( 'TranSon', THEME_URI.'/assets/js/main.js', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/js/main.js')), true);
+		wp_enqueue_script( 'khhv', THEME_URI.'/assets/js/main.js', $deps, date('YmdHis', filemtime(THEME_DIR . '/assets/js/main.js')), true);
 
 		$provinces = get_terms([
 			'taxonomy' => 'province',

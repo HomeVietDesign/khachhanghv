@@ -3,7 +3,6 @@
 #slug-description,
 #name-description,
 .term-description-wrap,
-.term-slug-wrap,
-.term-parent-wrap {
+.term-slug-wrap {
 	display: none;
 }

@@ -19,8 +19,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 	}
 
     public function ajax_change_provinces() {
-         global $view, $current_province;
-
+        
         $response = [
             'code' => false,
             'terms' => ''
@@ -32,24 +31,14 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
          $response['terms'] = $provinces;
          
-        if($id && check_ajax_referer( 'change-province-'.$id, 'nonce', false )) {
+        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'change-province-'.$id, 'nonce', false )) {
 
             $terms = wp_set_object_terms( $id, $provinces, 'province', false );
             $response['code'] = (is_array($terms) && !empty($terms))?true:false;
             $response['terms'] = $terms;
 
             wp_cache_delete( $id, 'posts' );
-            
-            // if($current_province) {
-            //     clean_term_cache( $current_province->term_id, $current_province->taxonomy );
-            // }
-            
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
+           
         }
 
         wp_send_json($response);
@@ -66,7 +55,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $external_url = isset($_POST['external_url'])?sanitize_url($_POST['external_url']):'';
         $response['data'] = $external_url;
         
-        if($id && check_ajax_referer( 'edit-external-url-'.$id, 'nonce', false )) {
+        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'edit-external-url-'.$id, 'nonce', false )) {
             
             update_post_meta( $id, '_external_url', $external_url );
             wp_cache_delete( $id, 'posts' );
@@ -77,7 +66,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
     }
 
     public function ajax_contractor_arrange() {
-        global $wpdb, $view;
+        global $wpdb;
         $response = [
             'code' => false,
             'arrange' => '',
@@ -86,7 +75,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $arrange = isset($_POST['arrange'])?$_POST['arrange']:'';
         $response['arrange'] = $arrange;
    
-        if($id && check_ajax_referer( 'action-'.$id, 'nonce', false )) {
+        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'action-'.$id, 'nonce', false )) {
             $args = [
                 'post_type' => 'contractor',
                 'post_status' => 'publish',
@@ -121,22 +110,12 @@ class FW_Shortcode_Contractors extends FW_Shortcode
                     break;
             }
 
-            // litespeed purge cache with url
-            // need RewriteCond %{REQUEST_METHOD} ^HEAD|GET|PURGE$ in .htaccess
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
-            
         }
 
         wp_send_json( $response );
     }
 
     public function ajax_toggle_best() {
-        global $view;
 
         $response = [
             'code' => false,
@@ -146,25 +125,17 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $best = isset($_POST['best'])?$_POST['best']:'false';
         $response['best'] = $best;
         //debug_log($best);
-        if($id && check_ajax_referer( 'toggle-best-'.$id, 'nonce', false )) {
+        if(current_user_can( 'contractor_edit' ) && $id && check_ajax_referer( 'toggle-best-'.$id, 'nonce', false )) {
             //debug_log($best);
             update_post_meta( $id, '_best', $best );
             wp_cache_delete( $id, 'posts' );
             $response['code'] = true;
-
-            $url = home_url( $_POST['uri']?$_POST['uri']:'' );
-            $view_url = get_permalink( $view );
-            wp_remote_request($url, ['method'=>'PURGE']);
-            if($url != $view_url) {
-                wp_remote_request($view_url, ['method'=>'PURGE']);
-            }
         }
 
         wp_send_json( $response );
     }
 
     public function ajax_contractors_paginate() {
-        global $current_password, $current_province, $view;
 
         $response = [
             'items' => '',
@@ -173,18 +144,8 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
         $paged = isset($_REQUEST['paged']) ? absint($_REQUEST['paged']) : 1;
         $args = isset($_REQUEST['query']) ? $_REQUEST['query'] : [];
-        debug_log($args);
-        $allow_query = false;
 
-        if( !is_user_logged_in() ) {
-            if($current_password) {
-                $allow_query = true;
-            }
-        } elseif(has_role('administrator')) {
-            $allow_query = true;
-        }
-
-        if($allow_query) {
+        if(current_user_can('contractor_view')) {
 
             $args['paged'] = $paged;
 
@@ -198,7 +159,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
                     self::loop_contractors($query);
                 $response['items'] = ob_get_clean();
 
-               $response['paginate_links'] = self::pagination($query, 3, 2);
+                $response['paginate_links'] = self::pagination($query, 3, 2);
 
             }
         }
@@ -292,7 +253,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
     public function html_modals() {
        
-        if(has_role('administrator')) {
+        if(current_user_can('contractor_edit')) {
             global $current_province;
             ?>
             <div class="modal fade" id="edit-external-url-modal" tabindex="-1">

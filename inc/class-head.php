@@ -12,11 +12,9 @@ class Head {
 
 
 	public function noindex() {
-		if(is_singular( 'contractor' ) || is_singular( 'contractor_page' ) || is_tax('contractor_cat')) {
 		?>
 		<meta name="robots" content="noindex, nofollow" />
 		<?php
-		}
 	}
 
 	public static function head_scripts() {
@@ -39,10 +37,6 @@ class Head {
 			.grecaptcha-badge {
 				right: -999999px!important;
 			}
-
-			/*@media (min-width: 576px) {
-				
-			}*/
 		</style>
 		<script type="text/javascript">
 			window.addEventListener('DOMContentLoaded', function(){
@@ -63,9 +57,6 @@ class Head {
 		if(''!=$custom_script) {
 			echo $custom_script;
 		}
-		?>
-		<!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script> -->
-		<?php
 
 	}
 

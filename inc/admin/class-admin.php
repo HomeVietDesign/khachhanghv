@@ -7,13 +7,16 @@ class Admin {
 
 	private function __construct() {
 
-		require_once THEME_DIR.'/inc/simplehtmldom/simple_html_dom.php';
-		require_once THEME_DIR.'/inc/admin/class-select-post-export.php';
-		require_once THEME_DIR.'/inc/admin/class-admin-post.php';
+		// require_once THEME_DIR.'/inc/simplehtmldom/simple_html_dom.php';
+		// require_once THEME_DIR.'/inc/admin/class-select-post-export.php';
+
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate.php';
-		require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
+		//require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-contract.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-econstruction.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-efurniture.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-passwords.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-province.php';
@@ -22,8 +25,12 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_rating.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_class.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate_cat.php';
-		require_once THEME_DIR.'/inc/admin/class-admin-partner_cat.php';
+		//require_once THEME_DIR.'/inc/admin/class-admin-partner_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-contract_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-gzalo_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-econstruction_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-efurniture_cat.php';
 
 		
 		//require_once THEME_DIR.'/inc/admin/class-admin-update-posts.php';
@@ -67,7 +74,7 @@ class Admin {
 		<style type="text/css">
 			<?php //if(post_type_supports( $post_type, 'thumbnail' )) { ?>
 			.column-thumbnail {
-				width: 150px;
+				width: 320px;
 			}
 			<?php //} ?>
 		</style>
@@ -82,7 +89,7 @@ class Admin {
 		switch ($column) {
 			case 'thumbnail':
 				if ( has_post_thumbnail( $post_id ) ) {
-					the_post_thumbnail( 'medium',['style'=>'width:100%;max-width:200px;height:auto;'] );
+					the_post_thumbnail( 'medium',['style'=>'width:100%;max-width:320px;height:auto;'] );
 				}
 				break;
 

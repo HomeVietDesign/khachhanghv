@@ -16,6 +16,9 @@ a {
 a:focus {
 	outline: none;
 }
+a[href="#"] {
+	cursor: default;
+}
 /* Make sure embeds and iframes fit their containers. */
 embed,
 iframe,
@@ -93,9 +96,12 @@ img.aligncenter {
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
 	line-height: 1.5;
 }
-
+.popover {
+	--bs-popover-max-width: 800px;
+}
 .modal {
 	--bs-modal-margin: 12px;
+	--bs-modal-zindex: 99999;
 }
 .modal-backdrop {
     --bs-backdrop-opacity: 0.85;
@@ -112,6 +118,12 @@ img.aligncenter {
 	padding-left: 12px;
 	padding-right: 12px;
 }
+.bg-green {
+	background: #0f0;
+}
+.bg-yellow {
+	background: #ff0;
+}
 .bg-red {
 	background-color: #f00;
 }
@@ -123,6 +135,41 @@ img.aligncenter {
 }
 .text-green {
 	color: #0f0;
+}
+.btn-outline-yellow {
+  --bs-btn-color: #ff0;
+  --bs-btn-border-color: #ff0;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #ff0;
+  --bs-btn-hover-border-color: #ff0;
+  --bs-btn-focus-shadow-rgb: 248, 249, 250;
+  --bs-btn-active-color: #f00;
+  --bs-btn-active-bg: #ff0;
+  --bs-btn-active-border-color: #ff0;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #ff0;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #ff0;
+  --bs-gradient: none;
+}
+.btn-outline-green {
+  --bs-btn-color: #0f0;
+  --bs-btn-border-color: #0f0;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #0f0;
+  --bs-btn-hover-border-color: #0f0;
+  --bs-btn-focus-shadow-rgb: 248, 249, 250;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #0f0;
+  --bs-btn-active-border-color: #0f0;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #0f0;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #0f0;
+  --bs-gradient: none;
+}
+.fs-sm {
+	font-size: 0.875rem;
 }
 #site-header {
 	top: 0;
@@ -289,11 +336,6 @@ img.aligncenter {
 	font-weight: 600;
 }
 .post-edit-link {
-	display: block;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	padding: 8px;
 	color: #fff;
 	z-index: 2;
 }
@@ -395,6 +437,10 @@ video {
 	transform: translateY(-50%);
 }
 
+.fw-shortcode-efurnitures .accordion,
+.fw-shortcode-econstructions .accordion,
+.fw-shortcode-contracts .accordion,
+.fw-shortcode-gzalos .accordion,
 .fw-shortcode-documents .accordion,
 .fw-shortcode-partners .accordion,
 .fw-shortcode-estimate-manage .accordion,
@@ -412,6 +458,10 @@ video {
 	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button,
+.fw-shortcode-econstructions .accordion .accordion-button,
+.fw-shortcode-contracts .accordion .accordion-button,
+.fw-shortcode-gzalos .accordion .accordion-button,
 .fw-shortcode-documents .accordion .accordion-button,
 .fw-shortcode-partners .accordion .accordion-button,
 .fw-shortcode-estimate-manage .accordion .accordion-button,
@@ -421,30 +471,50 @@ video {
 	justify-content: center;
 	text-align: center;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button:not(.collapsed),
+.fw-shortcode-econstructions .accordion .accordion-button:not(.collapsed),
+.fw-shortcode-contracts .accordion .accordion-button:not(.collapsed),
+.fw-shortcode-gzalos .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-documents .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-partners .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimate-manage .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button::after,
+.fw-shortcode-econstructions .accordion .accordion-button::after,
+.fw-shortcode-contracts .accordion .accordion-button::after,
+.fw-shortcode-gzalos .accordion .accordion-button::after,
 .fw-shortcode-documents .accordion .accordion-button::after,
 .fw-shortcode-partners .accordion .accordion-button::after,
 .fw-shortcode-estimate-manage .accordion .accordion-button::after,
 .fw-shortcode-estimates .accordion .accordion-button::after {
 	display: none;
 }
+.fw-shortcode-efurnitures .accordion .accordion-item:not(:first-of-type),
+.fw-shortcode-econstrucions .accordion .accordion-item:not(:first-of-type),
+.fw-shortcode-contracts .accordion .accordion-item:not(:first-of-type),
+.fw-shortcode-gzalos .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-documents .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-partners .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimate-manage .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
 }
+.fw-shortcode-efurnitures .accordion .accordion-button:focus,
+.fw-shortcode-econstructions .accordion .accordion-button:focus,
+.fw-shortcode-contracts .accordion .accordion-button:focus,
+.fw-shortcode-gzalos .accordion .accordion-button:focus,
 .fw-shortcode-documents .accordion .accordion-button:focus,
 .fw-shortcode-partners .accordion .accordion-button:focus,
 .fw-shortcode-estimate-manage .accordion .accordion-button:focus,
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }
+.fw-shortcode-efurnitures .efurniture-thumbnail,
+.fw-shortcode-econstructions .econstruction-thumbnail,
+.fw-shortcode-contracts .contract-thumbnail,
+.fw-shortcode-gzalos .gzalo-thumbnail,
 .fw-shortcode-documents .document-thumbnail,
 .fw-shortcode-partners .partner-thumbnail,
 .fw-shortcode-estimate-manage .estimate-thumbnail,
@@ -452,12 +522,20 @@ video {
 	padding-bottom: 60%;
 	overflow: hidden;
 }
+.fw-shortcode-efurnitures .thumbnail-image,
+.fw-shortcode-econstructions .thumbnail-image,
+.fw-shortcode-contracts .thumbnail-image,
+.fw-shortcode-gzalos .thumbnail-image,
 .fw-shortcode-documents .thumbnail-image,
 .fw-shortcode-partners .thumbnail-image,
 .fw-shortcode-estimate-manage .thumbnail-image,
 .fw-shortcode-estimates .thumbnail-image {
-	background: rgba(0, 0, 0, 0.1);
+	background: #0e0d0d;
 }
+.fw-shortcode-efurnitures .thumbnail-image img,
+.fw-shortcode-econstructions .thumbnail-image img,
+.fw-shortcode-contracts .thumbnail-image img,
+.fw-shortcode-gzalos .thumbnail-image img,
 .fw-shortcode-documents .thumbnail-image img,
 .fw-shortcode-partners .thumbnail-image img,
 .fw-shortcode-estimate-manage .thumbnail-image img,
@@ -470,15 +548,19 @@ video {
 	top: var(--site-header--height);
 	z-index: 9;
 	background: #1c1c1c;
+	font-size: 28px;
+	font-weight: 600;
+	border-bottom: transparent 1px solid;
 }
-label[for="document_attachment"],
-label[for="partner_attachment"],
-label[for="estimate_attachment"] {
+.client-heading.is-stuck {
+	border-color: rgb(33 37 41);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+label {
 	cursor: pointer;
 }
-#edit-document.modal,
-#edit-partner.modal,
-#edit-estimate.modal {
+.modal {
+	z-index: 100000;
 	color: #333;
 }
 .btn-shadow {
@@ -488,6 +570,75 @@ label[for="estimate_attachment"] {
 	color: #f00;
 	background: #ff0;
 }
+.zalo-link .btn:focus,
+.zalo-link .btn:active {
+	background: #ff0;
+	color: #000;
+}
+.progressing-bar {
+	font-weight: 600;
+	letter-spacing: 1px;
+}
+.progressing-bar .col {
+	height: 40px;
+	line-height: 40px;
+	position: relative;
+}
+.progressing-bar .col::after {
+	display: block;
+	content: "";
+	position: absolute;
+	height: 100%;
+	width: 1px;
+	background: rgb(33 37 41);
+	top: 0;
+	right: 0;
+}
+.progressing-bar .col:last-child::after {
+	display: none;
+}
+
+.popover-header {
+	color: #212529;
+}
+.thumbnail-image.pswp-gallery a:first-child {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	z-index: ;
+}
+.thumbnail-image.pswp-gallery a:first-child::before {
+	display: block;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .6);
+	opacity: 0;
+	transition: opacity .2s ease;
+}
+.thumbnail-image.pswp-gallery a:first-child::after {
+	display: block;
+	content: "\f10f";
+	font-family: dashicons;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 32px;
+	color: #b3b3b3;
+	opacity: 0;
+	transition: opacity .2s ease;
+}
+.thumbnail-image.pswp-gallery a:first-child:hover::before,
+.thumbnail-image.pswp-gallery a:first-child:hover::after {
+	opacity: 1;
+}
+
 @media (min-width: 375px) {
 	
 }

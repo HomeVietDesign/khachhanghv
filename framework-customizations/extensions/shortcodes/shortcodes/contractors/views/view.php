@@ -5,14 +5,7 @@
 /**
  * @var array $atts
  */
-global $current_password, $current_password_province, $current_province, $view;
-
-// debug('current_password:');
-// debug($current_password);
-// debug('current_password_province:');
-// debug($current_password_province);
-// debug('current_province:');
-// debug($current_province);
+global $current_province;
 
 $contractor_cat_id = 0;
 if ( ! empty( $atts['contractor_cat'] ) ) {
@@ -49,30 +42,7 @@ if($default_province) {
 	$provinces[] = $default_province;
 }
 
-if( !is_user_logged_in() ) {
-	if($current_password) {
-		$allow_query = true;
-
-		$orderby = [
-			'date' => 'DESC',
-			'ID' => 'DESC',
-		];
-
-		if($current_password_province) {
-
-			if($default_province==$current_password_province->term_id && !$current_province) { // chủ đầu tư thuộc toàn quốc
-				$provinces=[]; // loại bỏ lọc theo tỉnh thành để hiển thị tất cả nhà thầu
-			} else {
-				// lọc theo tỉnh của chủ đầu tư
-				$provinces[] = $current_province->term_id;
-			}
-		} else { // chủ đầu tư không thuộc tỉnh nào
-			$allow_query = false; // không truy vấn dữ liệu
-			//$provinces=[0];
-		}
-		
-	}
-} elseif(has_role('administrator') || has_role('viewer')) {
+if(current_user_can('contractor_view')) {
 	$allow_query = true;
 	
 	$orderby = [
@@ -150,8 +120,6 @@ if($allow_query) {
 	<div id="<?=$shortcode_html_id?>" class="fw-shortcode-contractors position-relative is-general-<?php echo esc_html($is_general); ?>">
 		<div class="fw-shortcode-contractors-inner">
 			<input type="hidden" name="paged" value="1">
-			<input type="hidden" name="view" value="<?=($view?$view->ID:0)?>">
-			<input type="hidden" name="uri" value="<?php echo empty($kw)?esc_attr($_SERVER['REQUEST_URI']):''; ?>">
 	        <input type="hidden" name="query" value="<?=esc_attr(json_encode($query->query))?>">
 
 	        <div class="contractors-container container-xxl p-0 position-relative">

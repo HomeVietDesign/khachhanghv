@@ -7,52 +7,24 @@ class Authentication {
 
 	private function __construct() {
 
-		add_filter( 'the_password_form', [$this, 'the_password_form'], 10, 2 );
-		add_filter( 'post_password_required', [$this, 'post_password_required'], 10, 2 );
+		add_action( 'parse_request', [$this, 'require_login_use'] );
+
+		//add_filter( 'the_password_form', [$this, 'the_password_form'], 10, 2 );
+		//add_filter( 'post_password_required', [$this, 'post_password_required'], 10, 2 );
 
 		add_filter( 'nonce_life', [$this, 'nonce_life'] );
 	}
 
+	public function require_login_use($wp) {
+		if(!is_user_logged_in()) { // bắt buộc đăng nhập để truy cập hệ thống
+			// chuyển hướng sang trang đăng nhập
+			wp_redirect(wp_login_url(fw_current_url()));
+			exit;
+		}
+	}
+
 	public function nonce_life() {
-		return 8 * DAY_IN_SECONDS;
-	}
-
-	public function post_password_required($required, $post) {
-		global $current_password;
-
-		$post = get_post( $post );
-		
-
-
-		if($post->post_type=="contractor_page") {
-			$required = true;
-
-			if($current_password || has_role('administrator') || has_role('viewer')) {
-				$required = false;
-			}
-		} elseif(is_page_template( 'estimate.php' )) {
-			$required = true;
-
-			if( has_role('administrator') || has_role('viewer') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
-				$required = false;
-			}
-		} elseif ( is_page_template( 'estimate-manage.php' ) || is_page_template( 'partner.php' ) || is_page_template( 'document.php' ) ) {
-			$required = true;
-
-			if( has_role('administrator') || ($current_password && ($current_password->term_id == $_GET['client'] || $current_password->term_id == get_option( 'default_term_passwords', -1 ))) ) {
-				$required = false;
-			}
-		}
-
-		return $required;
-	}
-
-	public static function check($contractor_page) {
-		global $current_password;
-		if($current_password) {
-			return true;
-		}
-		return false;
+		return 2 * DAY_IN_SECONDS;
 	}
 
 	public function the_password_form($output, $post) {

@@ -97,9 +97,7 @@ class Custom_Types {
 			$wp_taxonomies['post_tag']->labels->menu_name = 'Đặc điểm';
 			$wp_taxonomies['post_tag']->labels->name_admin_bar = 'Đặc điểm';
 		}
-
-		
-		
+	
 	}
 
 	public function _theme_action_register_custom_type_10() {
@@ -137,14 +135,15 @@ class Custom_Types {
 			'query_var'           => false,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'content_builder',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'editor',
 				'revisions',
 			),
 		);
-		register_post_type( 'content_builder', $args );
+		//register_post_type( 'content_builder', $args );
 
 
 		// nhà thầu
@@ -166,12 +165,12 @@ class Custom_Types {
 			'labels'              => $labels,
 			'hierarchical'        => false,
 			//'description'         => 'description',
-			'taxonomies'          => array('contractor_cat'),
+			//'taxonomies'          => array('contractor_cat'),
 			'public'              => true,
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 5,
+			'menu_position'       => 3,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -181,7 +180,8 @@ class Custom_Types {
 			'can_export'          => true,
 			//'rewrite'             => ['slug'=>'nha-thau'],
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'contractor',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -225,7 +225,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => ['slug'=>'trang-nha-thau'],
-			'capability_type'     => 'page',
+			'capability_type'     => 'contractor_page',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'editor',
@@ -254,7 +255,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Dự toán nào',
 			'not_found_in_trash' => 'Không có Dự toán nào trong Thùng rác',
 			'parent_item_colon'  => 'Dự toán cấp trên:',
-			'menu_name'          => 'Dự toán',
+			'menu_name'          => 'Dự toán (bỏ)',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -265,7 +266,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -275,17 +276,108 @@ class Custom_Types {
 			'can_export'          => true,
 			//'rewrite'             => ['slug'=>'noi-that'],
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'estimate',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
 				//'editor',
-				'excerpt',
+				//'excerpt',
 				//'revisions',
 				//'page-attributes',
 			),
 		);
-		register_post_type( 'estimate', $args );
+		//register_post_type( 'estimate', $args );
+
+		$labels = array(
+			'name'               => 'Xây dựng',
+			'singular_name'      => 'Xây dựng',
+			'add_new'            => 'Thêm mới Xây dựng',
+			'add_new_item'       => 'Thêm mới Xây dựng',
+			'edit_item'          => 'Sửa Xây dựng',
+			'new_item'           => 'Xây dựng mới',
+			'view_item'          => 'Xem Xây dựng',
+			'search_items'       => 'Tìm Xây dựng',
+			'not_found'          => 'Không có Xây dựng nào',
+			'not_found_in_trash' => 'Không có Xây dựng nào trong Thùng rác',
+			'parent_item_colon'  => 'Xây dựng cấp trên:',
+			'menu_name'          => 'Xây dựng',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 4,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'econstruction',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'econstruction', $args );
+
+		$labels = array(
+			'name'               => 'Đồ gỗ',
+			'singular_name'      => 'Đồ gỗ',
+			'add_new'            => 'Thêm mới Đồ gỗ',
+			'add_new_item'       => 'Thêm mới Đồ gỗ',
+			'edit_item'          => 'Sửa Đồ gỗ',
+			'new_item'           => 'Đồ gỗ mới',
+			'view_item'          => 'Xem Đồ gỗ',
+			'search_items'       => 'Tìm Đồ gỗ',
+			'not_found'          => 'Không có Đồ gỗ nào',
+			'not_found_in_trash' => 'Không có Đồ gỗ nào trong Thùng rác',
+			'parent_item_colon'  => 'Đồ gỗ cấp trên:',
+			'menu_name'          => 'Đồ gỗ',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 4,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'efurniture',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'efurniture', $args );
 
 		$labels = array(
 			'name'               => 'Đối tác',
@@ -306,11 +398,11 @@ class Custom_Types {
 			'hierarchical'        => false,
 			//'description'         => 'description',
 			//'taxonomies'          => array('contractor_cat'),
-			'public'              => true,
-			'show_ui'             => true,
+			'public'              => false,
+			'show_ui'             => false,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -319,7 +411,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'partner',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -329,7 +422,7 @@ class Custom_Types {
 				//'page-attributes',
 			),
 		);
-		register_post_type( 'partner', $args );
+		//register_post_type( 'partner', $args );
 
 		$labels = array(
 			'name'               => 'Hồ sơ',
@@ -354,7 +447,7 @@ class Custom_Types {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
-			'menu_position'       => 6,
+			'menu_position'       => 4,
 			'menu_icon'           => 'dashicons-admin-post',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
@@ -363,7 +456,8 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'document',
+			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
 				'thumbnail',
@@ -374,6 +468,96 @@ class Custom_Types {
 			),
 		);
 		register_post_type( 'document', $args );
+
+		$labels = array(
+			'name'               => 'Hợp đồng',
+			'singular_name'      => 'Hợp đồng',
+			'add_new'            => 'Thêm mới Hợp đồng',
+			'add_new_item'       => 'Thêm mới Hợp đồng',
+			'edit_item'          => 'Sửa Hợp đồng',
+			'new_item'           => 'Hợp đồng mới',
+			'view_item'          => 'Xem Hợp đồng',
+			'search_items'       => 'Tìm Hợp đồng',
+			'not_found'          => 'Không có Hợp đồng nào',
+			'not_found_in_trash' => 'Không có Hợp đồng nào trong Thùng rác',
+			'parent_item_colon'  => 'Hợp đồng cấp trên:',
+			'menu_name'          => 'Hợp đồng',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 4,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'contract',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'contract', $args );
+
+		$labels = array(
+			'name'               => 'Nhóm zalo',
+			'singular_name'      => 'Nhóm zalo',
+			'add_new'            => 'Thêm mới Nhóm zalo',
+			'add_new_item'       => 'Thêm mới Nhóm zalo',
+			'edit_item'          => 'Sửa Nhóm zalo',
+			'new_item'           => 'Nhóm zalo mới',
+			'view_item'          => 'Xem Nhóm zalo',
+			'search_items'       => 'Tìm Nhóm zalo',
+			'not_found'          => 'Không có Nhóm zalo nào',
+			'not_found_in_trash' => 'Không có Nhóm zalo nào trong Thùng rác',
+			'parent_item_colon'  => 'Nhóm zalo cấp trên:',
+			'menu_name'          => 'Nhóm zalo',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 4,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'gzalo',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'gzalo', $args );
 	}
 
 	/**
@@ -387,22 +571,18 @@ class Custom_Types {
 
 		remove_menu_page( 'edit-comments.php' ); // ẩn menu Comments
 		remove_menu_page( 'edit.php' ); // ẩn menu Blog posts
+		remove_menu_page( 'fw-extensions' ); // ẩn menu Unyson
+		remove_menu_page( 'separator1' ); // ẩn menu divider
 
-		// if ( isset( $menu[5] ) ) {
-		// 	// $menu[5][0] = 'Sản phẩm';
-		// }
-		
 		//debug_log($submenu);
 
-		if ( isset( $submenu['edit.php'] ) ) {
+		// if ( isset( $submenu['edit.php'] ) ) {
 			
 			// $submenu['edit.php'][5][0] = 'Xem tất cả';
 			// $submenu['edit.php'][10][0] = 'Tạo Sản phẩm mới';
-			// if(isset($submenu['edit.php'][16]))
-			// 	unset($submenu['edit.php'][16]);
-		}
+		// }
 
-		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_categories', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 4 );
+		add_menu_page( 'Chủ đầu tư', 'Chủ đầu tư', 'manage_passwordss', 'edit-tags.php?taxonomy=passwords', null, 'dashicons-businessperson', 2 );
 	}
 
 	public function _theme_action_register_taxonomy() {
@@ -436,7 +616,7 @@ class Custom_Types {
 			'show_in_nav_menus' => true,
 			'show_tagcloud' => false,
 		);
-		register_taxonomy( 'location', 'post', $args ); // our new 'format' taxonomy
+		//register_taxonomy( 'location', 'post', $args ); // our new 'format' taxonomy
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
@@ -458,10 +638,17 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_cats',
+				'edit_terms'   => 'edit_contractor_cats',
+				'delete_terms' => 'delete_contractor_cats',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
 		);
+		//update_option( 'default_term_contractor_cat', 1937 );
 		register_taxonomy( 'contractor_cat', 'contractor', $args ); // our new 'format' taxonomy
 
 		// Add new taxonomy, make it hierarchical (like categories)
@@ -485,6 +672,12 @@ class Custom_Types {
 			'query_var'         => true,
 			//'rewrite'           => ['slug'=>'hang-muc'],
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_ratings',
+				'edit_terms'   => 'edit_contractor_ratings',
+				'delete_terms' => 'delete_contractor_ratings',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -510,6 +703,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => true,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contractor_classs',
+				'edit_terms'   => 'edit_contractor_classs',
+				'delete_terms' => 'edit_contractor_classs',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -543,6 +742,12 @@ class Custom_Types {
 			'show_admin_column' => false,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_passwordss',
+				'edit_terms'   => 'edit_passwordss',
+				'delete_terms' => 'delete_passwordss',
+				'assign_terms' => 'edit_contractor_pages',
+			],
 			'public' => false,
 			'show_in_menu' => false,
 			'show_in_nav_menus' => false,
@@ -550,7 +755,7 @@ class Custom_Types {
 			'default_term' => ($default>0)?$default:$default_password
 			
 		);
-		register_taxonomy( 'passwords', ['contractor_page'], $args );
+		register_taxonomy( 'passwords', 'contractor_page', $args );
 		
 		// our new 'format' taxonomy
 
@@ -582,6 +787,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_provinces',
+				'edit_terms'   => 'edit_provinces',
+				'delete_terms' => 'delete_provinces',
+				'assign_terms' => 'edit_contractors',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -589,7 +800,7 @@ class Custom_Types {
 			
 		);
 		
-		register_taxonomy( 'province', ['contractor'], $args );
+		register_taxonomy( 'province', 'contractor', $args );
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
@@ -602,6 +813,7 @@ class Custom_Types {
 			'add_new_item'      => 'Thêm Nhóm dự toán mới',
 			'new_item_name'     => 'Nhóm dự toán mới',
 			'menu_name'         => 'Nhóm dự toán',
+			'parent_item'         => 'Nhóm cấp trên',
 		);
 
 		$args = array(
@@ -611,11 +823,83 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_estimate_cats',
+				'edit_terms'   => 'edit_estimate_cats',
+				'delete_terms' => 'delete_estimate_cats',
+				'assign_terms' => 'edit_estimates',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'estimate_cat', 'estimate', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm Xây dựng',
+			'singular_name'     => 'Nhóm Xây dựng',
+			'search_items'      => 'Tìm Nhóm Xây dựng',
+			'all_items'         => 'Tất cả Nhóm Xây dựng',
+			'edit_item'         => 'Sửa Nhóm Xây dựng',
+			'update_item'       => 'Cập nhật Nhóm Xây dựng',
+			'add_new_item'      => 'Thêm Nhóm Xây dựng mới',
+			'new_item_name'     => 'Nhóm Xây dựng mới',
+			'menu_name'         => 'Nhóm Xây dựng',
+			'parent_item'         => 'Nhóm cấp trên',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_econstruction_cats',
+				'edit_terms'   => 'edit_econstruction_cats',
+				'delete_terms' => 'delete_econstruction_cats',
+				'assign_terms' => 'edit_econstructions',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'econstruction_cat', 'econstruction', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm Đồ gỗ',
+			'singular_name'     => 'Nhóm Đồ gỗ',
+			'search_items'      => 'Tìm Nhóm Đồ gỗ',
+			'all_items'         => 'Tất cả Nhóm Đồ gỗ',
+			'edit_item'         => 'Sửa Nhóm Đồ gỗ',
+			'update_item'       => 'Cập nhật Nhóm Đồ gỗ',
+			'add_new_item'      => 'Thêm Nhóm Đồ gỗ mới',
+			'new_item_name'     => 'Nhóm Đồ gỗ mới',
+			'menu_name'         => 'Nhóm Đồ gỗ',
+			'parent_item'         => 'Nhóm cấp trên',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_efurniture_cats',
+				'edit_terms'   => 'edit_efurniture_cats',
+				'delete_terms' => 'delete_efurniture_cats',
+				'assign_terms' => 'edit_efurnitures',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'efurniture_cat', 'efurniture', $args ); // our new 'format' taxonomy
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
@@ -637,6 +921,12 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_partner_cats',
+				'edit_terms'   => 'edit_partner_cats',
+				'delete_terms' => 'delete_partner_cats',
+				'assign_terms' => 'edit_partners',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
@@ -663,11 +953,81 @@ class Custom_Types {
 			'show_admin_column' => true,
 			'query_var'         => false,
 			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_document_cats',
+				'edit_terms'   => 'edit_document_cats',
+				'delete_terms' => 'delete_document_cats',
+				'assign_terms' => 'edit_documents',
+			],
 			'public' => false,
 			'show_in_nav_menus' => false,
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'document_cat', 'document', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Loại hợp đồng',
+			'singular_name'     => 'Loại hợp đồng',
+			'search_items'      => 'Tìm Loại hợp đồng',
+			'all_items'         => 'Tất cả Loại hợp đồng',
+			'edit_item'         => 'Sửa Loại hợp đồng',
+			'update_item'       => 'Cập nhật Loại hợp đồng',
+			'add_new_item'      => 'Thêm Loại hợp đồng mới',
+			'new_item_name'     => 'Loại hợp đồng mới',
+			'menu_name'         => 'Loại hợp đồng',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_contract_cats',
+				'edit_terms'   => 'edit_contract_cats',
+				'delete_terms' => 'delete_contract_cats',
+				'assign_terms' => 'edit_contracts',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'contract_cat', 'contract', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Phân nhóm zalo',
+			'singular_name'     => 'Phân nhóm zalo',
+			'search_items'      => 'Tìm Phân nhóm zalo',
+			'all_items'         => 'Tất cả Phân nhóm zalo',
+			'edit_item'         => 'Sửa Phân nhóm zalo',
+			'update_item'       => 'Cập nhật Phân nhóm zalo',
+			'add_new_item'      => 'Thêm Phân nhóm zalo mới',
+			'new_item_name'     => 'Phân nhóm zalo mới',
+			'menu_name'         => 'Phân nhóm zalo',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_gzalo_cats',
+				'edit_terms'   => 'edit_gzalo_cats',
+				'delete_terms' => 'delete_gzalo_cats',
+				'assign_terms' => 'edit_contracts',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'gzalo_cat', 'gzalo', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {

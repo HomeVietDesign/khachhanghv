@@ -39,7 +39,7 @@ class Admin_Estimate_Cat {
 		// debug_log($taxonomy);
 		if(($hook=='edit-tags.php' || $hook=='term.php') && $taxonomy=='estimate_cat') {
 			wp_enqueue_style( 'manage-estimate_cat', THEME_URI.'/assets/css/manage-estimate_cat.css', [], '' );
-			//wp_enqueue_script('manage-estimate_cat', THEME_URI.'/assets/js/manage-estimate_cat.js', array('jquery'), '');
+			wp_enqueue_script('manage-estimate_cat', THEME_URI.'/assets/js/manage-estimate_cat.js', array('jquery'), '');
 		}
 	}
 

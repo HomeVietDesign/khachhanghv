@@ -260,7 +260,7 @@ class Admin_Contractor_Cat {
 
 	public function auto_slug($term_id) {
 		global $wpdb;
-		$wpdb->update( $wpdb->terms, ['slug' => current_time( 'U' )], ['term_id' => $term_id] );
+		$wpdb->update( $wpdb->terms, ['slug' => current_time( 'Ymd-His' )], ['term_id' => $term_id] );
 		wp_cache_delete( $term_id, 'terms' );
 	}
 

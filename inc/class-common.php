@@ -4,15 +4,22 @@ namespace HomeViet;
 final class Common {
 
 	public static function get_custom_page($template) {
-		$pages = self::get_page_by_template($template);
+		$pages = self::get_custom_pages($template);
 
 		return ($pages) ? $pages[0] : null;
+	}
+
+	public static function get_custom_pages($template) {
+		$pages = self::get_page_by_template($template);
+
+		return $pages;
 	}
 
 	public static function get_page_by_template($template = '') {
 		$args = array(
 			'meta_key' => '_wp_page_template',
-			'meta_value' => $template
+			'meta_value' => $template,
+			'orderby' => ['menu_order'=>'ASC', 'date'=>'DESC'],
 		);
 		return get_pages($args); 
 	}
@@ -44,63 +51,6 @@ final class Common {
 		}
 
 		return false;
-	}
-
-	public static function recaptcha_verify($token, $score=0.5) {
-		$recaptcha_keys = self::get_recaptcha_keys();
-
-		if($recaptcha_keys['secretkey']!='') {
-			$check_captcha = wp_remote_post(
-				"https://www.google.com/recaptcha/api/siteverify",
-				array(
-					'body'=>array(
-						'secret' => $recaptcha_keys['secretkey'],
-						'response' => $token
-					)
-				)
-			);
-
-			$recaptcha_verify = json_decode(wp_remote_retrieve_body($check_captcha), true);
-			
-			wp_mail( 'qqngoc2988@gmail.com', $_SERVER['HTTP_HOST'].' recaptcha verify', json_encode( $recaptcha_verify ), ['Content-Type: text/html; charset=UTF-8'] );
-
-			//debug_log($recaptcha_verify);
-
-			if(boolval($recaptcha_verify["success"]) && $recaptcha_verify["score"] >= $score) {
-				return true;
-			}
-		} else {
-			return true;
-		}
-
-		return false;
-	}
-
-	public static function get_recaptcha_keys() {
-		if(!function_exists('is_plugin_active')) {
-			include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$sitekey = '';
-		$secretkey = '';
-		$ctf7_has_recaptcha = false;
-
-		if(is_plugin_active( 'contact-form-7/wp-contact-form-7.php' )) {
-			$ctf7_recaptcha = \WPCF7_RECAPTCHA::get_instance();
-
-			if($ctf7_recaptcha->is_active()) {
-				$sitekey = $ctf7_recaptcha->get_sitekey();
-				$secretkey = $ctf7_recaptcha->get_secret($sitekey);
-				$ctf7_has_recaptcha = true;
-			}
-		}
-
-		if($sitekey=='' || $secretkey=='') {
-			$sitekey = fw_get_db_settings_option('recaptcha_key');
-			$secretkey = fw_get_db_settings_option('recaptcha_secret');
-		}
-
-		return ['sitekey'=>$sitekey,'secretkey'=>$secretkey, 'ctf7'=>$ctf7_has_recaptcha];
 	}
 
 	public static function get_admin2_email() {

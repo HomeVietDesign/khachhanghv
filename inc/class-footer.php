@@ -20,36 +20,11 @@ class Footer {
 		<?php
 	}
 
-	public function logout_post_password() {
-		global $current_password;
-
-		//if(is_singular('contractor_page') || is_page_template( 'estimate.php' ) || is_page_template( 'estimate-manage.php' )) {
-			?>
-			<div class="contractor-actions-fixed position-fixed d-flex">
-			<?php
-			if($current_password) {
-				?>
-				<button class="logout-post-password btn btn-primary me-1" data-hash="<?=esc_attr(COOKIEHASH)?>" data-url="<?=esc_url(fw_current_url())?>" title="Nhập lại pass">
-					<div class="d-flex align-items-center"><span class="dashicons dashicons-unlock"></span><span class="ms-1"><?php echo esc_html($current_password->description); ?></span></div>
-				</button>
-				<?php		
-			}
-			?>
-			</div>
-			<?php
-			
-		//}
-	}
-
 	public function site_footer() {
 	
 		?>
 		<footer id="site-footer" class="py-5">
-		<?php
-		
-		\HomeViet\Footer::display_widgets();
-		
-		?>
+			<?php \HomeViet\Footer::display_widgets(); ?>
 		</footer>
 		<?php
 	}
@@ -94,7 +69,7 @@ class Footer {
 		global $popup;
 		if( !$popup ) {
 			add_action('wp_footer', [$this, 'site_footer'], 10);
-			add_action('wp_footer', [$this, 'logout_post_password'], 15);
+			//add_action('wp_footer', [$this, 'logout_post_password'], 15);
 		}
 	}
 
