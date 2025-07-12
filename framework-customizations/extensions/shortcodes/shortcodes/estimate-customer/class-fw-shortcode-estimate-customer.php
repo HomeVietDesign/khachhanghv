@@ -218,7 +218,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="estimate_attachment" name="estimate_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control">
+								<!-- <input type="file" id="estimate_attachment" name="estimate_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control"> -->
+								<input type="file" id="estimate_attachment" name="estimate_attachment" class="form-control">
 							</div>
 						</label>
 					</div>

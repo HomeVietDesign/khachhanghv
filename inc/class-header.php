@@ -225,6 +225,29 @@ class Header {
 				$menu_html .= '</li>';
 			}
 
+			// $econstruction_page = Common::get_custom_page('econstruction.php');
+			// if( $econstruction_page && current_user_can('econstruction_view') ) {
+			// 	$econstruction_page_url = get_permalink($econstruction_page);
+			// 	$this_template = is_page_template('econstruction.php') ? true : false;
+			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+			// 	if($this_template) {
+			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
+			// 	}
+			// 	$menu_html .= '">';
+			// 	$menu_html .= '<a href="#">'.esc_html($econstruction_page->post_title).'</a>';
+			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
+			// 	foreach ($passwords as $key => $value) {
+			// 		$menu_html .= '<li class="menu-item';
+			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+			// 		$menu_html .= '">';
+			// 		$menu_html .= '<a href="'.esc_url($econstruction_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+			// 		$menu_html .= '</li>';
+			// 	}
+			// 	$menu_html .= '</ul>';
+			// 	$menu_html .= '</li>';
+			// }
+
 			$estimate_furniture_page = Common::get_custom_page('estimate-furniture.php');
 			if( $estimate_furniture_page && current_user_can('estimate_furniture_view') ) {
 				$estimate_furniture_page_url = get_permalink($estimate_furniture_page);
@@ -248,51 +271,28 @@ class Header {
 				$menu_html .= '</li>';
 			}
 
-			$econstruction_page = Common::get_custom_page('econstruction.php');
-			if( $econstruction_page && current_user_can('econstruction_view') ) {
-				$econstruction_page_url = get_permalink($econstruction_page);
-				$this_template = is_page_template('econstruction.php') ? true : false;
-				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-				if($this_template) {
-					$menu_html .= ' current-menu-ancestor current-menu-parent';
-				}
-				$menu_html .= '">';
-				$menu_html .= '<a href="#">'.esc_html($econstruction_page->post_title).'</a>';
-				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-				$menu_html .= '<ul class="sub-menu position-absolute">';
-				foreach ($passwords as $key => $value) {
-					$menu_html .= '<li class="menu-item';
-					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($econstruction_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-					$menu_html .= '</li>';
-				}
-				$menu_html .= '</ul>';
-				$menu_html .= '</li>';
-			}
-
-			$efurniture_page = Common::get_custom_page('efurniture.php');
-			if( $efurniture_page && current_user_can('efurniture_view') ) {
-				$efurniture_page_url = get_permalink($efurniture_page);
-				$this_template = is_page_template('efurniture.php') ? true : false;
-				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-				if($this_template) {
-					$menu_html .= ' current-menu-ancestor current-menu-parent';
-				}
-				$menu_html .= '">';
-				$menu_html .= '<a href="#">'.esc_html($efurniture_page->post_title).'</a>';
-				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-				$menu_html .= '<ul class="sub-menu position-absolute">';
-				foreach ($passwords as $key => $value) {
-					$menu_html .= '<li class="menu-item';
-					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($efurniture_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-					$menu_html .= '</li>';
-				}
-				$menu_html .= '</ul>';
-				$menu_html .= '</li>';
-			}
+			// $efurniture_page = Common::get_custom_page('efurniture.php');
+			// if( $efurniture_page && current_user_can('efurniture_view') ) {
+			// 	$efurniture_page_url = get_permalink($efurniture_page);
+			// 	$this_template = is_page_template('efurniture.php') ? true : false;
+			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+			// 	if($this_template) {
+			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
+			// 	}
+			// 	$menu_html .= '">';
+			// 	$menu_html .= '<a href="#">'.esc_html($efurniture_page->post_title).'</a>';
+			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
+			// 	foreach ($passwords as $key => $value) {
+			// 		$menu_html .= '<li class="menu-item';
+			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+			// 		$menu_html .= '">';
+			// 		$menu_html .= '<a href="'.esc_url($efurniture_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+			// 		$menu_html .= '</li>';
+			// 	}
+			// 	$menu_html .= '</ul>';
+			// 	$menu_html .= '</li>';
+			// }
 
 			// $partner_page = Common::get_custom_page('partner.php');
 			// if( $partner_page && current_user_can('partner_view') ) {
@@ -362,7 +362,29 @@ class Header {
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
 			}
-	
+			
+			$gzalo_page = Common::get_custom_page('gzalo.php');
+			if( $gzalo_page && current_user_can('gzalo_view') ) {
+				$gzalo_page_url = get_permalink($gzalo_page);
+				$this_template = is_page_template('gzalo.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($gzalo_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($gzalo_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
 		}
 
 		return $menu_html;

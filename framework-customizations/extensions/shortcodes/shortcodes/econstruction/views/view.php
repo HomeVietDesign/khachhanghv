@@ -24,9 +24,9 @@ if($econstruction_cats && $current_client) {
 		?>
 		<section class="accordion-item mb-3">
 			<h2 class="accordion-header">
-				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$value->term_id?>" aria-expanded="true" aria-controls="panels-<?=$value->term_id?>"><?=esc_html($value->name)?></button>
 			</h2>
-			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
+			<div id="panels-<?=$value->term_id?>" class="accordion-collapse collapse show">
   				<div class="accordion-body">
 					<div class="row justify-content-center">
 					<?php
@@ -125,10 +125,10 @@ if($econstruction_cats && $current_client) {
 								$item_class .= ' hide';
 							}
 							?>
-							<div class="col-lg-3 col-md-6 econstruction-item mb-4<?=$item_class?>">
+							<div class="col-lg-3 col-md-6 estimate-item econstruction-item mb-4<?=$item_class?>">
 								<div class="econstruction econstruction-<?=$econstruction_id?> border border-dark h-100 bg-black">
 									<div class="row g-0 progressing-bar econstruction-progress text-center text-yellow">
-										<div class="col econstruction-required<?php echo (isset($econstruction_data['required']) && $econstruction_data['required']!='')?' on':''; ?>">
+										<div class="col estimate-required econstruction-required<?php echo (isset($econstruction_data['required']) && $econstruction_data['required']!='')?' on':''; ?>">
 										<?php
 										if(isset($econstruction_data['required']) && $econstruction_data['required']!='') {
 											?>
@@ -139,7 +139,7 @@ if($econstruction_cats && $current_client) {
 										}
 										?>
 										</div>
-										<div class="col econstruction-received<?php echo (isset($econstruction_data['received']) && $econstruction_data['received']!='')?' on':''; ?>">
+										<div class="col estimate-received econstruction-received<?php echo (isset($econstruction_data['received']) && $econstruction_data['received']!='')?' on':''; ?>">
 											<?php
 											if(isset($econstruction_data['received']) && $econstruction_data['received']!='') {
 												?>
@@ -150,7 +150,7 @@ if($econstruction_cats && $current_client) {
 											}
 											?>
 										</div>
-										<div class="col econstruction-completed<?php echo (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?' on':''; ?>">
+										<div class="col estimate-completed econstruction-completed<?php echo (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?' on':''; ?>">
 											<?php
 											if(isset($econstruction_data['completed']) && $econstruction_data['completed']!='') {
 												?>
@@ -161,7 +161,7 @@ if($econstruction_cats && $current_client) {
 											}
 											?>
 										</div>
-										<div class="col econstruction-sent<?php echo (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?' on':''; ?>">
+										<div class="col estimate-sent econstruction-sent<?php echo (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?' on':''; ?>">
 											<?php
 											if(isset($econstruction_data['sent']) && $econstruction_data['sent']!='') {
 												?>
@@ -200,7 +200,7 @@ if($econstruction_cats && $current_client) {
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $econstruction_id, 'full' ); ?></span>
 
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="econstruction-quote<?php echo (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?' on':''; ?>">
+											<div class="estimate-quote econstruction-quote<?php echo (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes') {
 													?>

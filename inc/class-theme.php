@@ -23,6 +23,10 @@ class Theme {
 			include_once THEME_DIR.'/inc/official-facebook-pixel/class-official-facebook-pixel.php';
 		}
 
+		if(defined('CUSTOMTAXORDER_VER')) {
+			include_once THEME_DIR.'/inc/custom-taxonomy-order-ne/custom-taxonomy-order-ne.php';
+		}
+
 		include_once THEME_DIR.'/inc/class-authentication.php';
 		
 		if(unyson_exists()) {
@@ -51,7 +55,7 @@ class Theme {
 		// add_action('after_switch_theme', [$this, 'theme_activation']);
 		// add_action('switch_theme', [$this, 'theme_deactivation']);
 
-		add_action('after_setup_theme', [$this, 'theme_activation']);
+		//add_action('after_setup_theme', [$this, 'theme_activation']);
 		//add_action('after_setup_theme', [$this, 'theme_deactivation']);
 	}
 
@@ -61,6 +65,27 @@ class Theme {
 
 		
 		$admin_role = get_role( 'administrator' );
+
+		// $admin_role->add_cap('edit_gzalo');
+		// $admin_role->add_cap('read_gzalo');
+		// $admin_role->add_cap('delete_gzalo');
+		// $admin_role->add_cap('edit_gzalos');
+		// $admin_role->add_cap('edit_others_gzalos');
+		// $admin_role->add_cap('delete_gzalos');
+		// $admin_role->add_cap('publish_gzalos');
+		// $admin_role->add_cap('read_private_gzalos');
+		// $admin_role->add_cap('delete_private_gzalos');
+		// $admin_role->add_cap('delete_published_gzalos');
+		// $admin_role->add_cap('delete_others_gzalos');
+		// $admin_role->add_cap('edit_private_gzalos');
+		// $admin_role->add_cap('edit_published_gzalos');
+		
+		// $admin_role->add_cap('manage_gzalo_cats');
+		// $admin_role->add_cap('edit_gzalo_cats');
+		// $admin_role->add_cap('delete_gzalo_cats');
+
+		// $admin_role->add_cap('gzalo_view');
+		// $admin_role->add_cap('gzalo_edit');
 
 		// $admin_role->add_cap('estimate_construction_view');
 		// $admin_role->add_cap('estimate_construction_edit');
@@ -268,6 +293,19 @@ class Theme {
 		
 		/*-------------------------------------------*/
 		// $ngochv = get_user_by( 'login', 'ngochv' );
+
+		// $ngochv->add_cap('econstruction_view');
+		// $ngochv->add_cap('econstruction_edit');
+
+		// $ngochv->add_cap('efurniture_view');
+		// $ngochv->add_cap('efurniture_edit');
+
+		// $ngochv->add_cap('estimate_construction_view');
+		// $ngochv->add_cap('estimate_construction_edit');
+
+		// $ngochv->add_cap('estimate_furniture_view');
+		// $ngochv->add_cap('estimate_furniture_edit');
+
 		// $ngochv->add_cap('edit_contractors');
 		// $ngochv->add_cap('edit_others_contractors');
 		// $ngochv->add_cap('estimate_manage_view');
@@ -337,8 +375,26 @@ class Theme {
 		// $nhanhv->add_cap('estimate_customer_edit');
 		
 		// $thaotde = get_user_by( 'login', 'thaotde' );
-		// $thaotde->add_cap('estimate_contractor_view');
-		// $thaotde->add_cap('estimate_contractor_edit');
+
+		// $thaotde->add_cap('econstruction_view');
+		// $thaotde->add_cap('econstruction_edit');
+
+		// $thaotde->remove_cap('estimate_contractor_view');
+		// $thaotde->remove_cap('estimate_contractor_edit');
+
+		// $thaotde->add_cap('estimate_construction_view');
+		// $thaotde->add_cap('estimate_construction_edit');
+
+		// $thaotde->remove_cap('estimate_furniture_view');
+		// $thaotde->remove_cap('estimate_furniture_edit');
+
+		// $noithathv = get_user_by( 'login', 'noithathv' );
+
+		// $noithathv->add_cap('efurniture_view');
+		// $noithathv->add_cap('efurniture_edit');
+
+		// $noithathv->add_cap('estimate_furniture_view');
+		// $noithathv->add_cap('estimate_furniture_edit');
 		
 	}
 

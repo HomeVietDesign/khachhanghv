@@ -24,9 +24,9 @@ if($efurniture_cats && $current_client) {
 		?>
 		<section class="accordion-item mb-3">
 			<h2 class="accordion-header">
-				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$value->term_id?>" aria-expanded="true" aria-controls="panels-<?=$value->term_id?>"><?=esc_html($value->name)?></button>
 			</h2>
-			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
+			<div id="panels-<?=$value->term_id?>" class="accordion-collapse collapse show">
   				<div class="accordion-body">
 					<div class="row justify-content-center">
 					<?php
@@ -55,7 +55,7 @@ if($efurniture_cats && $current_client) {
 								'file_id' => (!empty($default_efurniture_file))?$default_efurniture_file['attachment_id']:'',
 							];
 
-							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'file_id'=>'', 'quote'=>''];
 
 							if(empty($efurniture_data['value'])) $efurniture_data['value'] = $default_data['value'];
 							if(empty($efurniture_data['unit'])) $efurniture_data['unit'] = $default_data['unit'];
@@ -125,10 +125,10 @@ if($efurniture_cats && $current_client) {
 								$item_class .= ' hide';
 							}
 							?>
-							<div class="col-lg-3 col-md-6 efurniture-item mb-4<?=$item_class?>">
+							<div class="col-lg-3 col-md-6 estimate-item efurniture-item mb-4<?=$item_class?>">
 								<div class="efurniture efurniture-<?=$efurniture_id?> border border-dark h-100 bg-black">
 									<div class="row g-0 progressing-bar efurniture-progress text-center text-yellow">
-										<div class="col efurniture-required<?php echo (isset($efurniture_data['required']) && $efurniture_data['required']!='')?' on':''; ?>">
+										<div class="col estimate-required efurniture-required<?php echo (isset($efurniture_data['required']) && $efurniture_data['required']!='')?' on':''; ?>">
 										<?php
 										if(isset($efurniture_data['required']) && $efurniture_data['required']!='') {
 											?>
@@ -139,7 +139,7 @@ if($efurniture_cats && $current_client) {
 										}
 										?>
 										</div>
-										<div class="col efurniture-received<?php echo (isset($efurniture_data['received']) && $efurniture_data['received']!='')?' on':''; ?>">
+										<div class="col estimate-received efurniture-received<?php echo (isset($efurniture_data['received']) && $efurniture_data['received']!='')?' on':''; ?>">
 											<?php
 											if(isset($efurniture_data['received']) && $efurniture_data['received']!='') {
 												?>
@@ -150,7 +150,7 @@ if($efurniture_cats && $current_client) {
 											}
 											?>
 										</div>
-										<div class="col efurniture-completed<?php echo (isset($efurniture_data['completed']) && $efurniture_data['completed']!='')?' on':''; ?>">
+										<div class="col estimate-completed efurniture-completed<?php echo (isset($efurniture_data['completed']) && $efurniture_data['completed']!='')?' on':''; ?>">
 											<?php
 											if(isset($efurniture_data['completed']) && $efurniture_data['completed']!='') {
 												?>
@@ -161,7 +161,7 @@ if($efurniture_cats && $current_client) {
 											}
 											?>
 										</div>
-										<div class="col efurniture-sent<?php echo (isset($efurniture_data['sent']) && $efurniture_data['sent']!='')?' on':''; ?>">
+										<div class="col estimate-sent efurniture-sent<?php echo (isset($efurniture_data['sent']) && $efurniture_data['sent']!='')?' on':''; ?>">
 											<?php
 											if(isset($efurniture_data['sent']) && $efurniture_data['sent']!='') {
 												?>
@@ -200,7 +200,7 @@ if($efurniture_cats && $current_client) {
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $efurniture_id, 'full' ); ?></span>
 
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="efurniture-quote<?php echo (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?' on':''; ?>">
+											<div class="estimate-quote efurniture-quote<?php echo (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes') {
 													?>
@@ -248,9 +248,21 @@ if($efurniture_cats && $current_client) {
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center efurniture-url mb-3">
 											<?php
-											if($efurniture_data['url']) {
+											if(isset($efurniture_data['url']) && $efurniture_data['url']) {
 												?>
 												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($efurniture_data['url'])?>" target="_blank">Xem chi tiết</a>
+												<?php
+											}
+
+											if(isset($efurniture_data['draw_id']) && $efurniture_data['draw_id']) {
+												?>
+												<a class="btn btn-sm btn-warning my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($efurniture_data['draw_id']))?>" target="_blank">Bản vẽ</a>
+												<?php
+											}
+
+											if(isset($efurniture_data['slideshow_id']) && $efurniture_data['slideshow_id']) {
+												?>
+												<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($efurniture_data['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
 												<?php
 											}
 											?>

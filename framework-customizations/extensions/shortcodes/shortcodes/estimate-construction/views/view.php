@@ -56,9 +56,9 @@ if($current_client) {
 						?>
 						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3">
 							<h2 class="accordion-header position-relative">
-								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$value->term_id?>" aria-expanded="true" aria-controls="panels-<?=$value->term_id?>"><?=esc_html($value->name)?></button>
 							</h2>
-							<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
+							<div id="panels-<?=$value->term_id?>" class="accordion-collapse collapse show">
 			      				<div class="accordion-body">
 									<div class="items row justify-content-center">
 									<?php

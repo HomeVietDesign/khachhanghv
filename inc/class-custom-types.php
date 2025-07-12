@@ -301,7 +301,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Xây dựng nào',
 			'not_found_in_trash' => 'Không có Xây dựng nào trong Thùng rác',
 			'parent_item_colon'  => 'Xây dựng cấp trên:',
-			'menu_name'          => 'Xây dựng (bỏ)',
+			'menu_name'          => 'Xây dựng',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -346,7 +346,7 @@ class Custom_Types {
 			'not_found'          => 'Không có Đồ gỗ nào',
 			'not_found_in_trash' => 'Không có Đồ gỗ nào trong Thùng rác',
 			'parent_item_colon'  => 'Đồ gỗ cấp trên:',
-			'menu_name'          => 'Đồ gỗ (bỏ)',
+			'menu_name'          => 'Đồ gỗ',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -513,6 +513,51 @@ class Custom_Types {
 			),
 		);
 		register_post_type( 'contract', $args );
+
+		$labels = array(
+			'name'               => 'Nhóm zalo',
+			'singular_name'      => 'Nhóm zalo',
+			'add_new'            => 'Thêm mới Nhóm zalo',
+			'add_new_item'       => 'Thêm mới Nhóm zalo',
+			'edit_item'          => 'Sửa Nhóm zalo',
+			'new_item'           => 'Nhóm zalo mới',
+			'view_item'          => 'Xem Nhóm zalo',
+			'search_items'       => 'Tìm Nhóm zalo',
+			'not_found'          => 'Không có Nhóm zalo nào',
+			'not_found_in_trash' => 'Không có Nhóm zalo nào trong Thùng rác',
+			'parent_item_colon'  => 'Nhóm zalo cấp trên:',
+			'menu_name'          => 'Nhóm zalo',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 4,
+			'menu_icon'           => 'dashicons-admin-post',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'gzalo',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'gzalo', $args );
 	}
 
 	/**
@@ -951,6 +996,38 @@ class Custom_Types {
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'contract_cat', 'contract', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Phân nhóm zalo',
+			'singular_name'     => 'Phân nhóm zalo',
+			'search_items'      => 'Tìm Phân nhóm zalo',
+			'all_items'         => 'Tất cả Phân nhóm zalo',
+			'edit_item'         => 'Sửa Phân nhóm zalo',
+			'update_item'       => 'Cập nhật Phân nhóm zalo',
+			'add_new_item'      => 'Thêm Phân nhóm zalo mới',
+			'new_item_name'     => 'Phân nhóm zalo mới',
+			'menu_name'         => 'Phân nhóm zalo',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_gzalo_cats',
+				'edit_terms'   => 'edit_gzalo_cats',
+				'delete_terms' => 'delete_gzalo_cats',
+				'assign_terms' => 'edit_contracts',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'gzalo_cat', 'gzalo', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {

@@ -580,11 +580,32 @@ window.addEventListener('DOMContentLoaded', function(){
 			});
 		});
 
+		$(document).on('input', '#estimate_furniture_draw', function() {
+			let $input = $(this);
+			$input.closest('[for="estimate_furniture_draw"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+		$(document).on('click', '#estimate_furniture_remove_draw', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#estimate_furniture_draw_id').val('');
+			$this.closest('.input-group').remove();
+		});
+
+		$(document).on('input', '#estimate_furniture_slideshow', function() {
+			let $input = $(this);
+			$input.closest('[for="estimate_furniture_slideshow"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+		$(document).on('click', '#estimate_furniture_remove_slideshow', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#estimate_furniture_slideshow_id').val('');
+			$this.closest('.input-group').remove();
+		});
+
 		$(document).on('input', '#estimate_furniture_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="estimate_furniture_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
-
 		$(document).on('click', '#estimate_furniture_remove_attachment', function(e){
 			e.preventDefault();
 			let $this = $(this);
@@ -1030,6 +1051,30 @@ window.addEventListener('DOMContentLoaded', function(){
 			let $input = $(this);
 			$input.closest('[for="efurniture_file"]').find('.form-control').text($input.val().split('\\').pop());
 		});
+
+		$(document).on('click', '#efurniture_remove_slideshow', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#efurniture_slideshow_id').val('');
+			$this.closest('.input-group').remove();
+		});
+		$(document).on('input', '#efurniture_slideshow', function() {
+			let $input = $(this);
+			$input.closest('[for="efurniture_slideshow"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+		$(document).on('click', '#efurniture_remove_draw', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#efurniture_draw_id').val('');
+			$this.closest('.input-group').remove();
+		});
+		$(document).on('input', '#efurniture_draw', function() {
+			let $input = $(this);
+			$input.closest('[for="efurniture_draw"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
+
 		// edit partner
 		$('#edit-partner').on('show.bs.modal', function (event) {
 			let $modal = $(this),
@@ -1342,6 +1387,111 @@ window.addEventListener('DOMContentLoaded', function(){
 			$input.closest('[for="contract_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
+		// edit gzalo
+		$('#edit-gzalo').on('show.bs.modal', function (event) {
+			let $modal = $(this),
+				$button = $(event.relatedTarget)
+				,$body = $modal.find('.modal-body')
+				,client = $button.data('client')
+				,gzalo = $button.data('gzalo')
+				,gzalo_title = $button.data('gzalo-title')
+				;
+
+			$('#edit-gzalo-label').text(gzalo_title);
+
+			$.ajax({
+				url: theme.ajax_url,
+				type: 'GET',
+				data: {
+					action: 'get_edit_gzalo_form',
+					client:client,
+					gzalo:gzalo
+				},
+				beforeSend: function(xhr) {
+					$body.text('Đang tải..');
+				},
+				success: function(response) {
+					$body.html(response);
+				},
+				error: function() {
+					$body.text('Lỗi khi tải. Tắt mở lại.');
+				},
+				complete: function() {
+					
+				}
+			});
+			
+		}).on('hidden.bs.modal', function (e) {
+			let $modal = $(this),
+				$body = $modal.find('.modal-body');
+
+			$('#edit-gzalo-label').text('');
+			$body.text('');
+		});
+
+		$(document).on('submit', '#frm-edit-gzalo', function(e){
+			e.preventDefault();
+			let $form = $(this)
+				,formData = new FormData($form[0])
+				,$button = $form.find('[type="submit"]')
+				,$response = $('#edit-gzalo-response')
+				;
+			$button.prop('disabled', true);
+
+			$.ajax({
+				url: theme.ajax_url+'?action=update_gzalo',
+				type: 'POST',
+				processData: false,
+				contentType: false,
+				data: formData,
+				dataType: 'json',
+				cache: false,
+				beforeSend: function() {
+					$response.html('<p class="text-primary">Đang xử lý...</p>');
+				},
+				success: function(response) {
+					if(response['code']>0) {
+						$.ajax({
+							url: theme.ajax_url+'?action=get_gzalo_info',
+							type: 'GET',
+							cache: false,
+							dataType: 'json',
+							data: {client:formData.get('gzalo_client'), gzalo:formData.get('gzalo_id')},
+							success: function(response) {
+								$('.gzalo-'+formData.get('gzalo_id')+' .zalo-link').html(response['zalo']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-info').html(response['info']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-required').html(response['required']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-created').html(response['created']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-completed').html(response['completed']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-sent').html(response['sent']);
+								$('.gzalo-'+formData.get('gzalo_id')+' .gzalo-signed').html(response['signed']);
+								$('#edit-gzalo .btn-close').trigger('click');
+							}
+						});
+					}
+					$response.html(response['msg']);
+				},
+				error: function(xhr) {
+					$response.html('<p class="text-danger">Có lỗi xảy ra. Xin vui lòng thử lại.</p>');
+				},
+				complete: function() {
+					$button.prop('disabled', false);
+				}
+			});
+		});
+
+		$(document).on('click', '#gzalo_remove_attachment', function(e){
+			e.preventDefault();
+			let $this = $(this);
+			$('#gzalo_attachment_id').val('');
+			$this.closest('.input-group').remove();
+		});
+
+		$(document).on('input', '#gzalo_attachment', function() {
+			let $input = $(this);
+			$input.closest('[for="gzalo_attachment"]').find('.form-control').text($input.val().split('\\').pop());
+		});
+
 		function getPageNumbers(currentPage, totalPages) {
 			const pages = [];
 
@@ -1583,7 +1733,30 @@ window.addEventListener('DOMContentLoaded', function(){
 			}
 		});
 
+		$('.gzalo-hide').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				gzalo = $this.data('gzalo'),
+				gzalo_title = $this.data('gzaloTitle'),
+				$gzalo = $this.closest('.gzalo-item');
 
+			if(confirm(gzalo_title)) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'gzalo_hide', client: client, gzalo: gzalo},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response) {
+							$gzalo.addClass('hide');
+						}
+					}
+				});
+			}
+		});
 
 		$('.client-heading.position-sticky').each(function(index, el){
 			let $el = $(el);
@@ -1645,6 +1818,43 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('label[for="progress-completed"] span').text(completed);
 			$('label[for="progress-sent"] span').text(sent);
 			$('label[for="progress-quote"] span').text(quote);
+		}
+
+		if($('#gzalo-filter-form').length) {
+			let none = 0, required = 0, created = 0, completed = 0, sent = 0, signed = 0;
+			$('#gzalo-filter-form').find('.gzalo-item:not(.hide)').each(function(i, el){
+				let $el = $(el), isNone = true;
+					
+				if($el.find('.gzalo-required').hasClass('on')) {
+					required += 1;
+					isNone = false;
+				}
+				if($el.find('.gzalo-created').hasClass('on')) {
+					created += 1;
+					isNone = false;
+				}
+				if($el.find('.gzalo-completed').hasClass('on')) {
+					completed += 1;
+					isNone = false;
+				}
+				if($el.find('.gzalo-sent').hasClass('on')) {
+					sent += 1;
+					isNone = false;
+				}
+				if($el.find('.gzalo-signed').hasClass('on')) {
+					signed += 1;
+					isNone = false;
+				}
+				if(isNone) {
+					none += 1;
+				}
+			});
+			$('label[for="progress-none"] span').text(none);
+			$('label[for="progress-required"] span').text(required);
+			$('label[for="progress-created"] span').text(created);
+			$('label[for="progress-completed"] span').text(completed);
+			$('label[for="progress-sent"] span').text(sent);
+			$('label[for="progress-signed"] span').text(signed);
 		}
 
 		if($('#contract-filter-form').length) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dự toán Đồ gỗ (bỏ)
+ * Template Name: Đồ gỗ
  * 
  */
 get_header();

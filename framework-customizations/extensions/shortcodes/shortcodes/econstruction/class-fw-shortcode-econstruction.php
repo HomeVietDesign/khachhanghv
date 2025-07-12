@@ -240,7 +240,8 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="econstruction_file" name="econstruction_file" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control">
+								<!-- <input type="file" id="econstruction_file" name="econstruction_file" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control"> -->
+								<input type="file" id="econstruction_file" name="econstruction_file" class="form-control">
 							</div>
 						</label>
 					</div>

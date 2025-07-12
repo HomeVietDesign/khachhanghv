@@ -34,12 +34,30 @@ $options = array(
 		'limit' => 1000
 	),
 
+	'contractor_customer_hide' => array(
+		'label' => 'Dự toán khách hàng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'contractor',
+		'limit' => 1000
+	),
+
 	'contractor_construction_hide' => array(
 		'label' => 'Dự toán Xây dựng ẩn',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contractor',
+		'limit' => 1000
+	),
+
+	'econstruction_hide' => array(
+		'label' => 'Xây dựng ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'econstruction',
 		'limit' => 1000
 	),
 
@@ -52,12 +70,12 @@ $options = array(
 		'limit' => 1000
 	),
 
-	'contractor_customer_hide' => array(
-		'label' => 'Dự toán khách hàng ẩn',
+	'efurniture_hide' => array(
+		'label' => 'Đồ gỗ ẩn',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
-		'source' => 'contractor',
+		'source' => 'efurniture',
 		'limit' => 1000
 	),
 
@@ -69,24 +87,6 @@ $options = array(
 	// 	'source' => 'estimate',
 	// 	'limit' => 1000
 	// ),
-
-	'econstruction_hide' => array(
-		'label' => 'Xây dựng ẩn(bỏ)',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		'population' => 'posts',
-		'source' => 'econstruction',
-		'limit' => 1000
-	),
-
-	'efurniture_hide' => array(
-		'label' => 'Đồ gỗ ẩn(bỏ)',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		'population' => 'posts',
-		'source' => 'efurniture',
-		'limit' => 1000
-	),
 	
 	'document_hide' => array(
 		'label' => 'Hồ sơ ẩn',
@@ -106,4 +106,12 @@ $options = array(
 		'limit' => 1000
 	),
 
+	'gzalo_hide' => array(
+		'label' => 'Nhóm zalo ẩn',
+		'desc'  => '',
+		'type'  => 'multi-select',
+		'population' => 'posts',
+		'source' => 'gzalo',
+		'limit' => 1000
+	),
 );

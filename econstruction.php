@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dự toán Xây dựng (bỏ)
+ * Template Name: Xây dựng
  * 
  */
 get_header();

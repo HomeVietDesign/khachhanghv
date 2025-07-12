@@ -54,7 +54,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			$estimates = get_post_meta($contractor_id, '_estimate_furniture', true);
 			if(empty($estimates)) $estimates = [];
 			
-			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:['required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>'', 'quote'=>''];
+			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:['required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'attachment_id'=>'', 'quote'=>''];
 
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -133,6 +133,17 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 					<?php
 				}
 
+				if(isset($estimate['draw_id']) && $estimate['draw_id']) {
+					?>
+					<a class="btn btn-sm btn-warning my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($estimate['draw_id']))?>" target="_blank">Bản vẽ</a>
+					<?php
+				}
+
+				if(isset($estimate['slideshow_id']) && $estimate['slideshow_id']) {
+					?>
+					<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($estimate['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
+					<?php
+				}
 				?>
 			</div>
 			
@@ -153,12 +164,19 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 		if(current_user_can( 'estimate_furniture_edit' ) && check_ajax_referer( 'edit-estimate-furniture', 'nonce', false )) {
 			$estimate_furniture_client = isset($_POST['estimate_furniture_client'])?absint($_POST['estimate_furniture_client']):0;
 			$estimate_furniture_contractor = isset($_POST['estimate_furniture_contractor'])?absint($_POST['estimate_furniture_contractor']):0;
-			$estimate_furniture_attachment_id = isset($_POST['estimate_furniture_attachment_id'])?absint($_POST['estimate_furniture_attachment_id']):0;
 			$estimate_furniture_value = isset($_POST['estimate_furniture_value'])?sanitize_text_field($_POST['estimate_furniture_value']):'';
 			$estimate_furniture_unit = isset($_POST['estimate_furniture_unit'])?sanitize_text_field($_POST['estimate_furniture_unit']):'';
 			$estimate_furniture_zalo = isset($_POST['estimate_furniture_zalo'])?sanitize_text_field($_POST['estimate_furniture_zalo']):'';
 			$estimate_furniture_info = isset($_POST['estimate_furniture_info'])?sanitize_text_field($_POST['estimate_furniture_info']):'';
 			$estimate_furniture_link = isset($_POST['estimate_furniture_link'])?sanitize_text_field($_POST['estimate_furniture_link']):'';
+			
+			$estimate_furniture_draw_id = isset($_POST['estimate_furniture_draw_id'])?absint($_POST['estimate_furniture_draw_id']):0;
+			$estimate_furniture_draw = isset($_FILES['estimate_furniture_draw']) ? $_FILES['estimate_furniture_draw'] : null;
+
+			$estimate_furniture_slideshow_id = isset($_POST['estimate_furniture_slideshow_id'])?absint($_POST['estimate_furniture_slideshow_id']):0;
+			$estimate_furniture_slideshow = isset($_FILES['estimate_furniture_slideshow']) ? $_FILES['estimate_furniture_slideshow'] : null;
+
+			$estimate_furniture_attachment_id = isset($_POST['estimate_furniture_attachment_id'])?absint($_POST['estimate_furniture_attachment_id']):0;
 			$estimate_furniture_attachment = isset($_FILES['estimate_furniture_attachment']) ? $_FILES['estimate_furniture_attachment'] : null;
 
 			//$estimate_furniture_require_content = isset($_POST['estimate_furniture_require_content']) ? sanitize_textarea_field($_POST['estimate_furniture_require_content']) : '';
@@ -173,7 +191,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			if($estimate_furniture_client && $estimate_furniture_contractor) {
 				$estimates = get_post_meta($estimate_furniture_contractor, '_estimate_furniture', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_furniture_client])?$estimates[$estimate_furniture_client]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_furniture_client])?$estimates[$estimate_furniture_client]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'link'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'attachment_id'=>'', 'quote'=>''];
 
 				$new_estimate = [
 					'required' => $estimate_furniture_required,
@@ -185,6 +203,8 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 					'zalo' => $estimate_furniture_zalo,
 					'info' => $estimate_furniture_info,
 					'link' => $estimate_furniture_link,
+					'draw_id' => ($estimate_furniture_draw_id!=0)?$estimate_furniture_draw_id:'',
+					'slideshow_id' => ($estimate_furniture_slideshow_id!=0)?$estimate_furniture_slideshow_id:'',
 					'attachment_id' => ($estimate_furniture_attachment_id!=0)?$estimate_furniture_attachment_id:'',
 					'quote' => $estimate_furniture_quote,
 				];
@@ -196,13 +216,29 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
 				}
 
-				$estimate_furniture_attachment_upload = media_handle_upload( 'estimate_furniture_attachment', $estimate_furniture_contractor );
+				$estimate_furniture_draw_upload = media_handle_upload( 'estimate_furniture_draw', $estimate_furniture_contractor );
+				if ($estimate_furniture_draw['error']==0 && !($estimate_furniture_draw_upload instanceof \WP_Error) ) {
+					$new_estimate['draw_id'] = $estimate_furniture_draw_upload;
+					if($estimate_furniture_draw_id) wp_delete_attachment($estimate_furniture_draw_id, true);
+				}
+				if($new_estimate['draw_id']=='' || $new_estimate['draw_id']==0) {
+					if(isset($estimate['draw_id']) && $estimate['draw_id']) wp_delete_attachment($estimate['draw_id'], true);
+				}
 
-				if ($estimate_furniture_attachment['error']==0 && $estimate_furniture_attachment_upload && ! is_array( $estimate_furniture_attachment_upload ) ) {
+				$estimate_furniture_slideshow_upload = media_handle_upload( 'estimate_furniture_slideshow', $estimate_furniture_contractor );
+				if ($estimate_furniture_slideshow['error']==0 && !($estimate_furniture_slideshow_upload instanceof \WP_Error)) {
+					$new_estimate['slideshow_id'] = $estimate_furniture_slideshow_upload;
+					if($estimate_furniture_slideshow_id) wp_delete_attachment($estimate_furniture_slideshow_id, true);
+				}
+				if($new_estimate['slideshow_id']=='' || $new_estimate['slideshow_id']==0) {
+					if(isset($estimate['slideshow_id']) && $estimate['slideshow_id']) wp_delete_attachment($estimate['slideshow_id'], true);
+				}
+
+				$estimate_furniture_attachment_upload = media_handle_upload( 'estimate_furniture_attachment', $estimate_furniture_contractor );
+				if ($estimate_furniture_attachment['error']==0 && !($estimate_furniture_attachment_upload instanceof \WP_Error)) {
 					$new_estimate['attachment_id'] = $estimate_furniture_attachment_upload;
 					if($estimate_furniture_attachment_id) wp_delete_attachment($estimate_furniture_attachment_id, true);
 				}
-
 				if($new_estimate['attachment_id']=='' || $new_estimate['attachment_id']==0) {
 					if(isset($estimate['attachment_id']) && $estimate['attachment_id']) wp_delete_attachment($estimate['attachment_id'], true);
 				}
@@ -237,11 +273,15 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 				'unit'=>'',
 				'zalo'=>'',
 				'link'=>'',
+				'draw_id'=>'',
+				'slideshow_id'=>'',
 				'attachment_id'=>'',
 				'quote'=>''
 			];
 			$estimate = isset($estimates[$client])?$estimates[$client]:$default;
 
+			$draw_url = (isset($estimate['draw_id']) && $estimate['draw_id']!='')?wp_get_attachment_url($estimate['draw_id']):'';
+			$slideshow_url = (isset($estimate['slideshow_id']) && $estimate['slideshow_id']!='')?wp_get_attachment_url($estimate['slideshow_id']):'';
 			$attachment_url = (isset($estimate['attachment_id']) && $estimate['attachment_id']!='')?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
 			<form id="frm-edit-estimate-furniture" method="POST" action="" >
@@ -280,8 +320,57 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 				<div class="mb-3">
 					<input type="text" id="estimate_furniture_link" name="estimate_furniture_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_attr($estimate['link']); ?>">
 				</div>
+
+				<!-- <div class="mb-3">
+					<div class="form-label mb-1">File bản vẽ</div>
+					<div class="row row-cols-2 g-0 p-2 border rounded-2">
+						<div class="col attachment-uploaded">
+							<input type="hidden" id="estimate_furniture_draw_id" name="estimate_furniture_draw_id" value="<?=esc_attr((isset($estimate['draw_id']))?$estimate['draw_id']:'')?>">
+							<?php if($draw_url) { ?>
+							<div class="input-group input-group-sm">
+								<div class="form-control text-truncate"><?=esc_html(basename($draw_url))?></div>
+								<button class="btn btn-warning" id="estimate_furniture_remove_draw" type="button">Xóa file</button>
+							</div>
+							<?php } ?>
+						</div>
+						<label class="col d-block ps-5" for="estimate_furniture_draw">
+							<div class="input-group input-group-sm">
+								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
+								<span class="btn btn-primary">Bấm tải lên</span>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="estimate_furniture_draw" name="estimate_furniture_draw" class="form-control">
+							</div>
+						</label>
+					</div>
+				</div>
+
 				<div class="mb-3">
-					<div class="form-label mb-1">File dự toán</div>
+					<div class="form-label mb-1">File thuyết trình</div>
+					<div class="row row-cols-2 g-0 p-2 border rounded-2">
+						<div class="col attachment-uploaded">
+							<input type="hidden" id="estimate_furniture_slideshow_id" name="estimate_furniture_slideshow_id" value="<?=esc_attr((isset($estimate['slideshow_id']))?$estimate['slideshow_id']:'')?>">
+							<?php if($slideshow_url) { ?>
+							<div class="input-group input-group-sm">
+								<div class="form-control text-truncate"><?=esc_html(basename($slideshow_url))?></div>
+								<button class="btn btn-warning" id="estimate_furniture_remove_slideshow" type="button">Xóa file</button>
+							</div>
+							<?php } ?>
+						</div>
+						<label class="col d-block ps-5" for="estimate_furniture_slideshow">
+							<div class="input-group input-group-sm">
+								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
+								<span class="btn btn-primary">Bấm tải lên</span>
+							</div>
+							<div style="width: 0;height: 0;overflow: hidden;">
+								<input type="file" id="estimate_furniture_slideshow" name="estimate_furniture_slideshow" class="form-control">
+							</div>
+						</label>
+					</div>
+				</div> -->
+
+				<div class="mb-3">
+					<div class="form-label mb-1">File dữ liệu</div>
 					<div class="row row-cols-2 g-0 p-2 border rounded-2">
 						<div class="col attachment-uploaded">
 							<input type="hidden" id="estimate_furniture_attachment_id" name="estimate_furniture_attachment_id" value="<?=esc_attr((isset($estimate['attachment_id']))?$estimate['attachment_id']:'')?>">
@@ -294,11 +383,12 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 						</div>
 						<label class="col d-block ps-5" for="estimate_furniture_attachment">
 							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="estimate_furniture_attachment" name="estimate_furniture_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control">
+								<!-- <input type="file" id="estimate_furniture_attachment" name="estimate_furniture_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control"> -->
+								<input type="file" id="estimate_furniture_attachment" name="estimate_furniture_attachment" class="form-control">
 							</div>
 						</label>
 					</div>
@@ -348,7 +438,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 		$estimate_content = fw_get_db_post_option($contractor_id, 'estimate_content');
 
 		$estimates = get_post_meta($contractor_id, '_estimate_furniture', true); // dữ liệu dự toán của mỗi chủ đầu tư lưu chung
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'require_content'=>'', 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'require_content'=>'', 'required'=>'', 'received'=>'', 'completed'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'info'=>'', 'default_link'=>'',  'link'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'attachment_id'=>'', 'quote'=>''];
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -606,6 +696,18 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 						if(isset($estimate['link']) && $estimate['link']!='') {
 							?>
 							<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($estimate['link'])?>" target="_blank">Xem chi tiết</a>
+							<?php
+						}
+
+						if(isset($estimate['draw_id']) && $estimate['draw_id']) {
+							?>
+							<a class="btn btn-sm btn-warning my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($estimate['draw_id']))?>" target="_blank">Bản vẽ</a>
+							<?php
+						}
+
+						if(isset($estimate['slideshow_id']) && $estimate['slideshow_id']) {
+							?>
+							<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($estimate['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
 							<?php
 						}
 						?>
