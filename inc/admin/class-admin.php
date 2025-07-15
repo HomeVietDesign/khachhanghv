@@ -14,6 +14,7 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate.php';
 		//require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-gzalo.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contract.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture.php';

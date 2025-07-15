@@ -367,22 +367,12 @@ class Header {
 			if( $gzalo_page && current_user_can('gzalo_view') ) {
 				$gzalo_page_url = get_permalink($gzalo_page);
 				$this_template = is_page_template('gzalo.php') ? true : false;
-				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
 				if($this_template) {
-					$menu_html .= ' current-menu-ancestor current-menu-parent';
+					$menu_html .= ' current-menu-item';
 				}
 				$menu_html .= '">';
-				$menu_html .= '<a href="#">'.esc_html($gzalo_page->post_title).'</a>';
-				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-				$menu_html .= '<ul class="sub-menu position-absolute">';
-				foreach ($passwords as $key => $value) {
-					$menu_html .= '<li class="menu-item';
-					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($gzalo_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-					$menu_html .= '</li>';
-				}
-				$menu_html .= '</ul>';
+				$menu_html .= '<a href="'.esc_url($gzalo_page_url).'">'.esc_html($gzalo_page->post_title).'</a>';
 				$menu_html .= '</li>';
 			}
 		}
