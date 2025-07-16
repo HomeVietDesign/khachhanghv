@@ -580,28 +580,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			});
 		});
 
-		$(document).on('input', '#estimate_furniture_draw', function() {
-			let $input = $(this);
-			$input.closest('[for="estimate_furniture_draw"]').find('.form-control').text($input.val().split('\\').pop());
-		});
-		$(document).on('click', '#estimate_furniture_remove_draw', function(e){
-			e.preventDefault();
-			let $this = $(this);
-			$('#estimate_furniture_draw_id').val('');
-			$this.closest('.input-group').remove();
-		});
-
-		$(document).on('input', '#estimate_furniture_slideshow', function() {
-			let $input = $(this);
-			$input.closest('[for="estimate_furniture_slideshow"]').find('.form-control').text($input.val().split('\\').pop());
-		});
-		$(document).on('click', '#estimate_furniture_remove_slideshow', function(e){
-			e.preventDefault();
-			let $this = $(this);
-			$('#estimate_furniture_slideshow_id').val('');
-			$this.closest('.input-group').remove();
-		});
-
 		$(document).on('input', '#estimate_furniture_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="estimate_furniture_attachment"]').find('.form-control').text($input.val().split('\\').pop());
@@ -948,6 +926,12 @@ window.addEventListener('DOMContentLoaded', function(){
 		});
 
 		// efurniture
+
+		const chunkSize = 1024 * 1024; // 1MB
+
+		let efurnitureUploadId = '';
+		let efurniture_ajax_upload = null;
+
 		$('#edit-efurniture').on('show.bs.modal', function (event) {
 			let $modal = $(this),
 				$button = $(event.relatedTarget)
@@ -987,6 +971,9 @@ window.addEventListener('DOMContentLoaded', function(){
 
 			$('#edit-efurniture-label').text('');
 			$body.text('');
+
+			if(efurniture_ajax_upload!=null) efurniture_ajax_upload.abort();
+
 		});
 
 		$(document).on('submit', '#frm-edit-efurniture', function(e){
@@ -1047,33 +1034,121 @@ window.addEventListener('DOMContentLoaded', function(){
 			$('#efurniture_file_id').val('');
 			$this.closest('.input-group').remove();
 		});
+
 		$(document).on('input', '#efurniture_file', function() {
-			let $input = $(this);
+			let $input = $(this), $form = $input.closest('form'), files = $input.prop('files');
 			$input.closest('[for="efurniture_file"]').find('.form-control').text($input.val().split('\\').pop());
-		});
+			
+			let client = $form.find('#client').val(),
+				efurniture = $form.find('#efurniture').val(),
+				nonce = $form.find('#nonce').val(),
+				$uploaded = $form.find('#attachment-uploaded'),
+				$upload_bar = $form.find('#attachment-upload-bar');
 
-		$(document).on('click', '#efurniture_remove_slideshow', function(e){
-			e.preventDefault();
-			let $this = $(this);
-			$('#efurniture_slideshow_id').val('');
-			$this.closest('.input-group').remove();
-		});
-		$(document).on('input', '#efurniture_slideshow', function() {
-			let $input = $(this);
-			$input.closest('[for="efurniture_slideshow"]').find('.form-control').text($input.val().split('\\').pop());
-		});
+			$upload_bar.removeClass('d-none').addClass('d-flex');
+			$uploaded.addClass('d-none');
 
-		$(document).on('click', '#efurniture_remove_draw', function(e){
-			e.preventDefault();
-			let $this = $(this);
-			$('#efurniture_draw_id').val('');
-			$this.closest('.input-group').remove();
-		});
-		$(document).on('input', '#efurniture_draw', function() {
-			let $input = $(this);
-			$input.closest('[for="efurniture_draw"]').find('.form-control').text($input.val().split('\\').pop());
-		});
+			$upload_bar.find('.abort').on('click', function(e){
+				if(efurniture_ajax_upload!=null) efurniture_ajax_upload.abort();
 
+				setTimeout(function(){
+					if(efurniture_ajax_upload==null || efurniture_ajax_upload.status==0) {
+						$uploaded.removeClass('d-none');
+						$upload_bar.addClass('d-none').removeClass('d-flex');
+					}
+				},800);
+				
+				$input.prop('files', new DataTransfer().files);
+				$input.closest('[for="efurniture_file"]').find('.form-control').text('');
+
+			});
+
+			if(files.length>0) {
+
+				const file = files[0];
+				
+				if (!file) return alert("Chọn file!");
+
+				const totalChunks = Math.ceil(file.size / chunkSize);
+				efurnitureUploadId = btoaUtf8(file.name + '_' + file.size);
+
+				let chunkIndex = 0;
+
+				// Gọi để kiểm tra chunk đã upload (resume)
+				$.get(theme.ajax_url, {
+					action: 'efurniture_check_chunks',
+					uploadId: efurnitureUploadId
+				}, function(uploadedChunks) {
+					if (Array.isArray(uploadedChunks)) {
+						uploadNext(uploadedChunks);
+					} else {
+						uploadNext([]);
+					}
+				}, 'json');
+
+				function uploadNext(uploadedChunks) {
+					if (chunkIndex >= totalChunks) {
+						return;
+					}
+
+					if (uploadedChunks.includes(chunkIndex)) {
+						chunkIndex++;
+						uploadNext(uploadedChunks);
+						return;
+					}
+
+					const start = chunkIndex * chunkSize;
+					const end = Math.min(start + chunkSize, file.size);
+					const blob = file.slice(start, end);
+
+					const formData = new FormData();
+					formData.append('action', 'efurniture_chunk_upload');
+					formData.append('file', blob);
+					formData.append('uploadId', efurnitureUploadId);
+					formData.append('fileName', file.name);
+					formData.append('chunkIndex', chunkIndex);
+					formData.append('totalChunks', totalChunks);
+					formData.append('client', client);
+					formData.append('efurniture', efurniture);
+					formData.append('nonce', nonce);
+
+					efurniture_ajax_upload = $.ajax({
+						url: theme.ajax_url,
+						method: 'POST',
+						data: formData,
+						contentType: false,
+						processData: false,
+						success: function (res) {
+							
+							//console.log(res);
+
+							chunkIndex++;
+							let percent = Math.floor((chunkIndex / totalChunks) * 100);
+							
+							$upload_bar.find('.progress').attr('aria-valuenow', percent);
+							$upload_bar.find('.progress-bar').css('width', percent+'%');
+							$upload_bar.find('.percent').text(percent+'%');
+							//$('#uploadProgress').val(percent);
+							
+							uploadNext(uploadedChunks);
+
+							if(res.success) {
+								$uploaded.find('#efurniture_file_id').val(res.attachment_id);
+								setTimeout(function(){
+									$uploaded.removeClass('d-none').find('.form-control').text(res.filename);
+									$upload_bar.addClass('d-none').removeClass('d-flex');
+									$input.prop('files', new DataTransfer().files);
+									$input.closest('[for="efurniture_file"]').find('.form-control').text('');
+								},1000);
+							}
+						},
+						error: function (xhr) {
+							$upload_bar.find('.percent').text(xhr.responseText);
+						}
+					});
+				}
+			}
+		});
 
 		// edit partner
 		$('#edit-partner').on('show.bs.modal', function (event) {

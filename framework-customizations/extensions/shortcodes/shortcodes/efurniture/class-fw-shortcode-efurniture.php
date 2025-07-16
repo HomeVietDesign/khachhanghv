@@ -10,6 +10,10 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
       add_action( 'wp_ajax_update_efurniture', [$this, 'ajax_update_efurniture']);
       add_action( 'wp_ajax_get_efurniture_info', [$this, 'ajax_get_efurniture_info']);
       add_action( 'wp_ajax_efurniture_hide', [$this, 'ajax_efurniture_hide']);
+
+      add_action( 'wp_ajax_efurniture_chunk_upload', [$this, 'handle_efurniture_chunk_upload'] );
+      add_action( 'wp_ajax_efurniture_check_chunks', [$this, 'check_uploaded_chunks'] );
+      //add_action( 'wp_ajax_efurniture_file_upload', [$this, 'ajax_efurniture_file_upload']);
 	}
 
 	public function ajax_efurniture_hide() {
@@ -133,14 +137,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			$efurniture_url = isset($_POST['efurniture_url'])?sanitize_url($_POST['efurniture_url']):'';
 			
 			$efurniture_file_id = isset($_POST['efurniture_file_id'])?absint($_POST['efurniture_file_id']):0;
-			$efurniture_file = isset($_FILES['efurniture_file']) ? $_FILES['efurniture_file'] : null;
-
-			$efurniture_draw_id = isset($_POST['efurniture_draw_id'])?absint($_POST['efurniture_draw_id']):0;
-			$efurniture_draw = isset($_FILES['efurniture_draw']) ? $_FILES['efurniture_draw'] : null;
-
-			$efurniture_slideshow_id = isset($_POST['efurniture_slideshow_id'])?absint($_POST['efurniture_slideshow_id']):0;
-			$efurniture_slideshow = isset($_FILES['efurniture_slideshow']) ? $_FILES['efurniture_slideshow'] : null;
-
+			
 			$efurniture_required = isset($_POST['efurniture_required']) ? $_POST['efurniture_required'] : '';
 			$efurniture_received = isset($_POST['efurniture_received']) ? $_POST['efurniture_received'] : '';
 			$efurniture_completed = isset($_POST['efurniture_completed']) ? $_POST['efurniture_completed'] : '';
@@ -149,7 +146,8 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			
 			if($client && $efurniture_id) {
 				$data = fw_get_db_term_option($client, 'passwords', 'efurniture', []);
-				$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'file_id'=>'', 'quote'=>''];
+				$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+
 
 				$new_efurniture_data = [
 					'required' => $efurniture_required,
@@ -160,42 +158,10 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 					'unit' => $efurniture_unit,
 					'zalo' => $efurniture_zalo,
 					'url' => $efurniture_url,
-					'draw_id' => ($efurniture_draw_id!=0)?$efurniture_draw_id:'',
-					'slideshow_id' => ($efurniture_slideshow_id!=0)?$efurniture_slideshow_id:'',
 					'file_id' => ($efurniture_file_id!=0)?$efurniture_file_id:'',
 					'quote' => $efurniture_quote,
 				];
 
-				// tải lên file dự toán
-				if ( ! function_exists( 'media_handle_upload' ) ) {
-					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
-				}
-
-				$efurniture_draw_upload = media_handle_upload( 'efurniture_draw', 0 );
-				if($efurniture_draw['error']==0 && !($efurniture_draw_upload instanceof \WP_Error)) {
-					$new_efurniture_data['draw_id'] = $efurniture_draw_upload;
-					if($efurniture_draw_id) wp_delete_attachment($efurniture_draw_id, true);
-				}
-				if($new_efurniture_data['draw_id']=='' || $new_efurniture_data['draw_id']==0) {
-					if(isset($efurniture_data['draw_id']) && $efurniture_data['draw_id']) wp_delete_attachment($efurniture_data['draw_id'], true);
-				}
-
-				$efurniture_slideshow_upload = media_handle_upload( 'efurniture_slideshow', 0 );
-				if($efurniture_slideshow['error']==0 && !($efurniture_slideshow_upload instanceof \WP_Error)) {
-					$new_efurniture_data['slideshow_id'] = $efurniture_slideshow_upload;
-					if($efurniture_slideshow_id) wp_delete_attachment($efurniture_slideshow_id, true);
-				}
-				if($new_efurniture_data['slideshow_id']=='' || $new_efurniture_data['slideshow_id']==0) {
-					if(isset($efurniture_data['slideshow_id']) && $efurniture_data['slideshow_id']) wp_delete_attachment($efurniture_data['slideshow_id'], true);
-				}
-
-				$efurniture_file_upload = media_handle_upload( 'efurniture_file', 0 );
-				if($efurniture_file['error']==0 && !($efurniture_file_upload instanceof \WP_Error)) {
-					$new_efurniture_data['file_id'] = $efurniture_file_upload;
-					if($efurniture_file_id) wp_delete_attachment($efurniture_file_id, true);
-				}
 				if($new_efurniture_data['file_id']=='' || $new_efurniture_data['file_id']==0) {
 					if(isset($efurniture_data['file_id']) && $efurniture_data['file_id']) wp_delete_attachment($efurniture_data['file_id'], true);
 				}
@@ -211,6 +177,120 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		}
 
 		wp_send_json( $response );
+	}
+
+	public function ajax_efurniture_file_upload() {
+		$response = [
+			'status' => 500,
+			'message' => '',
+			'data' => []
+		];
+
+		// debug_log($_POST);
+		// debug_log($_FILES);
+		// wp_send_json( $response );
+
+		if(!current_user_can('efurniture_edit') || !check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
+			$response['status'] = 403;
+			$response['message'] = "Forbiden.";
+			wp_send_json( $response, 403 );
+		}
+
+		$client = isset($_POST['client'])?absint($_POST['client']):0;
+		$efurniture_id = isset($_POST['efurniture'])?absint($_POST['efurniture']):0;
+
+		wp_send_json( $response, $response['status'] );
+	}
+
+	public function handle_efurniture_chunk_upload() {
+		$response = ['success' => false, 'attachment_id' => 0, 'url' => '', 'url' => ''];
+
+		if(current_user_can('efurniture_edit') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
+			$client = isset($_POST['client'])?absint($_POST['client']):0;
+			$efurniture_id = isset($_POST['efurniture'])?absint($_POST['efurniture']):0;
+
+			$chunk_temp_dir = wp_upload_dir()['basedir'] . '/chunk_temp/';
+			$combine_dir = wp_upload_dir()['basedir'] . '/combine/';
+			if (!is_dir($chunk_temp_dir)) mkdir($chunk_temp_dir);
+			if (!is_dir($combine_dir)) mkdir($combine_dir);
+
+			$uploadId = preg_replace('/[^a-zA-Z0-9_]/', '', $_POST['uploadId']);
+			$chunkIndex = intval($_POST['chunkIndex']);
+			$totalChunks = intval($_POST['totalChunks']);
+			$fileName = sanitize_file_name($_POST['fileName']);
+
+			$target = "{$chunk_temp_dir}{$uploadId}.part{$chunkIndex}";
+			@move_uploaded_file($_FILES['file']['tmp_name'], $target);
+
+			// Ghép nếu là chunk cuối
+			if ($chunkIndex + 1 == $totalChunks) {
+				$final_path = $combine_dir.$fileName;
+				$out = fopen($final_path, 'wb');
+				for ($i = 0; $i < $totalChunks; $i++) {
+					$chunk_path = "{$chunk_temp_dir}{$uploadId}.part{$i}";
+					fwrite($out, file_get_contents($chunk_path));
+					unlink($chunk_path);
+				}
+				fclose($out);
+
+				// ĐĂNG KÝ FILE VÀO MEDIA LIBRARY
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				require_once ABSPATH . 'wp-admin/includes/image.php';
+				require_once ABSPATH . 'wp-admin/includes/media.php';
+
+				$filetype = wp_check_filetype($fileName, null);
+
+				$file = [
+					'name'     => $fileName, // ex: wp-header-logo.png
+					'type'     => $filetype['type'],
+					'tmp_name' => $final_path,
+					'error'    => 0,
+					'size'     => filesize( $final_path ),
+				];
+
+				// Move the temporary file into the uploads directory.
+				$attach_id = media_handle_sideload( $file, 0 );
+				//debug_log($attach_id);
+
+				if(!($attach_id instanceof \WP_Error)) {
+					$data = fw_get_db_term_option($client, 'passwords', 'efurniture', []);
+					$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+
+					if($efurniture_data['file_id']) wp_delete_attachment($efurniture_data['file_id'], true);
+
+					$efurniture_data['file_id'] = $attach_id;
+
+					$data[$efurniture_id] = $efurniture_data;
+
+					fw_set_db_term_option($client, 'passwords', 'efurniture', $data);
+
+					// Trả về ID hoặc URL nếu bạn cần xử lý tiếp
+					$file_url = wp_get_attachment_url($attach_id);
+					$response['success'] = true;
+					$response['attachment_id'] = $attach_id;
+					$response['url'] = $file_url;
+					$response['filename'] = $fileName;
+				}
+			}
+		}
+
+		wp_send_json($response);
+
+	}
+
+	public function check_uploaded_chunks() {
+		$upload_dir = wp_upload_dir()['basedir'] . '/chunk_temp/';
+		$uploadId = preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['uploadId']);
+		$pattern = $upload_dir . $uploadId . '.part*';
+
+		$chunks = [];
+		foreach (glob($pattern) as $file) {
+			if (preg_match('/\.part(\d+)$/', $file, $m)) {
+				$chunks[] = intval($m[1]);
+			}
+		}
+
+		wp_send_json($chunks);
 	}
 
 	public function ajax_get_edit_efurniture_form() {
@@ -252,72 +332,33 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 				<div class="mb-3">
 					<input type="text" id="efurniture_unit" name="efurniture_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($efurniture_data['unit']); ?>">
 				</div>
-
 				<div class="mb-3">
 					<input type="text" id="efurniture_zalo" name="efurniture_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($efurniture_data['zalo']); ?>">
 				</div>
 				<div class="mb-3">
 					<input type="text" id="efurniture_url" name="efurniture_url" placeholder="Link dự toán" class="form-control" value="<?php echo ($efurniture_data['url'])?esc_url($efurniture_data['url']):''; ?>">
 				</div>
-				
-				<!-- <div class="mb-3">
-					<div class="form-label mb-1">File bản vẽ</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="efurniture_draw_id" name="efurniture_draw_id" value="<?=esc_attr($efurniture_data['draw_id'])?>">
-							<?php if($draw_url) { ?>
-							<div class="input-group input-group-sm">
-								<div class="form-control text-truncate"><?=esc_html(basename($draw_url))?></div>
-								<button class="btn btn-sm btn-warning" id="efurniture_remove_draw" type="button">Xóa file</button>
-							</div>
-							<?php } ?>
-						</div>
-						<label class="col d-block ps-5" for="efurniture_draw">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
-							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="efurniture_draw" name="efurniture_draw" class="form-control">
-							</div>
-						</label>
-					</div>
-				</div>
-				<div class="mb-3">
-					<div class="form-label mb-1">File thuyết trình</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="efurniture_slideshow_id" name="efurniture_slideshow_id" value="<?=esc_attr($efurniture_data['slideshow_id'])?>">
-							<?php if($slideshow_url) { ?>
-							<div class="input-group input-group-sm">
-								<div class="form-control text-truncate"><?=esc_html(basename($slideshow_url))?></div>
-								<button class="btn btn-sm btn-warning" id="efurniture_remove_slideshow" type="button">Xóa file</button>
-							</div>
-							<?php } ?>
-						</div>
-						<label class="col d-block ps-5" for="efurniture_slideshow">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
-							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="efurniture_slideshow" name="efurniture_slideshow" class="form-control">
-							</div>
-						</label>
-					</div>
-				</div> -->
-
 				<div class="mb-3">
 					<div class="form-label mb-1">File dữ liệu</div>
 					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="efurniture_file_id" name="efurniture_file_id" value="<?=esc_attr($efurniture_data['file_id'])?>">
-							<?php if($file_url) { ?>
-							<div class="input-group input-group-sm">
-								<div class="form-control text-truncate"><?=esc_html(basename($file_url))?></div>
-								<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button">Xóa file</button>
+						<div class="col">
+							<div id="attachment-uploaded">
+								<input type="hidden" id="efurniture_file_id" name="efurniture_file_id" value="<?=esc_attr($efurniture_data['file_id'])?>">
+								<!-- <input type="hidden" id="efurniture_file_id_new" name="efurniture_file_id_new" value=""> -->
+								<?php if($file_url) { ?>
+								<div class="input-group input-group-sm">
+									<div class="form-control text-truncate"><?=esc_html(basename($file_url))?></div>
+									<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button">Xóa file</button>
+								</div>
+								<?php } ?>
 							</div>
-							<?php } ?>
+							<div id="attachment-upload-bar" class="d-none">
+								<div class="progress flex-grow-1 position-relative" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 31px;">
+									<div class="progress-bar"></div>
+									<div class="percent position-absolute start-50 top-50 translate-middle text-danger"></div>
+								</div>
+								<button type="button" class="abort btn btn-sm btn-danger ms-2">Hủy</button>
+							</div>
 						</div>
 						<label class="col d-block ps-5" for="efurniture_file">
 							<div class="input-group input-group-sm">

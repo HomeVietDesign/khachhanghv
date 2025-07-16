@@ -51,6 +51,14 @@ class Head {
 					root.style.setProperty('--site-header--height', '0');
 				}
 			});
+
+			function btoaUtf8(str) {
+				return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
+			}
+
+			function atobUtf8(str) {
+				return decodeURIComponent([...atob(str)].map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
+			}
 		</script>
 		<?php
 		$custom_script = fw_get_db_settings_option('head_code', '');
