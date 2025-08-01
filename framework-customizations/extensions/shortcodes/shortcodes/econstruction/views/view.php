@@ -178,8 +178,9 @@ if($econstruction_cats && $current_client) {
 											<div class="econstruction-require-content">
 											<?php
 											if(isset($econstruction_content) && $econstruction_content!='') {
+												$econstruction_content = '<div class="copy-text">'.wp_get_the_content($econstruction_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($econstruction_content))?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($econstruction_content)?>" data-bs-html="true">Đề bài</button>
 												<?php
 											}
 											?>

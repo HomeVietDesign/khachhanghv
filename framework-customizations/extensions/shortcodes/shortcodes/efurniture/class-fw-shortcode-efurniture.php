@@ -345,12 +345,17 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 							<div id="attachment-uploaded">
 								<input type="hidden" id="efurniture_file_id" name="efurniture_file_id" value="<?=esc_attr($efurniture_data['file_id'])?>">
 								<!-- <input type="hidden" id="efurniture_file_id_new" name="efurniture_file_id_new" value=""> -->
-								<?php if($file_url) { ?>
 								<div class="input-group input-group-sm">
-									<div class="form-control text-truncate"><?=esc_html(basename($file_url))?></div>
-									<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button">Xóa file</button>
+									<div class="form-control text-truncate">
+										<?php
+										if($file_url) {
+											echo esc_html(basename($file_url));
+										}
+										?>	
+									</div>
+									<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button" <?php disabled( '', $file_url, true ); ?>>Xóa file</button>
 								</div>
-								<?php } ?>
+								
 							</div>
 							<div id="attachment-upload-bar" class="d-none">
 								<div class="progress flex-grow-1 position-relative" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 31px;">
@@ -362,7 +367,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 						</div>
 						<label class="col d-block ps-5" for="efurniture_file">
 							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file cần tải lên</div>
+								<div class="form-control text-nowrap text-truncate">Chọn file cần tải lên</div>
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">

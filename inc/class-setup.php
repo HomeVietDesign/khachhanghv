@@ -21,6 +21,7 @@ class Setup {
 		add_filter( 'posts_search', [$this, 'seo_post_search_by_title'], 10, 2 );
 
 		add_filter( 'mime_types', [$this, 'fix_rar_mime_type'] );
+		add_filter('upload_mimes', [$this, 'custom_mime_types'] );
 
 		add_action( 'wp_loaded', [$this, 'wp_loaded'], 10 );
 		add_action( 'admin_init', [$this, 'ajax_set_global_vars'], 10 );
@@ -28,6 +29,10 @@ class Setup {
 		
 	}
 
+	public function custom_mime_types($mimes) {
+		$mimes['dwg'] = 'image/vnd.dwg'; //period not necessary; use proper mime-type
+    	return $mimes;
+	}
 
 	public function fix_rar_mime_type($mime_types) {
 		if(isset($mime_types['rar'])) {

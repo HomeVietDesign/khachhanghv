@@ -50,8 +50,11 @@ if($document_cats && $current_client) {
 								'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
 							];
 
+							// url dự toán gốc
+							$default_url = fw_get_db_post_option($document_id, 'document_default_url');
+
 							$data = get_post_meta($document_id, '_data', true);
-							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>'', 'selected' => '' ];
+							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'selected' => '' ];
 							
 							if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
 							if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
@@ -184,10 +187,28 @@ if($document_cats && $current_client) {
 											}
 											?>
 											</div>
+											<div class="attachment-download">
+											<?php
+											if(isset($document_data['attachment_id']) && $document_data['attachment_id']!='') {
+												$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
+												if($attachment_url) {
+												?>
+												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+												<?php
+												}
+											}
+											?>
+											</div>
 										</div>
 
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $document_id, 'full' ); ?></span>
 										
+										<div class="position-absolute bottom-0 start-0 m-1 d-flex">
+											<?php if($default_url) { ?>
+											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
+											<?php } ?>
+										</div>
+
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 											<div class="document-selected<?php echo (isset($document_data['selected']) && $document_data['selected']=='yes')?' on':''; ?>">
 												<?php
@@ -235,15 +256,12 @@ if($document_cats && $current_client) {
 											<?php } ?>
 										</div>
 										<?php } ?>
-										<div class="d-flex flex-wrap justify-content-center document-links mb-3">
+										<div class="d-flex flex-wrap justify-content-center mb-3">
 											<?php
-											if($document_data['attachment_id']) {
-												$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
-												if($attachment_url) {
+											if($document_data['link']) {
 												?>
-												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
+												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($document_data['link'])?>" target="_blank">Xem chi tiết</a>
 												<?php
-												}
 											}
 											?>
 										</div>

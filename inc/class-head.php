@@ -59,6 +59,7 @@ class Head {
 			function atobUtf8(str) {
 				return decodeURIComponent([...atob(str)].map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
 			}
+
 		</script>
 		<?php
 		$custom_script = fw_get_db_settings_option('head_code', '');

@@ -53,6 +53,8 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
+			
 			$response['required'] = (isset($document_data['required']) && $document_data['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
 			$response['created'] = (isset($document_data['created']) && $document_data['created']!='')?'<div class="bg-danger" title="Ngày tạo hợp đồng">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
 			$response['completed'] = (isset($document_data['completed']) && $document_data['completed']!='')?'<div class="bg-danger" title="Ngày làm xong hợp đồng">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
@@ -80,13 +82,10 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center document-links mb-3">
 				<?php
-				if($document_data['attachment_id']) {
-					$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
-					if($attachment_url) {
+				if($document_data['link']) {
 					?>
-					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($attachment_url)?>" target="_blank">Xem chi tiết</a>
+					<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($document_data['link'])?>" target="_blank">Xem chi tiết</a>
 					<?php
-					}
 				}
 				?>
 			</div>
@@ -111,6 +110,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_value = isset($_POST['document_value'])?sanitize_text_field($_POST['document_value']):'';
 			$document_unit = isset($_POST['document_unit'])?sanitize_text_field($_POST['document_unit']):'';
 			$document_zalo = isset($_POST['document_zalo'])?sanitize_text_field($_POST['document_zalo']):'';
+			$document_link = isset($_POST['document_link'])?sanitize_text_field($_POST['document_link']):'';
 			$document_attachment = isset($_FILES['document_attachment']) ? $_FILES['document_attachment'] : null;
 
 			$document_required = isset($_POST['document_required']) ? $_POST['document_required'] : '';
@@ -122,7 +122,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			if($document_client && $document_id) {
 				$data = get_post_meta($document_id, '_data', true);
 				if(empty($data)) $data = [];
-				$document_data = isset($data[$document_client])?$data[$document_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+				$document_data = isset($data[$document_client])?$data[$document_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>''];
 
 				$new_document_data = [
 					'required' => $document_required,
@@ -132,6 +132,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 					'value' => $document_value,
 					'unit' => $document_unit,
 					'zalo' => $document_zalo,
+					'link' => $document_link,
 					'attachment_id' => $document_attachment_id,
 					'selected' => $document_selected,
 				];
@@ -173,7 +174,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 
 		if($client && $document) {
 			$data = get_post_meta($document, '_data', true);
-			$document_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>'', 'selected'=>''];
+			$document_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'selected'=>''];
 
 			$attachment_url = ($document_data['attachment_id'])?wp_get_attachment_url($document_data['attachment_id']):'';
 			?>
@@ -206,6 +207,9 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<input type="text" id="document_zalo" name="document_zalo" placeholder="URL nhóm zalo" class="form-control" value="<?php echo esc_attr($document_data['zalo']); ?>">
+				</div>
+				<div class="mb-3">
+					<input type="text" id="document_link" name="document_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_attr($document_data['link']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dữ liệu</div>

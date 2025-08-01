@@ -25,6 +25,10 @@ $options = array(
 				'label' => 'Link nhóm zalo',
 				'type' => 'text'
 			),
+			'document_default_url' => array(
+				'label' => 'Link dự toán gốc',
+				'type' => 'text'
+			),
 			'document_attachment' => array(
 				'label' => 'File pdf dữ liệu',
 				'type' => 'upload',
