@@ -10,6 +10,10 @@ global $current_client;
 $document_cats = get_terms(['taxonomy' => 'document_cat','parent'=>0]);
 $progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('documents');
+
+//debug($shortcode);
+
 if($document_cats && $current_client) {
 	$document_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'document_hide', []);
 	?>
@@ -42,12 +46,8 @@ if($document_cats && $current_client) {
 					if($documents) {
 						foreach($documents as $document_id) {
 							$document_content = fw_get_db_post_option($document_id, 'document_content');
-							$default_attachment = fw_get_db_post_option($document_id,'document_attachment');
 							$default_data = [
-								'value' => fw_get_db_post_option($document_id,'document_value'),
-								'unit' => fw_get_db_post_option($document_id,'document_unit'),
 								'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
-								'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
 							];
 
 							// url dự toán gốc
@@ -56,10 +56,7 @@ if($document_cats && $current_client) {
 							$data = get_post_meta($document_id, '_data', true);
 							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'selected' => '' ];
 							
-							if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
-							if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
 							if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
-							if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 							
 							$item_class = '';
 
@@ -135,7 +132,7 @@ if($document_cats && $current_client) {
 										<?php
 										if(isset($document_data['required']) && $document_data['required']!='') {
 											?>
-											<div class="bg-danger" title="Ngày gửi yêu cầu">
+											<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_1'])?>">
 												<?php echo esc_html(date('d/m', strtotime($document_data['required']))); ?>
 											</div>
 											<?php
@@ -146,7 +143,7 @@ if($document_cats && $current_client) {
 											<?php
 											if(isset($document_data['created']) && $document_data['created']!='') {
 												?>
-												<div class="bg-danger" title="Ngày bắt đầu">
+												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_2'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['created']))); ?>
 												</div>
 												<?php
@@ -157,7 +154,7 @@ if($document_cats && $current_client) {
 											<?php
 											if(isset($document_data['completed']) && $document_data['completed']!='') {
 												?>
-												<div class="bg-danger" title="Ngày làm xong">
+												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_3'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['completed']))); ?>
 												</div>
 												<?php
@@ -168,7 +165,7 @@ if($document_cats && $current_client) {
 											<?php
 											if(isset($document_data['sent']) && $document_data['sent']!='') {
 												?>
-												<div class="bg-danger" title="Ngày gửi cho khách">
+												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_4'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['sent']))); ?>
 												</div>
 												<?php
@@ -243,19 +240,7 @@ if($document_cats && $current_client) {
 										<div class="document-title pt-3 mb-1 fs-5 text-green text-uppercase">
 											<?php echo esc_html(get_the_title( $document_id )); ?>
 										</div>
-										<?php if($document_data['value']!='' || $document_data['unit']!='') { ?>
-										<div class="document-value mb-1">
-											<?php if($document_data['value']!='') { ?>
-											<div>
-												<span>Tổng giá trị: </span>
-												<span class="text-red fw-bold"><?php echo esc_html($document_data['value']); ?></span>
-											</div>
-											<?php } ?>
-											<?php if($document_data['unit']!='') { ?>
-											<div class="text-red"><?php echo esc_html($document_data['unit']); ?></div>
-											<?php } ?>
-										</div>
-										<?php } ?>
+										
 										<div class="d-flex flex-wrap justify-content-center mb-3">
 											<?php
 											if($document_data['link']) {

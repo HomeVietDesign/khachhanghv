@@ -105,7 +105,7 @@ class Header {
 	}
 
 	public static function extra_menu_html() {
-		global $current_client;
+		global $current_client, $current_nha88_type;
 
 		$object = get_queried_object();
 
@@ -121,6 +121,34 @@ class Header {
 		if($passwords) {
 			$current_user = wp_get_current_user();
 			$user_passwords = fw_get_db_settings_option('user_passwords');
+
+			$procedure_page = Common::get_custom_page('procedure.php');
+			if( $procedure_page && current_user_can('procedure_contractor_view') ) {
+				$procedure_page_url = get_permalink($procedure_page);
+				$this_template = is_page_template('procedure.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($procedure_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					if(has_role('viewer')&&(!isset($user_passwords[$current_user->user_login]) || !in_array($value->term_id, $user_passwords[$current_user->user_login]['passwords']))) {
+						// debug_log($value);
+						// debug_log($user_passwords[$current_user->user_login]['passwords']);
+						continue;
+					}
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($procedure_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
 
 			$estimate_page = Common::get_custom_page('estimate.php');
 			if( $estimate_page && current_user_can('estimate_contractor_view') ) {
@@ -143,7 +171,35 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($estimate_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($estimate_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
+
+			$estimate_signed_page = Common::get_custom_page('estimate-signed.php');
+			if( $estimate_signed_page && current_user_can('estimate_contractor_view') ) {
+				$estimate_signed_page_url = get_permalink($estimate_signed_page);
+				$this_template = is_page_template('estimate-signed.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($estimate_signed_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($passwords as $key => $value) {
+					if(has_role('viewer')&&(!isset($user_passwords[$current_user->user_login]) || !in_array($value->term_id, $user_passwords[$current_user->user_login]['passwords']))) {
+						// debug_log($value);
+						// debug_log($user_passwords[$current_user->user_login]['passwords']);
+						continue;
+					}
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($estimate_signed_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
@@ -166,7 +222,7 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($estimate_customer_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($estimate_customer_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
@@ -193,7 +249,7 @@ class Header {
 							$menu_html .= '<li class="menu-item';
 							$menu_html .= ($this_template && $object->ID==$estimate_manage_page->ID && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 							$menu_html .= '">';
-							$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+							$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 							$menu_html .= '</li>';
 						}
 						$menu_html .= '</ul>';
@@ -218,35 +274,12 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($estimate_construction_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($estimate_construction_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
 			}
-
-			// $econstruction_page = Common::get_custom_page('econstruction.php');
-			// if( $econstruction_page && current_user_can('econstruction_view') ) {
-			// 	$econstruction_page_url = get_permalink($econstruction_page);
-			// 	$this_template = is_page_template('econstruction.php') ? true : false;
-			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-			// 	if($this_template) {
-			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
-			// 	}
-			// 	$menu_html .= '">';
-			// 	$menu_html .= '<a href="#">'.esc_html($econstruction_page->post_title).'</a>';
-			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
-			// 	foreach ($passwords as $key => $value) {
-			// 		$menu_html .= '<li class="menu-item';
-			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-			// 		$menu_html .= '">';
-			// 		$menu_html .= '<a href="'.esc_url($econstruction_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-			// 		$menu_html .= '</li>';
-			// 	}
-			// 	$menu_html .= '</ul>';
-			// 	$menu_html .= '</li>';
-			// }
 
 			$estimate_furniture_page = Common::get_custom_page('estimate-furniture.php');
 			if( $estimate_furniture_page && current_user_can('estimate_furniture_view') ) {
@@ -264,58 +297,12 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($estimate_furniture_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($estimate_furniture_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
 			}
-
-			// $efurniture_page = Common::get_custom_page('efurniture.php');
-			// if( $efurniture_page && current_user_can('efurniture_view') ) {
-			// 	$efurniture_page_url = get_permalink($efurniture_page);
-			// 	$this_template = is_page_template('efurniture.php') ? true : false;
-			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-			// 	if($this_template) {
-			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
-			// 	}
-			// 	$menu_html .= '">';
-			// 	$menu_html .= '<a href="#">'.esc_html($efurniture_page->post_title).'</a>';
-			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
-			// 	foreach ($passwords as $key => $value) {
-			// 		$menu_html .= '<li class="menu-item';
-			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-			// 		$menu_html .= '">';
-			// 		$menu_html .= '<a href="'.esc_url($efurniture_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-			// 		$menu_html .= '</li>';
-			// 	}
-			// 	$menu_html .= '</ul>';
-			// 	$menu_html .= '</li>';
-			// }
-
-			// $partner_page = Common::get_custom_page('partner.php');
-			// if( $partner_page && current_user_can('partner_view') ) {
-			// 	$partner_page_url = get_permalink($partner_page);
-			// 	$this_template = is_page_template('partner.php') ? true : false;
-			// 	$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-			// 	if($this_template) {
-			// 		$menu_html .= ' current-menu-ancestor current-menu-parent';
-			// 	}
-			// 	$menu_html .= '">';
-			// 	$menu_html .= '<a href="#">'.esc_html($partner_page->post_title).'</a>';
-			// 	$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-			// 	$menu_html .= '<ul class="sub-menu position-absolute">';
-			// 	foreach ($passwords as $key => $value) {
-			// 		$menu_html .= '<li class="menu-item';
-			// 		$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-			// 		$menu_html .= '">';
-			// 		$menu_html .= '<a href="'.esc_url($partner_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
-			// 		$menu_html .= '</li>';
-			// 	}
-			// 	$menu_html .= '</ul>';
-			// 	$menu_html .= '</li>';
-			// }
 
 			$document_page = Common::get_custom_page('document.php');
 			if( $document_page && current_user_can('document_view') ) {
@@ -333,7 +320,7 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($document_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($document_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
@@ -356,7 +343,7 @@ class Header {
 					$menu_html .= '<li class="menu-item';
 					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
 					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($contract_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->description).'</a>';
+					$menu_html .= '<a href="'.esc_url($contract_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
 					$menu_html .= '</li>';
 				}
 				$menu_html .= '</ul>';
@@ -375,6 +362,62 @@ class Header {
 				$menu_html .= '<a href="'.esc_url($gzalo_page_url).'">'.esc_html($gzalo_page->post_title).'</a>';
 				$menu_html .= '</li>';
 			}
+
+			$media_page = Common::get_custom_page('media.php');
+			if( $media_page && current_user_can('media_view') ) {
+				$media_page_url = get_permalink($media_page);
+				$this_template = is_page_template('media.php') ? true : false;
+				$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-item';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="'.esc_url($media_page_url).'">'.esc_html($media_page->post_title).'</a>';
+				$menu_html .= '</li>';
+			}
+
+			// $nha88_page = Common::get_custom_page('nha88.php');
+			// if( $nha88_page && current_user_can('nha88_view') ) {
+			// 	$nha88_page_url = get_permalink($nha88_page);
+			// 	$this_template = is_page_template('nha88.php') ? true : false;
+			// 	$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			// 	if($this_template) {
+			// 		$menu_html .= ' current-menu-item';
+			// 	}
+			// 	$menu_html .= '">';
+			// 	$menu_html .= '<a href="'.esc_url($nha88_page_url).'">'.esc_html($nha88_page->post_title).'</a>';
+			// 	$menu_html .= '</li>';
+			// }
+		}
+
+		$nha88_types = get_terms([
+			'taxonomy' => 'nha88_type',
+			'hide_empty' => false,
+		]);
+
+		if($nha88_types) {
+			$nha88_page = Common::get_custom_page('nha88.php');
+			if( $nha88_page && current_user_can('nha88_view') ) {
+				$nha88_page_url = get_permalink($nha88_page);
+				$this_template = is_page_template('nha88.php') ? true : false;
+				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+				if($this_template) {
+					$menu_html .= ' current-menu-ancestor current-menu-parent';
+				}
+				$menu_html .= '">';
+				$menu_html .= '<a href="#">'.esc_html($nha88_page->post_title).'</a>';
+				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
+				$menu_html .= '<ul class="sub-menu position-absolute">';
+				foreach ($nha88_types as $key => $value) {
+					$menu_html .= '<li class="menu-item';
+					$menu_html .= ($this_template && $current_nha88_type && $value->term_id==$current_nha88_type->term_id)?' current-menu-item':'';
+					$menu_html .= '">';
+					$menu_html .= '<a href="'.esc_url($nha88_page_url).'?nha88_type='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
+					$menu_html .= '</li>';
+				}
+				$menu_html .= '</ul>';
+				$menu_html .= '</li>';
+			}
 		}
 
 		return $menu_html;
@@ -384,7 +427,9 @@ class Header {
 		$nav_menu = '';
 		$object = get_queried_object();
 
-		if( is_singular( 'contractor_page' ) ) {
+		if( is_singular( 'contractor_page' ) || is_page_template('staff.php') ) {
+			$extra_menu_html = '';
+
 			$estimates_page = Common::get_custom_page('estimates.php');
 			$estimates_menu = '';
 			if($estimates_page) {
@@ -398,8 +443,24 @@ class Header {
 					$estimates_menu .= '<a href="'.esc_url($estimates_page_url).'">'.esc_html($estimates_page->post_title).'</a>';
 					$estimates_menu .= '</li>';
 			}
+
+			$staff_page = Common::get_custom_page('staff.php');
+			$staff_menu = '';
+			if($staff_page) {
+				$staff_page_url = get_permalink($staff_page);
+					$this_template = is_page_template('staff.php') ? true : false;
+					$staff_menu .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
+					if($this_template) {
+						$staff_menu .= ' current-menu-ancestor current-menu-parent';
+					}
+					$staff_menu .= '">';
+					$staff_menu .= '<a href="'.esc_url($staff_page_url).'">'.esc_html($staff_page->post_title).'</a>';
+					$staff_menu .= '</li>';
+			}
+
+			$extra_menu_html = $estimates_menu . $staff_menu;
 			
-			$contractor_menu = self::contractor_menu( ($estimates_menu!='') ? $estimates_menu : self::extra_menu_html() );
+			$contractor_menu = self::contractor_menu( ($extra_menu_html!='') ? $extra_menu_html : self::extra_menu_html() );
 			echo $contractor_menu;
 
 			return;
@@ -415,7 +476,7 @@ class Header {
 					'fallback_cb' => '',
 					'depth' => 2,
 					'walker' => new \HomeViet\Walker_Primary_Menu(),
-					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.self::extra_menu_html().'</ul>',
+					'items_wrap' => '<ul class="%2$s d-flex flex-wrap justify-content-center">%3$s'.str_replace('%','&#37;',self::extra_menu_html()).'</ul>',
 				]);
 			} else {
 				$nav_menu = '<ul class="menu d-flex flex-wrap justify-content-center">'.self::extra_menu_html().'</ul>';

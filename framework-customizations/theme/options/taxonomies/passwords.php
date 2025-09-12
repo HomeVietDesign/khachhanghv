@@ -26,21 +26,38 @@ $options = array(
 	),
 
 	'contractor_hide' => array(
-		'label' => 'Dự toán nhà thầu ẩn',
+		'label' => 'Dự toán nhà thầu Hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contractor',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'contractor_hide',
+		),
 	),
 
+	// 'contractor_hide' => array(
+	// 	'label' => 'Dự toán đã ký',
+	// 	'desc'  => '',
+	// 	'type'  => 'multi-select',
+	// 	'population' => 'posts',
+	// 	'source' => 'contractor',
+	// 	'limit' => 1000
+	// ),
+
 	'contractor_customer_hide' => array(
-		'label' => 'Dự toán khách hàng ẩn',
+		'label' => 'Dự toán khách hàng Hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contractor',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'contractor_customer_hide',
+		),
 	),
 
 	'contractor_construction_hide' => array(
@@ -49,7 +66,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contractor',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'contractor_construction_hide',
+		),
 	),
 
 	'econstruction_hide' => array(
@@ -58,7 +79,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'econstruction',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'econstruction_hide',
+		),
 	),
 
 	'contractor_furniture_hide' => array(
@@ -67,7 +92,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contractor',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'contractor_furniture_hide',
+		),
 	),
 
 	'efurniture_hide' => array(
@@ -76,7 +105,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'efurniture',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'efurniture_hide',
+		),
 	),
 
 	// 'estimate_hide' => array(
@@ -94,7 +127,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'document',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'document_hide',
+		),
 	),
 
 	'contract_hide' => array(
@@ -103,7 +140,11 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'contract',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'contract_hide',
+		),
 	),
 
 	'gzalo_hide' => array(
@@ -112,6 +153,10 @@ $options = array(
 		'type'  => 'multi-select',
 		'population' => 'posts',
 		'source' => 'gzalo',
-		'limit' => 1000
+		'limit' => 1000,
+		'fw-storage' => array(
+			'type' => 'term-meta',
+			'term-meta' => 'gzalo_hide',
+		),
 	),
 );

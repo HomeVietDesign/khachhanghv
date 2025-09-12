@@ -123,7 +123,7 @@ class FW_Shortcode_Estimate_Construction extends FW_Shortcode
 			
 				if(!empty($estimate['info'])) {
 					?>
-					<span class="bg-danger px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($estimate['info'])?></span>
+					<a class="btn btn-sm btn-danger my-1 mx-2 fs-sm" href="<?=esc_url($estimate['info'])?>" target="_blank">Hợp đồng</a>
 					<?php
 				}
 
@@ -157,7 +157,7 @@ class FW_Shortcode_Estimate_Construction extends FW_Shortcode
 			$estimate_construction_value = isset($_POST['estimate_construction_value'])?sanitize_text_field($_POST['estimate_construction_value']):'';
 			$estimate_construction_unit = isset($_POST['estimate_construction_unit'])?sanitize_text_field($_POST['estimate_construction_unit']):'';
 			$estimate_construction_zalo = isset($_POST['estimate_construction_zalo'])?sanitize_text_field($_POST['estimate_construction_zalo']):'';
-			$estimate_construction_info = isset($_POST['estimate_construction_info'])?sanitize_text_field($_POST['estimate_construction_info']):'';
+			$estimate_construction_info = isset($_POST['estimate_construction_info'])?sanitize_url($_POST['estimate_construction_info']):'';
 			$estimate_construction_link = isset($_POST['estimate_construction_link'])?sanitize_text_field($_POST['estimate_construction_link']):'';
 			$estimate_construction_attachment = isset($_FILES['estimate_construction_attachment']) ? $_FILES['estimate_construction_attachment'] : null;
 
@@ -275,10 +275,10 @@ class FW_Shortcode_Estimate_Construction extends FW_Shortcode
 					<input type="text" id="estimate_construction_zalo" name="estimate_construction_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
 				</div>
 				<div class="col mb-3">
-					<input type="text" id="estimate_construction_info" name="estimate_construction_info" placeholder="Thông tin nhà thầu" class="form-control" value="<?php echo esc_attr($estimate['info']); ?>">
+					<input type="text" id="estimate_construction_info" name="estimate_construction_info" placeholder="Link hợp đồng" class="form-control" value="<?php echo esc_url($estimate['info']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_construction_link" name="estimate_construction_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_attr($estimate['link']); ?>">
+					<input type="text" id="estimate_construction_link" name="estimate_construction_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_url($estimate['link']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
@@ -601,7 +601,7 @@ class FW_Shortcode_Estimate_Construction extends FW_Shortcode
 
 						if(!empty($estimate['info'])) {
 							?>
-							<span class="bg-danger px-2 py-1 rounded-1 my-1 mx-2 fs-sm"><?=esc_html($estimate['info'])?></span>
+							<a class="btn btn-sm btn-danger px-2 py-1 my-1 mx-2 fs-sm" href="<?=esc_url($estimate['info'])?>" target="_blank">Hợp đồng</a>
 							<?php
 						}
 

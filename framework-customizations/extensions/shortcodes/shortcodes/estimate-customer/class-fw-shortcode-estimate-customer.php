@@ -15,12 +15,17 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	public function ajax_estimate_customer_hide() {
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
-		$response = false;
+		$response = 0;
 		if(current_user_can('estimate_customer_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
 			$contractor_customer_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', []);
-			$contractor_customer_hide[] = $contractor_id;
+			if(in_array($contractor_id, $contractor_customer_hide)) {
+				unset($contractor_customer_hide[array_search($contractor_id, $contractor_customer_hide)]);
+				$response = -1;
+			} else {
+				$contractor_customer_hide[] = $contractor_id;
+				$response = 1;
+			}
 			fw_set_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', $contractor_customer_hide);
-			$response = true;
 		}
 		wp_send_json($response);
 	}
@@ -260,6 +265,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			'attachment_id' => ($default_estimate_attachment) ? $default_estimate_attachment['attachment_id']:''
 		];
 
+		$estimate_content = fw_get_db_post_option($contractor_id, 'estimate_content');
+
 		$estimates = get_post_meta($contractor_id, '_estimate_customer', true);
 		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 		
@@ -279,19 +286,30 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		$project_images = fw_get_db_post_option($contractor_id, 'project_images');
 
 		if(in_array($contractor_id, $contractor_customer_hide)) {
-			$item_class .= ' hide';
+			$item_class .= ' active';
 		}
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
 				<div class="contractor-thumbnail position-relative">
+					<div class="position-absolute contractor-control top-0 start-0 p-1 z-3 d-flex">
+						<?php
+						if(isset($estimate_content) && $estimate_content!='') {
+							$estimate_content = '<div class="copy-text">'.wp_get_the_content($estimate_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+							?>
+							<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($estimate_content)?>" data-bs-html="true">Đề bài</button>
+							<?php
+						}
+						?>
+					</div>
 
 					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></div>
 					
-					<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+					<div class="position-absolute contractor-control bottom-0 end-0 m-1 d-flex">
 						
 						<?php if(current_user_can('estimate_customer_edit')) { ?>
-						<button class="estimate-customer-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-visibility"></span></button>
+
+						<button class="estimate-customer-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="Ẩn/Hiện"></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 						
@@ -300,12 +318,12 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 					</div>
 
-					<div class="zalo-link position-absolute top-0 end-0 p-1">
+					<div class="zalo-link position-absolute contractor-control top-0 end-0 p-1">
 					<?php if($estimate['zalo']) { ?>
 						<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($estimate['zalo'])?>" target="_blank">Zalo</a>
 					<?php } ?>
 					</div>
-					<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+					<div class="position-absolute contractor-control start-0 bottom-0 p-1 z-3 d-flex">
 						<?php if(!empty($project_images)) { ?>
 						<div class="position-relative project-images pswp-gallery me-2">
 							<?php foreach ($project_images as $key => $value) {

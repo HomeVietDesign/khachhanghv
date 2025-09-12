@@ -16,7 +16,7 @@ if($current_client) {
 
 	if($contractor_cats) {
 		?>
-		<div class="fw-shortcode-estimates">
+		<div class="fw-shortcode-estimates fw-shortcode-estimates-customer">
 			<div class="accordion">
 			<?php
 			foreach ($contractor_cats as $key => $value) {

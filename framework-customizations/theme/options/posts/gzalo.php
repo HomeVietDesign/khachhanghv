@@ -31,20 +31,20 @@ $options = array(
 			// ),
 		),
 	),
-	// 'gzalo_content' => array(
-	// 	'context' => 'advanced',
-	// 	'title'   => 'Nội dung yêu cầu',
-	// 	'type'    => 'box',
-    //     'options' => array(
-    //     	'gzalo_content' => array(
-	// 			'label' => '',
-	// 			'desc'  => '',
-	// 			'type'  => 'wp-editor',
-	// 			'value' => '',
-	// 			'size' => 'large',
-	// 			'editor_height' => '400',
-	// 			'media_buttons' => false
-	// 		),
-	// 	),
-	// ),
+	'gzalo_content' => array(
+		'context' => 'advanced',
+		'title'   => 'Nội dung yêu cầu',
+		'type'    => 'box',
+        'options' => array(
+        	'gzalo_content' => array(
+				'label' => '',
+				'desc'  => '',
+				'type'  => 'wp-editor',
+				'value' => '',
+				'size' => 'large',
+				'editor_height' => '400',
+				'media_buttons' => false
+			),
+		),
+	),
 );

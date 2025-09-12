@@ -5,12 +5,25 @@ $best = get_post_meta($post->ID, '_best', true);
 $phone_number = get_post_meta($post->ID, '_phone_number', true);
 $external_url = get_post_meta($post->ID, '_external_url', true);
 
+$estimate_content = fw_get_db_post_option($post->ID, 'estimate_content');
+
 $class = get_the_terms( $post, 'contractor_class' );
 
 $index = 0;
 
 if($class) {
     $index = absint(get_term_meta($class[0]->term_id, 'order', true));
+}
+
+$view_estimate_content = '';
+if($estimate_content!='') {
+    ob_start();
+    $estimate_content = '<div class="copy-text">'.wp_get_the_content($estimate_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+
+    ?>
+    <button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($estimate_content)?>" data-bs-html="true">Đề bài</button>
+    <?php
+   $view_estimate_content = ob_get_clean(); 
 }
 
 if( current_user_can('contractor_view') && !current_user_can('contractor_edit') ) {
@@ -22,7 +35,11 @@ if( current_user_can('contractor_view') && !current_user_can('contractor_edit') 
                 <div class="entry-thumbnail d-block <?php echo (!has_post_thumbnail( $post ))?'no-thumbnail bg-secondary-subtle':''; ?>">
                     <span class="d-block"><?php the_post_thumbnail('large', ['alt'=>esc_attr(get_the_title())]); ?></span>
                 </div>
-
+                <div class="position-absolute start-0 top-0 ms-1 mt-1 d-flex">
+                <?php
+                echo $view_estimate_content;
+                ?>
+                </div>
                 <div class="position-absolute top-0 start-50 mt-2 translate-middle-x d-flex featured">
                     <?php if($best=='true') { ?>
                     <span class="d-block px-2 py-1 mx-1 bg-danger text-white rounded-0 fw-bold text-uppercase text-nowrap">Nhà thầu Uy tín</span>
@@ -86,7 +103,12 @@ if( current_user_can('contractor_view') && !current_user_can('contractor_edit') 
                  <div class="entry-thumbnail d-block <?php echo (!has_post_thumbnail( $post ))?'no-thumbnail bg-secondary-subtle':''; ?>">
                     <span class="d-block"><?php the_post_thumbnail('large', ['alt'=>esc_attr(get_the_title())]); ?></span>
                 </div>
-                <?php edit_post_link( '<span class="dashicons dashicons-edit"></span>','','',0,'post-edit-link bg-dark btn btn-sm btn-secondary position-absolute start-0 top-0 ms-1 mt-1 rounded-0' ); ?>
+                <div class="position-absolute start-0 top-0 ms-1 mt-1 d-flex">
+                <?php
+                edit_post_link( '<span class="dashicons dashicons-edit"></span>','','',0,'post-edit-link bg-dark btn btn-sm btn-secondary rounded-0 me-2' );
+                echo $view_estimate_content;
+                ?>
+                </div>
                 <?php
                 //debug($best);
                 $nonce = wp_create_nonce( 'toggle-best-'.$post->ID );

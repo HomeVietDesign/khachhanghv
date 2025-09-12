@@ -1,0 +1,41 @@
+.fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail .thumbnail-image,
+.fw-shortcode-estimates-customer .estimate-item .contractor-info {
+	opacity: 0.3;
+}
+.fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail .contractor-control {
+	opacity: 0.7;
+}
+.fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .thumbnail-image,
+.fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .contractor-control,
+.fw-shortcode-estimates-customer .estimate-item.active .contractor-info {
+	opacity: 1;
+}
+.fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-estimates-customer .estimate-item .estimate-customer-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-estimates-customer .estimate-item.active .estimate-customer-hide::before {
+	content: "\f460";
+}
+

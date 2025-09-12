@@ -56,7 +56,7 @@ class Theme {
 		// add_action('after_switch_theme', [$this, 'theme_activation']);
 		// add_action('switch_theme', [$this, 'theme_deactivation']);
 
-		//add_action('after_setup_theme', [$this, 'theme_activation']);
+		add_action('after_setup_theme', [$this, 'theme_activation']);
 		//add_action('after_setup_theme', [$this, 'theme_deactivation']);
 	}
 
@@ -66,6 +66,46 @@ class Theme {
 
 		
 		$admin_role = get_role( 'administrator' );
+
+		$admin_role->add_cap('procedure_contractor_view');
+		$admin_role->add_cap('procedure_contractor_edit');
+
+		// $admin_role->add_cap('edit_nha88');
+		// $admin_role->add_cap('read_nha88');
+		// $admin_role->add_cap('delete_nha88');
+		// $admin_role->add_cap('edit_nha88s');
+		// $admin_role->add_cap('edit_others_nha88s');
+		// $admin_role->add_cap('delete_nha88s');
+		// $admin_role->add_cap('publish_nha88s');
+		// $admin_role->add_cap('read_private_nha88s');
+		// $admin_role->add_cap('delete_private_nha88s');
+		// $admin_role->add_cap('delete_published_nha88s');
+		// $admin_role->add_cap('delete_others_nha88s');
+		// $admin_role->add_cap('edit_private_nha88s');
+		// $admin_role->add_cap('edit_published_nha88s');
+		// $admin_role->add_cap('nha88_view');
+		// $admin_role->add_cap('nha88_edit');
+
+		// $admin_role->add_cap('edit_media');
+		// $admin_role->add_cap('read_media');
+		// $admin_role->add_cap('delete_media');
+		// $admin_role->add_cap('edit_medias');
+		// $admin_role->add_cap('edit_others_medias');
+		// $admin_role->add_cap('delete_medias');
+		// $admin_role->add_cap('publish_medias');
+		// $admin_role->add_cap('read_private_medias');
+		// $admin_role->add_cap('delete_private_medias');
+		// $admin_role->add_cap('delete_published_medias');
+		// $admin_role->add_cap('delete_others_medias');
+		// $admin_role->add_cap('edit_private_medias');
+		// $admin_role->add_cap('edit_published_medias');
+		
+		// $admin_role->add_cap('manage_media_cats');
+		// $admin_role->add_cap('edit_media_cats');
+		// $admin_role->add_cap('delete_media_cats');
+
+		// $admin_role->add_cap('media_view');
+		// $admin_role->add_cap('media_edit');
 
 		// $admin_role->add_cap('edit_gzalo');
 		// $admin_role->add_cap('read_gzalo');

@@ -429,8 +429,8 @@ window.addEventListener('DOMContentLoaded', function(){
 
 			tooltip.show();
 
-			// Ẩn sau 2 giây (tuỳ chỉnh nếu cần)
-			setTimeout(() => tooltip.hide(), 2000);
+			// Ẩn sau 3 giây (tuỳ chỉnh nếu cần)
+			setTimeout(() => tooltip.hide(), 3000);
 		});
 
 	});// jQuery

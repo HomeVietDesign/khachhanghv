@@ -21,8 +21,10 @@ if(current_user_can( 'estimate_furniture_view' )) {
 					<input type="hidden" name="client" value="<?=$current_client->term_id?>">
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="client-name text-uppercase d-flex align-items-center">
-							<div><?=esc_html($current_client->description)?></div>
-							<div class="fs-6 ms-3">( <?=esc_html($current_client->name)?> )</div>
+							<div><?=esc_html($current_client->name)?></div>
+							<?php if($current_client->description!='') { ?>
+							<div class="fs-6 ms-3">( <?=esc_html($current_client->description)?> )</div>
+							<?php } ?>
 						</div>
 						<div class="filters d-flex justify-content-end align-items-center">
 							<div class="filter-progress d-flex justify-content-end align-items-center">

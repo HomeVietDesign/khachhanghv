@@ -15,6 +15,7 @@ class Admin {
 		//require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-gzalo.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-medias.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contract.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture.php';
@@ -30,8 +31,13 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-document_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contract_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-gzalo_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-media_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture_cat.php';
+
+		require_once THEME_DIR.'/inc/admin/class-admin-nha88.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-nha88_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-nha88_type.php';
 
 		
 		//require_once THEME_DIR.'/inc/admin/class-admin-update-posts.php';

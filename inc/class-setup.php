@@ -113,13 +113,14 @@ class Setup {
 
 	public function ajax_set_global_vars() {
 		if(defined('DOING_AJAX') && DOING_AJAX) {
-			global $current_client;
+			global $current_client, $current_nha88_type;
 			$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
+			$current_nha88_type = isset($_REQUEST['nha88_type'])?get_term_by( 'id', absint($_REQUEST['nha88_type']), 'nha88_type' ):null;
 		}
 	}
 
 	public function wp_loaded() {
-		global $current_province, $current_client;
+		global $current_province, $current_client, $current_nha88_type;
 		
 		$province = isset($_REQUEST['province'])?absint($_REQUEST['province']):0;
 		$current_province = get_term_by( 'term_id', $province, 'province' );
@@ -129,6 +130,7 @@ class Setup {
 		}
 
 		$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
+		$current_nha88_type = isset($_REQUEST['nha88_type'])?get_term_by( 'id', absint($_REQUEST['nha88_type']), 'nha88_type' ):null;
 	}
 
 	public function contractor_page_link($post_link, $post) {

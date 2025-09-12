@@ -13,27 +13,13 @@ $options = array(
 		'title'   => 'Dữ liệu mặc định',
 		'type'    => 'box',
         'options' => array(
-        	'document_value' => array(
-				'label' => 'Giá trị',
-				'type' => 'text'
-			),
-			'document_unit' => array(
-				'label' => 'Đơn vị',
-				'type' => 'text'
-			),
 			'document_zalo' => array(
 				'label' => 'Link nhóm zalo',
 				'type' => 'text'
 			),
 			'document_default_url' => array(
-				'label' => 'Link dự toán gốc',
+				'label' => 'Link dữ liệu gốc',
 				'type' => 'text'
-			),
-			'document_attachment' => array(
-				'label' => 'File pdf dữ liệu',
-				'type' => 'upload',
-				'images_only' => false,
-				'files_ext' => array( 'pdf','rar','zip' ),
 			),
 		),
 	),

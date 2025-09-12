@@ -96,8 +96,12 @@ img.aligncenter {
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
 	line-height: 1.5;
 }
+.tooltip {
+	--bs-tooltip-zindex: 999999;
+}
 .popover {
 	--bs-popover-max-width: 800px;
+	--bs-popover-zindex: 99999;
 }
 .modal {
 	--bs-modal-margin: 12px;

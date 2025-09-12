@@ -2,14 +2,20 @@
 
 class FW_Shortcode_Documents extends FW_Shortcode
 {
-	
+	public $date_labels = [];
+
 	public function _init()
 	{
-      add_action( 'wp_footer', [$this, 'edit_modal'] );
-      add_action( 'wp_ajax_get_edit_document_form', [$this, 'ajax_get_edit_document_form']);
-      add_action( 'wp_ajax_update_document', [$this, 'ajax_update_document']);
-      add_action( 'wp_ajax_get_document_info', [$this, 'ajax_get_document_info']);
-      add_action( 'wp_ajax_document_hide', [$this, 'ajax_document_hide']);
+		$this->date_labels['document_label_1'] = fw_get_db_settings_option('document_label_1');
+		$this->date_labels['document_label_2'] = fw_get_db_settings_option('document_label_2');
+		$this->date_labels['document_label_3'] = fw_get_db_settings_option('document_label_3');
+		$this->date_labels['document_label_4'] = fw_get_db_settings_option('document_label_4');
+
+		add_action( 'wp_footer', [$this, 'edit_modal'] );
+		add_action( 'wp_ajax_get_edit_document_form', [$this, 'ajax_get_edit_document_form']);
+		add_action( 'wp_ajax_update_document', [$this, 'ajax_update_document']);
+		add_action( 'wp_ajax_get_document_info', [$this, 'ajax_get_document_info']);
+		add_action( 'wp_ajax_document_hide', [$this, 'ajax_document_hide']);
 	}
 
 	public function ajax_document_hide() {
@@ -36,29 +42,22 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		];
 		
 		if($client && $document_id) {
-			$default_attachment = fw_get_db_post_option($document_id,'document_attachment');
 			$default_data = [
-				'value' => fw_get_db_post_option($document_id,'document_value'),
-				'unit' => fw_get_db_post_option($document_id,'document_unit'),
 				'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
-				'attachment_id' => ($default_attachment) ? $default_attachment['attachment_id']:''
 			];
 
 			$data = get_post_meta($document_id, '_data', true);
 			$document_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
 
-			if(empty($document_data['value'])) $document_data['value'] = $default_data['value'];
-			if(empty($document_data['unit'])) $document_data['unit'] = $default_data['unit'];
 			if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
-			if(empty($document_data['attachment_id'])) $document_data['attachment_id'] = $default_data['attachment_id'];
 
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
 			
-			$response['required'] = (isset($document_data['required']) && $document_data['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
-			$response['created'] = (isset($document_data['created']) && $document_data['created']!='')?'<div class="bg-danger" title="Ngày tạo hợp đồng">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
-			$response['completed'] = (isset($document_data['completed']) && $document_data['completed']!='')?'<div class="bg-danger" title="Ngày làm xong hợp đồng">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
-			$response['sent'] = (isset($document_data['sent']) && $document_data['sent']!='')?'<div class="bg-danger" title="Ngày gửi cho khách">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
+			$response['required'] = (isset($document_data['required']) && $document_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_1']).'">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
+			$response['created'] = (isset($document_data['created']) && $document_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_2']).'">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
+			$response['completed'] = (isset($document_data['completed']) && $document_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_3']).'">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
+			$response['sent'] = (isset($document_data['sent']) && $document_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_4']).'">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
 
 			$response['selected'] = (isset($document_data['selected']) && $document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
@@ -184,32 +183,28 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-document', 'nonce' ); ?>
 				<div id="edit-document-response"></div>
 				<div class="mb-3<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
-					Gửi yêu cầu
+					<?=esc_html($this->date_labels['document_label_1'])?>
 					<input class="form-control" type="date" value="<?php echo (isset($document_data['required'])&&$document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
 				</div>
 				<div class="mb-3">
-					Ngày bắt đầu
+					<?=esc_html($this->date_labels['document_label_2'])?>
 					<input class="form-control" type="date" value="<?php echo (isset($document_data['created'])&&$document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
 				</div>
 				<div class="mb-3">
-					Ngày làm xong
+					<?=esc_html($this->date_labels['document_label_3'])?>
 					<input class="form-control" type="date" value="<?php echo (isset($document_data['completed'])&&$document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
 				</div>
 				<div class="mb-3">
-					Ngày gửi khách
+					<?=esc_html($this->date_labels['document_label_4'])?>
 					<input class="form-control" type="date" value="<?php echo (isset($document_data['sent'])&&$document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="document_value" name="document_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($document_data['value']); ?>">
+					URL nhóm zalo
+					<input type="text" id="document_zalo" name="document_zalo" class="form-control" value="<?php echo esc_attr($document_data['zalo']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="document_unit" name="document_unit" placeholder="Đơn vị" class="form-control" value="<?php echo esc_attr($document_data['unit']); ?>">
-				</div>
-				<div class="mb-3">
-					<input type="text" id="document_zalo" name="document_zalo" placeholder="URL nhóm zalo" class="form-control" value="<?php echo esc_attr($document_data['zalo']); ?>">
-				</div>
-				<div class="mb-3">
-					<input type="text" id="document_link" name="document_link" placeholder="Link dự toán" class="form-control" value="<?php echo esc_attr($document_data['link']); ?>">
+					Link dữ liệu
+					<input type="text" id="document_link" name="document_link" class="form-control" value="<?php echo esc_attr($document_data['link']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dữ liệu</div>
@@ -225,7 +220,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 						</div>
 						<label class="col d-block ps-5" for="document_attachment">
 							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+								<div class="form-control text-nowrap">Chọn file dữ liệu cần tải lên</div>
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">

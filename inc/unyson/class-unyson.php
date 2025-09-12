@@ -6,7 +6,7 @@ final class Unyson {
 	private static $instance = null;
 
 	private function __construct() {
-		add_action('fw_init', [$this, '_action_theme_remove_default_option_types']);
+		//add_action('fw_init', [$this, '_action_theme_remove_default_option_types']);
 		add_action('fw_option_types_init', [$this, '_action_theme_include_custom_option_types']);
 		
 		add_action( 'after_setup_theme', [ $this, 'on_after_setup_theme' ] );
@@ -23,7 +23,7 @@ final class Unyson {
 		require_once THEME_DIR.'/framework-customizations/option-types/code-editor/class-fw-option-type-code-editor.php';
 		require_once THEME_DIR.'/framework-customizations/option-types/numeric/class-fw-option-type-numeric.php';
 
-		\FW_Option_Type::register( 'FW_Option_Type_Hidden' );
+		/*\FW_Option_Type::register( 'FW_Option_Type_Hidden' );
 		\FW_Option_Type::register( 'FW_Option_Type_Text' );
 		\FW_Option_Type::register( 'FW_Option_Type_Short_Text' );
         \FW_Option_Type::register( 'FW_Option_Type_Number' );
@@ -72,7 +72,7 @@ final class Unyson {
 
 		{
 			\FW_Option_Type::register( 'FW_Option_Type_Oembed' );
-		}
+		}*/
 	}
 
 	public function _action_theme_remove_default_option_types() {

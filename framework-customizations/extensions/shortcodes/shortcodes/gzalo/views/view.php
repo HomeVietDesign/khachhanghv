@@ -14,7 +14,7 @@ if($gzalo_cats) {
 		<?php
 		foreach ($gzalo_cats as $key => $value) {
 		?>
-		<section class="mb-3">
+		<section class="accordion-item mb-3">
 			<h2 class="accordion-header">
 				<button class="accordion-button text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 			</h2>
@@ -38,11 +38,24 @@ if($gzalo_cats) {
 					if($gzalos) {
 						foreach($gzalos as $gzalo_id) {
 							$gzalo_url = fw_get_db_post_option($gzalo_id, 'gzalo_zalo');
+							$gzalo_content = fw_get_db_post_option($gzalo_id, 'gzalo_content');
 							
 							?>
 							<div class="col-lg-3 col-md-6 gzalo-item mb-4">
 								<div class="gzalo gzalo-<?=$gzalo_id?> h-100 bg-black">
 									<div class="gzalo-thumbnail position-relative">
+										<div class="position-absolute top-0 start-0 p-2 z-3 d-flex">
+											<div class="nha88-require-content">
+											<?php
+											if(isset($gzalo_content) && $gzalo_content!='') {
+												$gzalo_content = '<div class="copy-text mb-3">'.wp_get_the_content($gzalo_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($gzalo_content))?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+										</div>
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $gzalo_id, 'full' ); ?></span>
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 											<?php if(current_user_can('edit_gzalos')) { ?>

@@ -22,8 +22,10 @@ if(current_user_can('document_view')) {
 						<input type="hidden" name="client" value="<?=$current_client->term_id?>">
 						<div class="d-flex justify-content-between align-items-center">
 							<div class="client-name text-uppercase d-flex align-items-center">
-								<div><?=esc_html($current_client->description)?></div>
-								<div class="fs-6 ms-3">( <?=esc_html($current_client->name)?> )</div>
+								<div><?=esc_html($current_client->name)?></div>
+								<?php if($current_client->description!='') { ?>
+								<div class="fs-6 ms-3">( <?=esc_html($current_client->description)?> )</div>
+								<?php } ?>
 							</div>
 							<div class="filters d-flex justify-content-end align-items-center">
 								<div class="filter-progress d-flex justify-content-end align-items-center">
@@ -33,19 +35,19 @@ if(current_user_can('document_view')) {
 									</div>
 									<div class="filter-progress-item m-1 d-flex">
 										<input type="checkbox" class="btn-check progress-checker" name="progress" value="required" id="progress-required" <?php checked( 'required', $progress, true ); ?>>
-										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-required">Yêu cầu: <span>0</span></label>
+										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-required"><?=fw_get_db_settings_option('document_label_1_count')?>: <span>0</span></label>
 									</div>
 									<div class="filter-progress-item m-1 d-flex">
 										<input type="checkbox" class="btn-check progress-checker" name="progress" value="created" id="progress-created" <?php checked( 'created', $progress, true ); ?>>
-										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-created">Bắt đầu: <span>0</span></label>
+										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-created"><?=fw_get_db_settings_option('document_label_2_count')?>: <span>0</span></label>
 									</div>
 									<div class="filter-progress-item m-1 d-flex">
 										<input type="checkbox" class="btn-check progress-checker" name="progress" value="completed" id="progress-completed" <?php checked( 'completed', $progress, true ); ?>>
-										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-completed">Xong: <span>0</span></label>
+										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-completed"><?=fw_get_db_settings_option('document_label_3_count')?>: <span>0</span></label>
 									</div>
 									<div class="filter-progress-item m-1 d-flex">
 										<input type="checkbox" class="btn-check progress-checker" name="progress" value="sent" id="progress-sent" <?php checked( 'sent', $progress, true ); ?>>
-										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-sent">Gửi: <span>0</span></label>
+										<label class="btn btn-sm btn-outline-yellow fw-bold" for="progress-sent"><?=fw_get_db_settings_option('document_label_4_count')?>: <span>0</span></label>
 									</div>
 									<div class="filter-progress-item m-1 d-flex">
 										<input type="checkbox" class="btn-check progress-checker" name="progress" value="selected" id="progress-selected" <?php checked( 'selected', $progress, true ); ?>>

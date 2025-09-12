@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(e){
 	jQuery(function($){
-
+		
 		// estimate contractor
 		$('#edit-estimate').on('show.bs.modal', function (event) {
 			let $modal = $(this),
@@ -112,6 +112,66 @@ document.addEventListener('DOMContentLoaded', function(e){
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
+		$('.btn-add-signed').on('click', function(e){
+			let $this = $(this),
+				$that = $this.parent('.toggle-signed').find('.btn-remove-signed'),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('"'+contractor_title+'" đã ký ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_contractor_add_signed', client: client, contractor: contractor},
+					beforeSend: function() {
+						$this.prop('disabled', true);
+					},
+					success: function(response) {
+						if(response) {
+							$this.addClass('d-none');
+							$that.removeClass('d-none');
+						}
+					},
+					complete: function(){
+						$this.prop('disabled', false);
+					}
+				});
+			}
+		});
+
+		$('.btn-remove-signed').on('click', function(e){
+			let $this = $(this),
+				$that = $this.parent('.toggle-signed').find('.btn-add-signed'),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('"'+contractor_title+'" chưa ký ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_contractor_remove_signed', client: client, contractor: contractor},
+					beforeSend: function() {
+						$this.prop('disabled', true);
+					},
+					success: function(response) {
+						if(response) {
+							$this.addClass('d-none');
+							$that.removeClass('d-none');
+						}
+					},
+					complete: function(){
+						$this.prop('disabled', false);
+					}
+				});
+			}
+		});
+
 		$('.estimate-contractor-hide').on('click', function(e){
 			let $this = $(this),
 				client = $this.data('client'),
@@ -119,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				contractor_title = $this.data('contractorTitle'),
 				$estimate = $this.closest('.estimate-item');
 
-			if(confirm('Ẩn nhà thầu "'+contractor_title+'" ?')) {
+			if(confirm('Ẩn/Hiện "'+contractor_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -129,8 +189,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$estimate.addClass('hide');
+						if(response===1) {
+							$estimate.addClass('active');
+						} else if(response===-1) {
+							$estimate.removeClass('active');
 						}
 					}
 				});
@@ -227,6 +289,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 			renderPagination($paginationLink, p, totalPages);
 		});
-
+		
 	});
 });

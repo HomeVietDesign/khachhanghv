@@ -9,7 +9,7 @@ class Admin_Passwords {
 
 		if(is_admin()) {
 			
-			require_once THEME_DIR.'/inc/admin/class-walker-passwords-checklist.php';
+			//require_once THEME_DIR.'/inc/admin/class-walker-passwords-checklist.php';
 
 			add_action( 'admin_enqueue_scripts', [$this, 'enqueue_scripts'] );
 
@@ -18,8 +18,8 @@ class Admin_Passwords {
 			add_filter('manage_edit-passwords_columns', [$this, 'custom_column_header']);
 			add_filter('manage_passwords_custom_column', [$this, 'custom_column_value'], 10, 3);
 
-			add_filter( 'wp_terms_checklist_args', [$this, 'change_passwords_check_list'], 10, 1 );
-			add_filter( 'post_column_taxonomy_links', [$this, 'change_passwords_columns_links'], 10, 3 );
+			// add_filter( 'wp_terms_checklist_args', [$this, 'change_passwords_check_list'], 10, 1 );
+			// add_filter( 'post_column_taxonomy_links', [$this, 'change_passwords_columns_links'], 10, 3 );
 
 			add_action( 'delete_passwords', [$this, 'delete_contractor_order'], 10, 4 );
 			add_action( 'created_passwords', [$this, 'create_default_contractor_order_term'] );
@@ -128,10 +128,10 @@ class Admin_Passwords {
 
 	public function custom_column_header($columns) {
 		if(isset($columns['name'])) {
-			$columns['name'] = 'Số điện thoại';
+			$columns['name'] = 'Tên gọi';
 		}
 		if(isset($columns['description'])) {
-			$columns['description'] = 'Tên gọi';
+			$columns['description'] = 'Số điện thoại';
 		}
 		if(isset($columns['slug'])) {
 			unset($columns['slug']);

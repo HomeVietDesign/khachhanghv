@@ -1,4 +1,3 @@
-
 <?php
 if ( ! defined( 'FW' ) ) {
 	die( 'Forbidden' );
@@ -60,7 +59,7 @@ $_passwords = get_terms(['taxonomy'=>'passwords', 'hide_empty'=>false]);
 if(!empty($wp_users) && !empty($_passwords)) {
 	$passwords = [];
 	foreach ($_passwords as $key => $value) {
-		$passwords[$value->term_id] = $value->description.' ( '.$value->name.' )';
+		$passwords[$value->term_id] = $value->name.' ( '.$value->description.' )';
 	}
 
 	$option = [

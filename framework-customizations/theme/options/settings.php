@@ -10,9 +10,8 @@
 $options = array(
 	fw()->theme->get_options( 'general-settings' ),
 	fw()->theme->get_options( 'footer-settings' ),
-	//fw()->theme->get_options( 'google-settings' ),
-	//fw()->theme->get_options( 'facebook-settings' ),
+	fw()->theme->get_options( 'custom-script-settings' ),
 	fw()->theme->get_options( 'contractor-settings' ),
 	fw()->theme->get_options( 'user-settings' ),
-	fw()->theme->get_options( 'custom-script-settings' ),
+	fw()->theme->get_options( 'document-settings' ),
 );
