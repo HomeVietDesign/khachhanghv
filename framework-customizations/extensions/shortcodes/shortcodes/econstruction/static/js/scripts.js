@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				econstruction_title = $this.data('econstructionTitle'),
 				$econstruction = $this.closest('.econstruction-item');
 
-			if(confirm(econstruction_title)) {
+			if(confirm('Ẩn/Hiện "'+econstruction_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -123,8 +123,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$econstruction.addClass('hide');
+						if(response===1) {
+							$econstruction.addClass('active');
+						} else if(response===-1) {
+							$econstruction.removeClass('active');
 						}
 					}
 				});

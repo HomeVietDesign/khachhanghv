@@ -42,3 +42,46 @@
 	height: 100%;
 	object-fit: cover;
 }
+
+.fw-shortcode-econstructions .estimate-item .econstruction-thumbnail .thumbnail-image,
+.fw-shortcode-econstructions .estimate-item .econstruction-info {
+	opacity: 0.3;
+}
+.fw-shortcode-econstructions .estimate-item .progressing-bar,
+.fw-shortcode-econstructions .estimate-item .econstruction-thumbnail .econstruction-control {
+	opacity: 0.7;
+}
+.fw-shortcode-econstructions .estimate-item.active .progressing-bar,
+.fw-shortcode-econstructions .estimate-item.active .econstruction-thumbnail .thumbnail-image,
+.fw-shortcode-econstructions .estimate-item.active .econstruction-thumbnail .econstruction-control,
+.fw-shortcode-econstructions .estimate-item.active .econstruction-info {
+	opacity: 1;
+}
+.fw-shortcode-econstructions .estimate-item .econstruction-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-econstructions .estimate-item.active .econstruction-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-econstructions .estimate-item .econstruction-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-econstructions .estimate-item.active .econstruction-hide::before {
+	content: "\f460";
+}

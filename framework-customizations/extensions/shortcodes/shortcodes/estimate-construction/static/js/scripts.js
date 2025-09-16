@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				contractor_title = $this.data('contractorTitle'),
 				$estimate = $this.closest('.estimate-item');
 
-			if(confirm('Ẩn nhà thầu "'+contractor_title+'" ?')) {
+			if(confirm('Ẩn/Hiện "'+contractor_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -124,8 +124,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$estimate.addClass('hide');
+						if(response===1) {
+							$estimate.addClass('active');
+						} else if(response===-1) {
+							$estimate.removeClass('active');
 						}
 					}
 				});

@@ -43,3 +43,46 @@
 	height: 100%;
 	object-fit: cover;
 }
+
+.fw-shortcode-nha88s .nha88-item .nha88-thumbnail .thumbnail-image,
+.fw-shortcode-nha88s .nha88-item .nha88-info {
+	opacity: 0.3;
+}
+.fw-shortcode-nha88s .nha88-item .progressing-bar,
+.fw-shortcode-nha88s .nha88-item .nha88-thumbnail .nha88-control {
+	opacity: 0.7;
+}
+.fw-shortcode-nha88s .nha88-item.active .progressing-bar,
+.fw-shortcode-nha88s .nha88-item.active .nha88-thumbnail .thumbnail-image,
+.fw-shortcode-nha88s .nha88-item.active .nha88-thumbnail .nha88-control,
+.fw-shortcode-nha88s .nha88-item.active .nha88-info {
+	opacity: 1;
+}
+.fw-shortcode-nha88s .nha88-item .nha88-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-nha88s .nha88-item.active .nha88-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-nha88s .nha88-item .nha88-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-nha88s .nha88-item.active .nha88-hide::before {
+	content: "\f460";
+}

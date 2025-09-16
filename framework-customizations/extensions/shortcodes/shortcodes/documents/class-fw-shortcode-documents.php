@@ -21,12 +21,21 @@ class FW_Shortcode_Documents extends FW_Shortcode
 	public function ajax_document_hide() {
 		global $current_client;
 		$doc_id = isset($_POST['doc']) ? absint($_POST['doc']) : 0;
-		$response = false;
+		$response = 0;
 		if(current_user_can('document_edit') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$document_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'document_hide', []);
-			$document_hide[] = $doc_id;
-			fw_set_db_term_option($current_client->term_id, 'passwords', 'document_hide', $document_hide);
-			$response = true;
+
+			$document_hide = get_term_meta($current_client->term_id, 'document_hide', true);
+			if(empty($document_hide)) $document_hide = [];
+
+			if(in_array($doc_id, $document_hide)) {
+				unset($document_hide[array_search($doc_id, $document_hide)]);
+				$response = -1;
+			} else {
+				$document_hide[] = $doc_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'document_hide', $document_hide);
 		}
 		wp_send_json($response);
 	}

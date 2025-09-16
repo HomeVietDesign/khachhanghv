@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				contract_title = $this.data('contractTitle'),
 				$contract = $this.closest('.contract-item');
 
-			if(confirm(contract_title)) {
+			if(confirm('Ẩn/Hiện "'+contract_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -122,8 +122,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$contract.addClass('hide');
+						if(response===1) {
+							$contract.addClass('active');
+						} else if(response===-1) {
+							$contract.removeClass('active');
 						}
 					}
 				});

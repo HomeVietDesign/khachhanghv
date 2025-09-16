@@ -17,7 +17,9 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = 0;
 		if(current_user_can('estimate_customer_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$contractor_customer_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', []);
+			$contractor_customer_hide = get_term_meta($current_client->term_id, 'contractor_customer_hide', true);
+			if(empty($contractor_customer_hide)) $contractor_customer_hide = [];
+
 			if(in_array($contractor_id, $contractor_customer_hide)) {
 				unset($contractor_customer_hide[array_search($contractor_id, $contractor_customer_hide)]);
 				$response = -1;
@@ -25,8 +27,10 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				$contractor_customer_hide[] = $contractor_id;
 				$response = 1;
 			}
-			fw_set_db_term_option($current_client->term_id, 'passwords', 'contractor_customer_hide', $contractor_customer_hide);
+
+			update_term_meta($current_client->term_id, 'contractor_customer_hide', $contractor_customer_hide);
 		}
+		
 		wp_send_json($response);
 	}
 

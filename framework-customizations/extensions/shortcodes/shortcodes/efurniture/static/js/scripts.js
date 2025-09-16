@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function(e){
-	const chunkSize = 1024 * 1024; // 1MB
+	const chunkSize = 2* 1024 * 1024; // 2MB
 	
 	jQuery(function($){
 
@@ -126,10 +126,12 @@ document.addEventListener('DOMContentLoaded', function(e){
 				efurniture = $form.find('#efurniture').val(),
 				nonce = $form.find('#nonce').val(),
 				$uploaded = $form.find('#attachment-uploaded'),
+				$uploaded_error = $form.find('#attachment-uploaded-error'),
 				$upload_bar = $form.find('#attachment-upload-bar');
 
 			$upload_bar.removeClass('d-none').addClass('d-flex');
 			$uploaded.addClass('d-none');
+			$uploaded_error.addClass('d-none');
 
 			$upload_bar.find('.abort').on('click', function(e){
 				if(efurniture_ajax_upload!=null) efurniture_ajax_upload.abort();
@@ -202,8 +204,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 						contentType: false,
 						processData: false,
 						success: function (res) {
-							
-							//console.log(res);
 
 							chunkIndex++;
 							let percent = Math.floor((chunkIndex / totalChunks) * 100);
@@ -228,6 +228,9 @@ document.addEventListener('DOMContentLoaded', function(e){
 									$input.prop('files', new DataTransfer().files);
 									$input.closest('[for="efurniture_file"]').find('.form-control').text('');
 								},1000);
+							} else if (chunkIndex == totalChunks) {
+								$uploaded_error.html(res.msg);
+								$uploaded_error.removeClass('d-none');
 							}
 						},
 						error: function (xhr) {
@@ -282,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				efurniture_title = $this.data('efurnitureTitle'),
 				$efurniture = $this.closest('.efurniture-item');
 
-			if(confirm(efurniture_title)) {
+			if(confirm('Ẩn/Hiện "'+efurniture_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -292,8 +295,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$efurniture.addClass('hide');
+						if(response===1) {
+							$efurniture.addClass('active');
+						} else if(response===-1) {
+							$efurniture.removeClass('active');
 						}
 					}
 				});

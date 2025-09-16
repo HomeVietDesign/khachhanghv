@@ -42,3 +42,46 @@
 	height: 100%;
 	object-fit: cover;
 }
+
+.fw-shortcode-efurnitures .estimate-item .efurniture-thumbnail .thumbnail-image,
+.fw-shortcode-efurnitures .estimate-item .efurniture-info {
+	opacity: 0.3;
+}
+.fw-shortcode-efurnitures .estimate-item .progressing-bar,
+.fw-shortcode-efurnitures .estimate-item .efurniture-thumbnail .efurniture-control {
+	opacity: 0.7;
+}
+.fw-shortcode-efurnitures .estimate-item.active .progressing-bar,
+.fw-shortcode-efurnitures .estimate-item.active .efurniture-thumbnail .thumbnail-image,
+.fw-shortcode-efurnitures .estimate-item.active .efurniture-thumbnail .efurniture-control,
+.fw-shortcode-efurnitures .estimate-item.active .efurniture-info {
+	opacity: 1;
+}
+.fw-shortcode-efurnitures .estimate-item .efurniture-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-efurnitures .estimate-item.active .efurniture-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-efurnitures .estimate-item .efurniture-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-efurnitures .estimate-item.active .efurniture-hide::before {
+	content: "\f460";
+}

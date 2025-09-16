@@ -24,7 +24,7 @@ $options = array(
 			'term-meta' => 'province',
 		),
 	),
-
+	/*
 	'contractor_hide' => array(
 		'label' => 'Dự toán nhà thầu Hiện',
 		'desc'  => '',
@@ -61,7 +61,7 @@ $options = array(
 	),
 
 	'contractor_construction_hide' => array(
-		'label' => 'Dự toán Xây dựng ẩn',
+		'label' => 'Dự toán Xây dựng hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -74,7 +74,7 @@ $options = array(
 	),
 
 	'econstruction_hide' => array(
-		'label' => 'Xây dựng ẩn',
+		'label' => 'Xây dựng hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -87,7 +87,7 @@ $options = array(
 	),
 
 	'contractor_furniture_hide' => array(
-		'label' => 'Dự toán Đồ gỗ ẩn',
+		'label' => 'Dự toán Đồ gỗ hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -100,7 +100,7 @@ $options = array(
 	),
 
 	'efurniture_hide' => array(
-		'label' => 'Đồ gỗ ẩn',
+		'label' => 'Đồ gỗ hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -122,7 +122,7 @@ $options = array(
 	// ),
 	
 	'document_hide' => array(
-		'label' => 'Hồ sơ ẩn',
+		'label' => 'Hồ sơ hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -135,7 +135,7 @@ $options = array(
 	),
 
 	'contract_hide' => array(
-		'label' => 'Hợp đồng ẩn',
+		'label' => 'Hợp đồng hiện',
 		'desc'  => '',
 		'type'  => 'multi-select',
 		'population' => 'posts',
@@ -146,17 +146,5 @@ $options = array(
 			'term-meta' => 'contract_hide',
 		),
 	),
-
-	'gzalo_hide' => array(
-		'label' => 'Nhóm zalo ẩn',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		'population' => 'posts',
-		'source' => 'gzalo',
-		'limit' => 1000,
-		'fw-storage' => array(
-			'type' => 'term-meta',
-			'term-meta' => 'gzalo_hide',
-		),
-	),
+	*/
 );

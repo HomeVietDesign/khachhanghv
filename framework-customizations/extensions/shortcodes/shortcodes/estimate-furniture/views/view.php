@@ -62,10 +62,12 @@ if($current_client) {
 			      				<div class="accordion-body">
 									<div class="items row justify-content-center">
 									<?php
-									$contractor_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_furniture_hide', []);
+									$contractor_furniture_hide = get_term_meta($current_client->term_id, 'contractor_furniture_hide', true);
+									if(empty($contractor_furniture_hide)) $contractor_furniture_hide = [];
+
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											\FW_Shortcode_Estimate_Furniture::display_contractor($contractor_id, $current_client, $progress, $contractor_hide);
+											\FW_Shortcode_Estimate_Furniture::display_contractor($contractor_id, $current_client, $progress, $contractor_furniture_hide);
 										} else {
 											break;
 										}

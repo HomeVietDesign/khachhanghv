@@ -9,13 +9,4 @@
 
 $options = array(
 	
-	'nha88_hide' => array(
-		'label' => 'Hồ sơ đã ẩn',
-		'desc'  => '',
-		'type'  => 'multi-select',
-		'population' => 'posts',
-		'source' => 'nha88',
-		'limit' => 1000
-	),
-
 );

@@ -57,9 +57,11 @@
 .fw-shortcode-estimates .estimate-item .contractor-info {
 	opacity: 0.3;
 }
+.fw-shortcode-estimates .estimate-item .progressing-bar,
 .fw-shortcode-estimates .estimate-item .contractor-thumbnail .contractor-control {
 	opacity: 0.7;
 }
+.fw-shortcode-estimates .estimate-item.active .progressing-bar,
 .fw-shortcode-estimates .estimate-item.active .contractor-thumbnail .thumbnail-image,
 .fw-shortcode-estimates .estimate-item.active .contractor-thumbnail .contractor-control,
 .fw-shortcode-estimates .estimate-item.active .contractor-info {

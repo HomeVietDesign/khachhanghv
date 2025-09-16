@@ -12,9 +12,12 @@ $progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($econstruction_cats && $current_client) {
 
-	$econstruction_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'econstruction_hide', []);
+	$econstruction_hide = get_term_meta($current_client->term_id, 'econstruction_hide', true);
+	if(empty($econstruction_hide)) $econstruction_hide = [];
 
-	$data = fw_get_db_term_option($current_client->term_id, 'passwords', 'econstruction', []);
+	// $data = fw_get_db_term_option($current_client->term_id, 'passwords', 'econstruction', []); // bỏ vì gây lỗi mất dữ liệu
+	$data = get_term_meta($current_client->term_id, 'econstruction', true);
+	if(empty($data)) $data = [];
 
 	?>
 	<div class="fw-shortcode-econstructions">
@@ -55,7 +58,7 @@ if($econstruction_cats && $current_client) {
 								'file_id' => (!empty($default_econstruction_file))?$default_econstruction_file['attachment_id']:'',
 							];
 
-							$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'file_id'=>'', 'quote'=>''];
+							$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'file_id'=>'', 'quote'=>''];
 
 							if(empty($econstruction_data['value'])) $econstruction_data['value'] = $default_data['value'];
 							if(empty($econstruction_data['unit'])) $econstruction_data['unit'] = $default_data['unit'];
@@ -122,7 +125,7 @@ if($econstruction_cats && $current_client) {
 							}
 
 							if(in_array($econstruction_id, $econstruction_hide)) {
-								$item_class .= ' hide';
+								$item_class .= ' active';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 estimate-item econstruction-item mb-4<?=$item_class?>">
@@ -174,7 +177,7 @@ if($econstruction_cats && $current_client) {
 										</div>	
 									</div>
 									<div class="econstruction-thumbnail position-relative">
-										<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+										<div class="econstruction-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="econstruction-require-content">
 											<?php
 											if(isset($econstruction_content) && $econstruction_content!='') {
@@ -200,7 +203,7 @@ if($econstruction_cats && $current_client) {
 										</div>
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $econstruction_id, 'full' ); ?></span>
 
-										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+										<div class="econstruction-control position-absolute bottom-0 end-0 m-1 d-flex">
 											<div class="estimate-quote econstruction-quote<?php echo (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes') {
@@ -211,22 +214,26 @@ if($econstruction_cats && $current_client) {
 												?>
 											</div>
 											<?php if(current_user_can('edit_econstructions')) { ?>
-											<button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="Ẩn <?php echo esc_attr('"'.get_the_title( $econstruction_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
+											
+											<button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>" title="Ẩn/Hiện"></button>
+
+											<!-- <button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="Ẩn <?php echo esc_attr('"'.get_the_title( $econstruction_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button> -->
 
 											<a href="<?php echo get_edit_post_link( $econstruction_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>
+
 											<?php if(current_user_can('econstruction_edit')) { ?>
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-econstruction" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 											<?php } ?>
 										</div>
 										
-										<div class="zalo-link position-absolute top-0 end-0 p-1">
+										<div class="econstruction-control zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($econstruction_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($econstruction_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 
-										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+										<div class="econstruction-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>
 											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
 											<?php } ?>
@@ -251,7 +258,17 @@ if($econstruction_cats && $current_client) {
 											<?php
 											if($econstruction_data['url']) {
 												?>
-												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($econstruction_data['url'])?>" target="_blank">Xem chi tiết</a>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($econstruction_data['url'])?>" target="_blank">Dự toán 1</a>
+												<?php
+											}
+											if($econstruction_data['url2']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($econstruction_data['url2'])?>" target="_blank">Dự toán 2</a>
+												<?php
+											}
+											if($econstruction_data['url3']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($econstruction_data['url3'])?>" target="_blank">Dự toán 3</a>
 												<?php
 											}
 											?>

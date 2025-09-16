@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				nha88_title = $this.data('nha88Title'),
 				$nha88 = $this.closest('.nha88-item');
 
-			if(confirm(nha88_title)) {
+			if(confirm('Ẩn/Hiện "'+nha88_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -122,8 +122,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$nha88.addClass('hide');
+						if(response===1) {
+							$nha88.addClass('active');
+						} else if(response===-1) {
+							$nha88.removeClass('active');
 						}
 					}
 				});

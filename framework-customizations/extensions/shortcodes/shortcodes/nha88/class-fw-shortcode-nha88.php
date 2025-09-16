@@ -15,13 +15,21 @@ class FW_Shortcode_Nha88 extends FW_Shortcode
 	public function ajax_nha88_hide() {
 		global $current_nha88_type;
 		$nha88_id = isset($_POST['nha88']) ? absint($_POST['nha88']) : 0;
-		$response = false;
+		$response = 0;
 		if(current_user_can('nha88_edit') && $current_nha88_type && $nha88_id && check_ajax_referer( 'global', 'nonce', false )) {
-			$nha88_hide = fw_get_db_term_option($current_nha88_type->term_id, 'nha88_type', 'nha88_hide', []);
-			if(!in_array($nha88_id, $nha88_hide))
+			
+			$nha88_hide = get_term_meta($current_nha88_type->term_id, 'nha88_hide', true);
+			if(empty($nha88_hide)) $nha88_hide = [];
+
+			if(in_array($nha88_id, $nha88_hide)) {
+				unset($nha88_hide[array_search($nha88_id, $nha88_hide)]);
+				$response = -1;
+			} else {
 				$nha88_hide[] = $nha88_id;
-			fw_set_db_term_option($current_nha88_type->term_id, 'nha88_type', 'nha88_hide', $nha88_hide);
-			$response = true;
+				$response = 1;
+			}
+
+			update_term_meta($current_nha88_type->term_id, 'nha88_hide', $nha88_hide);
 		}
 		wp_send_json($response);
 	}

@@ -24,11 +24,88 @@ class Admin_Passwords {
 			add_action( 'delete_passwords', [$this, 'delete_contractor_order'], 10, 4 );
 			add_action( 'created_passwords', [$this, 'create_default_contractor_order_term'] );
 
+			//add_action( 'passwords_add_form_fields', [$this, 'passwords_add_form_fields'] );
+			//add_action( 'passwords_edit_form_fields', [$this, 'passwords_edit_form_fields'] );
+
+			add_action( 'edited_passwords', [$this, 'save_passwords_meta'] );
+
 			
 		}
 		
 		add_action( 'delete_contractor_order', [$this, 'async_delete_contractor_order'] );
 		add_action( 'create_default_contractor_order_term', [$this, 'async_create_default_contractor_order_term'] );
+	}
+
+	public function save_passwords_meta($term_id) {
+		if(isset($_POST['econstruction'])) {
+			$econstruction =  $_POST['econstruction'];
+			update_term_meta( $term_id, 'econstruction', $econstruction );
+		}
+		
+		if(isset($_POST['efurniture'])) {
+			$efurniture =  $_POST['efurniture'];
+			update_term_meta( $term_id, 'efurniture', $efurniture );
+		}
+	}
+
+	public function passwords_edit_form_fields($term) {
+		//$data = get_term_meta( $term->term_id, 'econstruction', true );
+		$econstruction = fw_get_db_term_option($term->term_id, 'passwords', 'econstruction', []);
+		$efurniture = fw_get_db_term_option($term->term_id, 'passwords', 'efurniture', []);
+
+		// $econstruction = get_term_meta( $term->term_id, 'econstruction', true );
+		// $efurniture = get_term_meta( $term->term_id, 'efurniture', true );
+		
+		//debug($econstruction);
+		//debug($efurniture);
+		?>
+		<tr class="form-field">
+			<th scope="row"><label for="econstruction">econstruction</label></th>
+			<td>
+				<?php
+				if($econstruction) {
+					foreach ($econstruction as $key => $value) {
+						if(!empty($value)) {
+							foreach ($value as $key2 => $value2) {
+							?>
+							<input type="text" name="econstruction[<?=$key?>][<?=$key2?>]" value="<?=esc_attr($value2)?>">
+							<?php
+							}
+						}
+					}
+				}
+				?>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row"><label for="econstruction">efurniture</label></th>
+			<td>
+				<?php
+				if($efurniture) {
+					foreach ($efurniture as $key => $value) {
+						if(!empty($value)) {
+							foreach ($value as $key2 => $value2) {
+							?>
+							<input type="text" name="efurniture[<?=$key?>][<?=$key2?>]" value="<?=esc_attr($value2)?>">
+							<?php
+							}
+						}
+					}
+				}
+				?>
+			</td>
+		</tr>
+		<?php
+	}
+
+	public function passwords_add_form_fields() {
+		?>
+		<div class="form-field">
+			<label for="term_econstruction">Econstruction</label>
+			<textarea name="term_econstruction" id="term_econstruction"></textarea>
+			<p class="description"></p>
+		</div>
+		<?php
 	}
 
 	public function async_create_default_contractor_order_term($term_id) {

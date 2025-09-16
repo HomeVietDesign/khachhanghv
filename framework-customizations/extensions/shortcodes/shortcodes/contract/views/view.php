@@ -12,7 +12,8 @@ $progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($contract_cats && $current_client) {
 
-	$contract_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'contract_hide', []);
+	$contract_hide = get_term_meta($current_client->term_id, 'contract_hide', true);
+	if(empty($contract_hide)) $contract_hide = [];
 
 	?>
 	<div class="fw-shortcode-contracts">
@@ -52,7 +53,7 @@ if($contract_cats && $current_client) {
 							];
 
 							$data = get_post_meta($contract_id, '_data', true);
-							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'signed'=>''];
+							$contract_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'signed'=>''];
 							
 							if(empty($contract_data['value'])) $contract_data['value'] = $default_data['value'];
 							if(empty($contract_data['unit'])) $contract_data['unit'] = $default_data['unit'];
@@ -120,7 +121,7 @@ if($contract_cats && $current_client) {
 							}
 
 							if(in_array($contract_id, $contract_hide)) {
-								$item_class .= ' hide';
+								$item_class .= ' active';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4<?=$item_class?>">
@@ -172,7 +173,7 @@ if($contract_cats && $current_client) {
 										</div>
 									</div>
 									<div class="contract-thumbnail position-relative">
-										<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+										<div class="contract-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="contract-require-content">
 											<?php
 											if(isset($contract_content) && $contract_content!='') {
@@ -185,13 +186,13 @@ if($contract_cats && $current_client) {
 										</div>
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
 
-										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+										<div class="contract-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>
 											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
 											<?php } ?>
 										</div>
 
-										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+										<div class="contract-control position-absolute bottom-0 end-0 m-1 d-flex">
 											<div class="contract-signed<?php echo (isset($contract_data['signed']) && $contract_data['signed']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($contract_data['signed']) && $contract_data['signed']=='yes') {
@@ -202,7 +203,8 @@ if($contract_cats && $current_client) {
 												?>
 											</div>
 											<?php if(current_user_can('edit_contracts')) { ?>
-											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="Ẩn hợp đồng <?php echo esc_attr('"'.get_the_title( $contract_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
+
+											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="<?php echo esc_attr(get_the_title( $contract_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $contract_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>
@@ -211,7 +213,7 @@ if($contract_cats && $current_client) {
 											<?php } ?>
 										</div>
 										
-										<div class="zalo-link position-absolute top-0 end-0 p-1">
+										<div class="contract-control zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($contract_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($contract_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
@@ -238,7 +240,17 @@ if($contract_cats && $current_client) {
 											<?php
 											if($contract_data['url']) {
 												?>
-												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($contract_data['url'])?>" target="_blank">Xem chi tiết</a>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($contract_data['url'])?>" target="_blank">Hợp đồng bản 1</a>
+												<?php
+											}
+											if($contract_data['url2']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($contract_data['url2'])?>" target="_blank">Hợp đồng bản 2</a>
+												<?php
+											}
+											if($contract_data['url3']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($contract_data['url3'])?>" target="_blank">Hợp đồng bản 3</a>
 												<?php
 											}
 											?>

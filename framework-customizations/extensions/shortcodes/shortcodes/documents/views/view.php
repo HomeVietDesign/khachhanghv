@@ -15,7 +15,8 @@ $shortcode = fw_ext( 'shortcodes' )->get_shortcode('documents');
 //debug($shortcode);
 
 if($document_cats && $current_client) {
-	$document_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'document_hide', []);
+	$document_hide = get_term_meta($current_client->term_id, 'document_hide', true);
+	if(empty($document_hide)) $document_hide = [];
 	?>
 	<div class="fw-shortcode-documents">
 		<div class="accordion">
@@ -122,7 +123,7 @@ if($document_cats && $current_client) {
 							}
 
 							if(in_array($document_id, $document_hide)) {
-								$item_class .= ' hide';
+								$item_class .= ' active';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 document-item mb-4<?=$item_class?>">
@@ -174,7 +175,7 @@ if($document_cats && $current_client) {
 										</div>
 									</div>
 									<div class="document-thumbnail position-relative">
-										<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+										<div class="document-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="document-require-content">
 											<?php
 											if(isset($document_content) && $document_content!='') {
@@ -200,13 +201,13 @@ if($document_cats && $current_client) {
 
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $document_id, 'full' ); ?></span>
 										
-										<div class="position-absolute bottom-0 start-0 m-1 d-flex">
+										<div class="document-control position-absolute bottom-0 start-0 m-1 d-flex">
 											<?php if($default_url) { ?>
 											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
 											<?php } ?>
 										</div>
 
-										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+										<div class="document-control position-absolute bottom-0 end-0 m-1 d-flex">
 											<div class="document-selected<?php echo (isset($document_data['selected']) && $document_data['selected']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($document_data['selected']) && $document_data['selected']=='yes') {
@@ -217,8 +218,8 @@ if($document_cats && $current_client) {
 												?>
 											</div>
 											<?php if(current_user_can('edit_documents')) { ?>
-											
-											<button class="document-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="Ẩn hồ sơ <?php echo esc_attr('"'.get_the_title( $document_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
+
+											<button class="document-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>" title="Ẩn/Hiện"></button>
 											
 											<a href="<?php echo get_edit_post_link( $document_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 
@@ -230,7 +231,7 @@ if($document_cats && $current_client) {
 
 										</div>
 										
-										<div class="zalo-link position-absolute top-0 end-0 p-1">
+										<div class="document-control zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($document_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($document_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>

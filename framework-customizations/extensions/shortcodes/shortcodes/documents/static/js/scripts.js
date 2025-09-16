@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				doc_title = $this.data('documentTitle'),
 				$doc = $this.closest('.document-item');
 
-			if(confirm(doc_title)) {
+			if(confirm('Ẩn/Hiện "'+doc_title+'" ?')) {
 				$.ajax({
 					url: theme.ajax_url,
 					type: 'POST',
@@ -125,8 +125,10 @@ document.addEventListener('DOMContentLoaded', function(e){
 
 					},
 					success: function(response) {
-						if(response) {
-							$doc.addClass('hide');
+						if(response===1) {
+							$doc.addClass('active');
+						} else if(response===-1) {
+							$doc.removeClass('active');
 						}
 					}
 				});

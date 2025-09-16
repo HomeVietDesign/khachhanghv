@@ -12,10 +12,12 @@ $progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($efurniture_cats && $current_client) {
 
-	$efurniture_hide = fw_get_db_term_option($current_client->term_id, 'passwords', 'efurniture_hide', []);
+	$efurniture_hide = get_term_meta($current_client->term_id, 'efurniture_hide', true);
+	if(empty($efurniture_hide)) $efurniture_hide = [];
 
-	$data = fw_get_db_term_option($current_client->term_id, 'passwords', 'efurniture', []);
-
+	// $data = fw_get_db_term_option($current_client->term_id, 'passwords', 'efurniture', []); // bỏ vì gây mất dữ liệu
+	$data = get_term_meta($current_client->term_id, 'efurniture', true);
+	if(empty($data)) $data = [];
 	?>
 	<div class="fw-shortcode-efurnitures">
 		<div class="accordion">
@@ -55,7 +57,7 @@ if($efurniture_cats && $current_client) {
 								'file_id' => (!empty($default_efurniture_file))?$default_efurniture_file['attachment_id']:'',
 							];
 
-							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'file_id'=>'', 'quote'=>''];
+							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'file_id'=>'', 'quote'=>''];
 
 							if(empty($efurniture_data['value'])) $efurniture_data['value'] = $default_data['value'];
 							if(empty($efurniture_data['unit'])) $efurniture_data['unit'] = $default_data['unit'];
@@ -122,7 +124,7 @@ if($efurniture_cats && $current_client) {
 							}
 
 							if(in_array($efurniture_id, $efurniture_hide)) {
-								$item_class .= ' hide';
+								$item_class .= ' active';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 estimate-item efurniture-item mb-4<?=$item_class?>">
@@ -174,7 +176,7 @@ if($efurniture_cats && $current_client) {
 										</div>	
 									</div>
 									<div class="efurniture-thumbnail position-relative">
-										<div class="position-absolute top-0 start-0 p-1 z-3 d-flex">
+										<div class="efurniture-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="efurniture-require-content">
 											<?php
 											if(isset($efurniture_content) && $efurniture_content!='') {
@@ -200,7 +202,7 @@ if($efurniture_cats && $current_client) {
 										</div>
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $efurniture_id, 'full' ); ?></span>
 
-										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
+										<div class="efurniture-control position-absolute bottom-0 end-0 m-1 d-flex">
 											<div class="estimate-quote efurniture-quote<?php echo (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?' on':''; ?>">
 												<?php
 												if(isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes') {
@@ -211,7 +213,10 @@ if($efurniture_cats && $current_client) {
 												?>
 											</div>
 											<?php if(current_user_can('edit_efurnitures')) { ?>
-											<button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="Ẩn <?php echo esc_attr('"'.get_the_title( $efurniture_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button>
+											
+											<!-- <button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="Ẩn <?php echo esc_attr('"'.get_the_title( $efurniture_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button> -->
+
+											<button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="<?php echo esc_attr(get_the_title( $efurniture_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $efurniture_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>
@@ -220,13 +225,13 @@ if($efurniture_cats && $current_client) {
 											<?php } ?>
 										</div>
 										
-										<div class="zalo-link position-absolute top-0 end-0 p-1">
+										<div class="efurniture-control zalo-link position-absolute top-0 end-0 p-1">
 										<?php if($efurniture_data['zalo']) { ?>
 											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($efurniture_data['zalo'])?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 
-										<div class="position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+										<div class="efurniture-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>
 											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
 											<?php } ?>
@@ -251,19 +256,31 @@ if($efurniture_cats && $current_client) {
 											<?php
 											if(isset($efurniture_data['url']) && $efurniture_data['url']) {
 												?>
-												<a class="btn btn-sm btn-primary my-1 mx-2" href="<?=esc_url($efurniture_data['url'])?>" target="_blank">Xem chi tiết</a>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url'])?>" target="_blank">Dự toán 1</a>
+												<?php
+											}
+
+											if(isset($efurniture_data['url2']) && $efurniture_data['url2']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url2'])?>" target="_blank">Dự toán 2</a>
+												<?php
+											}
+
+											if(isset($efurniture_data['url3']) && $efurniture_data['url3']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url3'])?>" target="_blank">Dự toán 3</a>
 												<?php
 											}
 
 											if(isset($efurniture_data['draw_id']) && $efurniture_data['draw_id']) {
 												?>
-												<a class="btn btn-sm btn-warning my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($efurniture_data['draw_id']))?>" target="_blank">Bản vẽ</a>
+												<a class="btn btn-sm btn-warning my-1 mx-1" href="<?=esc_url(wp_get_attachment_url($efurniture_data['draw_id']))?>" target="_blank">Bản vẽ</a>
 												<?php
 											}
 
 											if(isset($efurniture_data['slideshow_id']) && $efurniture_data['slideshow_id']) {
 												?>
-												<a class="btn btn-sm btn-info my-1 mx-2" href="<?=esc_url(wp_get_attachment_url($efurniture_data['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
+												<a class="btn btn-sm btn-info my-1 mx-1" href="<?=esc_url(wp_get_attachment_url($efurniture_data['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
 												<?php
 											}
 											?>
