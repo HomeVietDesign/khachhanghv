@@ -5,13 +5,13 @@ wp_enqueue_style(
 	'fw-shortcode-estimate-customer',
 	$shortcodes_extension->locate_URI( '/shortcodes/estimate-customer/static/css/styles.css' ),
 	[],
-	'1.0'
+	'1.2'
 );
 
 wp_enqueue_script(
 	'fw-shortcode-estimate-customer',
 	$shortcodes_extension->locate_URI('/shortcodes/estimate-customer/static/js/scripts.js'),
 	array('jquery'),
-	'1.0',
+	'1.1',
 	true
 );

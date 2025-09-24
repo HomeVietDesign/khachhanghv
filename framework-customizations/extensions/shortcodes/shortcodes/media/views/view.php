@@ -55,7 +55,7 @@ if($media_cats) {
 											<?php
 											if($web!='') {
 												?>
-												<a href="<?=esc_url($web)?>" class="d-block w-100 py-2 d-flex justify-content-center align-items-center text-yellow" target="_blank">Web</a>
+												<a href="<?=esc_url($web)?>" class="w-100 d-flex justify-content-center align-items-center text-yellow" target="_blank">Web</a>
 												<?php
 											}
 											?>
@@ -64,7 +64,7 @@ if($media_cats) {
 											<?php
 											if($fb!='') {
 												?>
-												<a href="<?=esc_url($fb)?>" class="d-block w-100 py-2 d-flex justify-content-center align-items-center text-yellow" target="_blank">Face</a>
+												<a href="<?=esc_url($fb)?>" class="w-100 d-flex justify-content-center align-items-center text-yellow" target="_blank">Face</a>
 												<?php
 											}
 											?>
@@ -74,7 +74,7 @@ if($media_cats) {
 											if($_last_date!='') {
 												$last_date = date('d/m/y', strtotime($_last_date));
 												?>
-												<span class="d-block w-100 py-2 d-flex justify-content-center align-items-center text-yellow"><?=esc_html($last_date)?></span>
+												<span class="w-100 d-flex justify-content-center align-items-center text-yellow"><?=esc_html($last_date)?></span>
 												<?php
 											}
 											?>
@@ -84,7 +84,7 @@ if($media_cats) {
 											if($_end_date!='') {
 												$end_date = date('d/m/y', strtotime($_end_date));
 												?>
-												<span class="d-block w-100 py-2 d-flex justify-content-center align-items-center text-yellow"><?=esc_html($end_date)?></span>
+												<span class="w-100 d-flex justify-content-center align-items-center text-yellow"><?=esc_html($end_date)?></span>
 												<?php
 											}
 											?>

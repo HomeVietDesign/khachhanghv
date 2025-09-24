@@ -1,6 +1,7 @@
 <?php if ( ! defined( 'FW' ) ) {
 	die( 'Forbidden' );
 }
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('estimate_furniture');
 
 /**
  * @var array $atts
@@ -16,7 +17,7 @@ if($current_client) {
 
 	if($contractor_cats) {
 		?>
-		<div class="fw-shortcode-estimates">
+		<div class="fw-shortcode-estimates-furniture">
 			<div class="accordion">
 			<?php
 			foreach ($contractor_cats as $key => $value) {
@@ -52,7 +53,6 @@ if($current_client) {
 					if($contractors) {
 						$total = ($per>0)?ceil(count($contractors)/$per):0;
 
-						$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 						?>
 						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3">
 							<h2 class="accordion-header position-relative">
@@ -67,7 +67,7 @@ if($current_client) {
 
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											\FW_Shortcode_Estimate_Furniture::display_contractor($contractor_id, $current_client, $progress, $contractor_furniture_hide);
+											$shortcode->display_contractor($contractor_id, $current_client, $contractor_furniture_hide);
 										} else {
 											break;
 										}

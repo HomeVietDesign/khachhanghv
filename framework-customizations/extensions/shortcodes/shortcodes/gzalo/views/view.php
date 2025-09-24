@@ -47,7 +47,7 @@ if($gzalo_cats) {
 										<div class="position-absolute top-0 start-0 p-2 z-3 d-flex">
 											<div class="nha88-require-content">
 											<?php
-											if(isset($gzalo_content) && $gzalo_content!='') {
+											if($gzalo_content!='') {
 												$gzalo_content = '<div class="copy-text mb-3">'.wp_get_the_content($gzalo_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
 												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($gzalo_content))?>" data-bs-html="true">Đề bài</button>

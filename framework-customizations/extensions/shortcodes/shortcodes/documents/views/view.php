@@ -2,15 +2,14 @@
 	die( 'Forbidden' );
 }
 
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('documents');
+
 /**
  * @var array $atts
  */
 global $current_client;
 
 $document_cats = get_terms(['taxonomy' => 'document_cat','parent'=>0]);
-$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
-
-$shortcode = fw_ext( 'shortcodes' )->get_shortcode('documents');
 
 //debug($shortcode);
 
@@ -55,72 +54,12 @@ if($document_cats && $current_client) {
 							$default_url = fw_get_db_post_option($document_id, 'document_default_url');
 
 							$data = get_post_meta($document_id, '_data', true);
-							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:[ 'required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'selected' => '' ];
+							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:$shortcode->default;
+							$document_data += $shortcode->default;
 							
 							if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
 							
 							$item_class = '';
-
-							$display = empty($progress) ? true : false;
-
-							if(!$display) {
-								$display_none = true;
-								if('none'==$progress) {
-									$display_none = false;
-									if(empty($document_data['required']) && empty($document_data['created']) && empty($document_data['completed']) && empty($document_data['sent']) && empty($document_data['selected'])) {
-										$display_none = true;
-									}
-								}
-
-								$display_required = true;
-								if('required'==$progress) {
-									$display_required = false;
-									if(isset($document_data['required']) && $document_data['required']!='' ) {
-										$display_required = true;
-									}
-								}
-
-								$display_created = true;
-								if('created'==$progress) {
-									$display_created = false;
-									if(isset($document_data['created']) && $document_data['created']!='' ) {
-										$display_created = true;
-									}
-								}
-
-								$display_completed = true;
-								if('completed'==$progress) {
-									$display_completed = false;
-									if(isset($document_data['completed']) && $document_data['completed']!='' ) {
-										$display_completed = true;
-									}
-								}
-
-								$display_sent = true;
-								if('sent'==$progress) {
-									$display_sent = false;
-									if(isset($document_data['sent']) && $document_data['sent']!='' ) {
-										$display_sent = true;
-									}
-								}
-
-								$display_selected = true;
-								if('selected'==$progress) {
-									$display_selected = false;
-									if(isset($document_data['selected']) && $document_data['selected']!='' ) {
-										$display_selected = true;
-									}
-								}
-
-							}
-							
-							$item_class = '';
-
-							if(!$display) {
-								if( !($display_none && $display_required && $display_created && $display_completed && $display_sent && $display_selected )) {
-									$item_class .= ' hidden';
-								}
-							}
 
 							if(in_array($document_id, $document_hide)) {
 								$item_class .= ' active';
@@ -129,44 +68,44 @@ if($document_cats && $current_client) {
 							<div class="col-lg-3 col-md-6 document-item mb-4<?=$item_class?>">
 								<div class="document document-<?=$document_id?> border border-dark h-100 bg-black">
 									<div class="row g-0 progressing-bar document-progress text-center text-yellow">
-										<div class="col document-required<?php echo (isset($document_data['required']) && $document_data['required']!='')?' on':''; ?>">
+										<div class="col document-required">
 										<?php
-										if(isset($document_data['required']) && $document_data['required']!='') {
+										if($document_data['required']!='') {
 											?>
-											<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_1'])?>">
+											<div class="bg-danger" title="<?=esc_attr($document_data['required_label'])?>">
 												<?php echo esc_html(date('d/m', strtotime($document_data['required']))); ?>
 											</div>
 											<?php
 										}
 										?>
 										</div>
-										<div class="col document-created<?php echo (isset($document_data['created']) && $document_data['created']!='')?' on':''; ?>">
+										<div class="col document-created">
 											<?php
-											if(isset($document_data['created']) && $document_data['created']!='') {
+											if($document_data['created']!='') {
 												?>
-												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_2'])?>">
+												<div class="bg-danger" title="<?=esc_attr($document_data['created_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['created']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col document-completed<?php echo (isset($document_data['completed']) && $document_data['completed']!='')?' on':''; ?>">
+										<div class="col document-completed">
 											<?php
-											if(isset($document_data['completed']) && $document_data['completed']!='') {
+											if($document_data['completed']!='') {
 												?>
-												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_3'])?>">
+												<div class="bg-danger" title="<?=esc_attr($document_data['completed_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['completed']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col document-sent<?php echo (isset($document_data['sent']) && $document_data['sent']!='')?' on':''; ?>">
+										<div class="col document-sent">
 											<?php
-											if(isset($document_data['sent']) && $document_data['sent']!='') {
+											if($document_data['sent']!='') {
 												?>
-												<div class="bg-danger" title="<?=esc_attr($shortcode->date_labels['document_label_4'])?>">
+												<div class="bg-danger" title="<?=esc_attr($document_data['sent_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($document_data['sent']))); ?>
 												</div>
 												<?php
@@ -178,7 +117,7 @@ if($document_cats && $current_client) {
 										<div class="document-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="document-require-content">
 											<?php
-											if(isset($document_content) && $document_content!='') {
+											if($document_content!='') {
 												?>
 												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($document_content))?>" data-bs-html="true">Đề bài</button>
 												<?php
@@ -187,7 +126,7 @@ if($document_cats && $current_client) {
 											</div>
 											<div class="attachment-download">
 											<?php
-											if(isset($document_data['attachment_id']) && $document_data['attachment_id']!='') {
+											if($document_data['attachment_id']!='') {
 												$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
 												if($attachment_url) {
 												?>
@@ -208,9 +147,9 @@ if($document_cats && $current_client) {
 										</div>
 
 										<div class="document-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="document-selected<?php echo (isset($document_data['selected']) && $document_data['selected']=='yes')?' on':''; ?>">
+											<div class="document-selected">
 												<?php
-												if(isset($document_data['selected']) && $document_data['selected']=='yes') {
+												if($document_data['selected']=='yes') {
 													?>
 													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>
 													<?php

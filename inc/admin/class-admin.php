@@ -12,7 +12,6 @@ class Admin {
 
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate.php';
-		//require_once THEME_DIR.'/inc/admin/class-admin-partner.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-gzalo.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-medias.php';
@@ -20,6 +19,9 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-design.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-construction.php';
+
 		require_once THEME_DIR.'/inc/admin/class-admin-passwords.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-province.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_page.php';
@@ -27,13 +29,14 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_rating.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_class.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-estimate_cat.php';
-		//require_once THEME_DIR.'/inc/admin/class-admin-partner_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-document_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contract_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-gzalo_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-design_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-construction_cat.php';
 
 		require_once THEME_DIR.'/inc/admin/class-admin-nha88.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-nha88_cat.php';

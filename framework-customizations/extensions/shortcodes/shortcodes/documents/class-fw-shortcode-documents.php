@@ -2,15 +2,25 @@
 
 class FW_Shortcode_Documents extends FW_Shortcode
 {
-	public $date_labels = [];
+	public $default = [
+		'required_label' => '',
+		'required' => '',
+		'created_label' => '',
+		'created' => '',
+		'completed_label' => '',
+		'completed' => '',
+		'sent_label' => '',
+		'sent' => '',
+		'value' => '',
+		'unit' => '',
+		'zalo' => '',
+		'link' => '',
+		'attachment_id' => '',
+		'selected' => '',
+	];
 
 	public function _init()
 	{
-		$this->date_labels['document_label_1'] = fw_get_db_settings_option('document_label_1');
-		$this->date_labels['document_label_2'] = fw_get_db_settings_option('document_label_2');
-		$this->date_labels['document_label_3'] = fw_get_db_settings_option('document_label_3');
-		$this->date_labels['document_label_4'] = fw_get_db_settings_option('document_label_4');
-
 		add_action( 'wp_footer', [$this, 'edit_modal'] );
 		add_action( 'wp_ajax_get_edit_document_form', [$this, 'ajax_get_edit_document_form']);
 		add_action( 'wp_ajax_update_document', [$this, 'ajax_update_document']);
@@ -56,19 +66,20 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			];
 
 			$data = get_post_meta($document_id, '_data', true);
-			$document_data = isset($data[$client])?$data[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$document_data = isset($data[$client])?$data[$client]:$this->default;
+			$document_data += $this->default;
 
 			if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
 
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
 			
-			$response['required'] = (isset($document_data['required']) && $document_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_1']).'">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
-			$response['created'] = (isset($document_data['created']) && $document_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_2']).'">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
-			$response['completed'] = (isset($document_data['completed']) && $document_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_3']).'">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
-			$response['sent'] = (isset($document_data['sent']) && $document_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($this->date_labels['document_label_4']).'">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
+			$response['required'] = ($document_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['required_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
+			$response['created'] = ($document_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['created_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
+			$response['completed'] = ($document_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['completed_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
+			$response['sent'] = ($document_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['sent_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
 
-			$response['selected'] = (isset($document_data['selected']) && $document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
+			$response['selected'] = ($document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 		?>
@@ -121,21 +132,30 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_link = isset($_POST['document_link'])?sanitize_text_field($_POST['document_link']):'';
 			$document_attachment = isset($_FILES['document_attachment']) ? $_FILES['document_attachment'] : null;
 
+			$document_required_label = isset($_POST['document_required_label']) ? $_POST['document_required_label'] : '';
 			$document_required = isset($_POST['document_required']) ? $_POST['document_required'] : '';
+			$document_created_label = isset($_POST['document_created_label']) ? $_POST['document_created_label'] : '';
 			$document_created = isset($_POST['document_created']) ? $_POST['document_created'] : '';
+			$document_completed_label = isset($_POST['document_completed_label']) ? $_POST['document_completed_label'] : '';
 			$document_completed = isset($_POST['document_completed']) ? $_POST['document_completed'] : '';
+			$document_sent_label = isset($_POST['document_sent_label']) ? $_POST['document_sent_label'] : '';
 			$document_sent = isset($_POST['document_sent']) ? $_POST['document_sent'] : '';
 			$document_selected = isset($_POST['document_selected']) ? $_POST['document_selected'] : '';
 
 			if($document_client && $document_id) {
 				$data = get_post_meta($document_id, '_data', true);
 				if(empty($data)) $data = [];
-				$document_data = isset($data[$document_client])?$data[$document_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>''];
+				$document_data = isset($data[$document_client])?$data[$document_client]:$this->default;
+				$document_data += $this->default;
 
 				$new_document_data = [
+					'required_label' => $document_required_label,
 					'required' => $document_required,
+					'created_label' => $document_created_label,
 					'created' => $document_created,
+					'completed_label' => $document_completed_label,
 					'completed' => $document_completed,
+					'sent_label' => $document_sent_label,
 					'sent' => $document_sent,
 					'value' => $document_value,
 					'unit' => $document_unit,
@@ -182,7 +202,9 @@ class FW_Shortcode_Documents extends FW_Shortcode
 
 		if($client && $document) {
 			$data = get_post_meta($document, '_data', true);
-			$document_data = isset($data[$client])?$data[$client]:['required'=>'', 'created'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'link'=>'', 'attachment_id'=>'', 'selected'=>''];
+			
+			$document_data = isset($data[$client])?$data[$client]:$this->default;
+			$document_data += $this->default;
 
 			$attachment_url = ($document_data['attachment_id'])?wp_get_attachment_url($document_data['attachment_id']):'';
 			?>
@@ -192,20 +214,20 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-document', 'nonce' ); ?>
 				<div id="edit-document-response"></div>
 				<div class="mb-3<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
-					<?=esc_html($this->date_labels['document_label_1'])?>
-					<input class="form-control" type="date" value="<?php echo (isset($document_data['required'])&&$document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
+					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['required_label']!='')?esc_html($document_data['required_label']):''; ?>" name="document_required_label" id="document_required_label" placeholder="Ghi chú ngày 1">
+					<input class="form-control" type="date" value="<?php echo ($document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
 				</div>
 				<div class="mb-3">
-					<?=esc_html($this->date_labels['document_label_2'])?>
-					<input class="form-control" type="date" value="<?php echo (isset($document_data['created'])&&$document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
+					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['created_label']!='')?esc_html($document_data['created_label']):''; ?>" name="document_created_label" id="document_created_label" placeholder="Ghi chú ngày 2">
+					<input class="form-control" type="date" value="<?php echo ($document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
 				</div>
 				<div class="mb-3">
-					<?=esc_html($this->date_labels['document_label_3'])?>
-					<input class="form-control" type="date" value="<?php echo (isset($document_data['completed'])&&$document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
+					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['completed_label']!='')?esc_html($document_data['completed_label']):''; ?>" name="document_completed_label" id="document_completed_label" placeholder="Ghi chú ngày 3">
+					<input class="form-control" type="date" value="<?php echo ($document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
 				</div>
 				<div class="mb-3">
-					<?=esc_html($this->date_labels['document_label_4'])?>
-					<input class="form-control" type="date" value="<?php echo (isset($document_data['sent'])&&$document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
+					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['sent_label']!='')?esc_html($document_data['sent_label']):''; ?>" name="document_sent_label" id="document_sent_label" placeholder="Ghi chú ngày 4">
+					<input class="form-control" type="date" value="<?php echo ($document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
 				</div>
 				<div class="mb-3">
 					URL nhóm zalo
@@ -240,7 +262,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				</div>
 				<div class="mb-3">
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( (isset($document_data['selected']) && $document_data['selected']=='yes'), true, true ); ?>>
+						<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( $document_data['selected']=='yes', true, true ); ?>>
 						<label class="form-check-label" for="document_selected">Được chọn?</label>
 					</div>
 				</div>

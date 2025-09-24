@@ -135,42 +135,5 @@ document.addEventListener('DOMContentLoaded', function(e){
 			}
 		});
 
-		if($('#document-filter-form').length) {
-			let none = 0, required = 0, created = 0, completed = 0, sent = 0, selected = 0;
-			$('#document-filter-form').find('.document-item:not(.hide)').each(function(i, el){
-				let $el = $(el), isNone = true;
-					
-				if($el.find('.document-required').hasClass('on')) {
-					required += 1;
-					isNone = false;
-				}
-				if($el.find('.document-created').hasClass('on')) {
-					created += 1;
-					isNone = false;
-				}
-				if($el.find('.document-completed').hasClass('on')) {
-					completed += 1;
-					isNone = false;
-				}
-				if($el.find('.document-sent').hasClass('on')) {
-					sent += 1;
-					isNone = false;
-				}
-				if($el.find('.document-selected').hasClass('on')) {
-					selected += 1;
-					isNone = false;
-				}
-				if(isNone) {
-					none += 1;
-				}
-			});
-			$('label[for="progress-none"] span').text(none);
-			$('label[for="progress-required"] span').text(required);
-			$('label[for="progress-created"] span').text(created);
-			$('label[for="progress-completed"] span').text(completed);
-			$('label[for="progress-sent"] span').text(sent);
-			$('label[for="progress-selected"] span').text(selected);
-		}
-
 	});
 });

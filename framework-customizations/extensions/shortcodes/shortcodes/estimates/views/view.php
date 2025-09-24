@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'FW' ) ) {
 	die( 'Forbidden' );
 }
-
+$shortcode = fw_ext('shortcodes')->get_shortcode('estimates');
 /**
  * @var array $atts
  */
@@ -52,7 +52,6 @@ if($current_client) {
 					if($contractors) {
 						$total = ($per>0)?ceil(count($contractors)/$per):0;
 
-						$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 						?>
 						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3">
 							<h2 class="accordion-header position-relative">
@@ -65,11 +64,9 @@ if($current_client) {
 									$contractor_hide = get_term_meta($current_client->term_id, 'contractor_hide', true);
 									if(empty($contractor_hide)) $contractor_hide = [];
 									
-									$contractor_signed = fw_get_db_term_option($current_client->term_id, 'passwords', 'contractor_signed', []);
-									
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											\FW_Shortcode_Estimates::display_contractor($contractor_id, $current_client, $progress, $contractor_hide, $contractor_signed);
+											$shortcode->display_contractor($contractor_id, $current_client, $contractor_hide);
 										} else {
 											break;
 										}

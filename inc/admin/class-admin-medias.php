@@ -65,12 +65,6 @@ class Admin_Medias {
 			'side'
 		);
 
-		remove_meta_box(
-			'passwordsdiv',
-			'media',
-			'side'
-		);
-
 	}
 
 

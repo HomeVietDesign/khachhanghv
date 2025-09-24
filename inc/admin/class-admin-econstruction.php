@@ -43,14 +43,6 @@ class Admin_Econstruction {
 		return $disabled;
 	}
 
-
-	public function post_content_editor($post) {
-		wp_editor( self::unescape($post->post_content), 'content', [
-			'tinymce' => true,
-			'textarea_rows' => 15,
-		] );
-	}
-
 	public function switch_boxes() {
 
 		remove_meta_box(
@@ -65,36 +57,7 @@ class Admin_Econstruction {
 			'side'
 		);
 
-		remove_meta_box(
-			'passwordsdiv',
-			'econstruction',
-			'side'
-		);
-		/*
-		remove_meta_box(
-            'postexcerpt' // ID
-        ,   'econstruction'            // Screen, empty to support all post types
-        ,   'normal'      // Context
-        );
-
-        add_meta_box(
-            'postexcerpt2'     // Reusing just 'postexcerpt' doesn't work.
-        ,   'Số điện thoại'    // Title
-        ,   array ( $this, 'postexcerpt2' ) // Display function
-        ,   'econstruction'              // Screen, we use all screens with meta boxes.
-        ,   'normal'          // Context
-        ,   'core'            // Priority
-        );
-        */
 	}
-
-	public function postexcerpt2( $post ) {
-    ?>
-        <label class="screen-reader-text" for="excerpt">Số điện thoại</label>
-        <input type="text" name="excerpt" value="<?php echo esc_attr( $post->post_excerpt ); ?>">
-        <?php
-    }
-
 
 	public static function instance() {
 		if(empty(self::$instance))

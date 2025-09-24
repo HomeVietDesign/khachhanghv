@@ -5,13 +5,13 @@ wp_enqueue_style(
 	'fw-shortcode-estimate-furniture',
 	$shortcodes_extension->locate_URI( '/shortcodes/estimate-furniture/static/css/styles.css' ),
 	[],
-	'1.0'
+	'1.1'
 );
 
 wp_enqueue_script(
 	'fw-shortcode-estimate-furniture',
 	$shortcodes_extension->locate_URI('/shortcodes/estimate-furniture/static/js/scripts.js'),
 	array('jquery'),
-	'1.0',
+	'1.1',
 	true
 );

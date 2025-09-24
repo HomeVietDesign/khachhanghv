@@ -55,9 +55,7 @@ class FW_Shortcode_Media extends FW_Shortcode
 			$media_end_date = isset($_POST['media_end_date']) ? $_POST['media_end_date'] : '';
 			
 			if($media_id) {
-				// $data = fw_get_db_term_option($client, 'passwords', 'media', []);
 				
-
 				fw_set_db_post_option($media_id, 'web', $media_web);
 				fw_set_db_post_option($media_id, 'fb', $media_fb);
 				fw_set_db_post_option($media_id, 'last_date', $media_last_date);

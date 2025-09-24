@@ -56,8 +56,8 @@ class Theme {
 		// add_action('after_switch_theme', [$this, 'theme_activation']);
 		// add_action('switch_theme', [$this, 'theme_deactivation']);
 
-		add_action('after_setup_theme', [$this, 'theme_activation']);
-		//add_action('after_setup_theme', [$this, 'theme_deactivation']);
+		// add_action('after_setup_theme', [$this, 'theme_activation']);
+		// add_action('after_setup_theme', [$this, 'theme_deactivation']);
 	}
 
 	public function theme_activation() {
@@ -67,8 +67,45 @@ class Theme {
 		
 		$admin_role = get_role( 'administrator' );
 
-		$admin_role->add_cap('procedure_contractor_view');
-		$admin_role->add_cap('procedure_contractor_edit');
+		// $admin_role->add_cap('edit_design');
+		// $admin_role->add_cap('read_design');
+		// $admin_role->add_cap('delete_design');
+		// $admin_role->add_cap('edit_designs');
+		// $admin_role->add_cap('edit_others_designs');
+		// $admin_role->add_cap('delete_designs');
+		// $admin_role->add_cap('publish_designs');
+		// $admin_role->add_cap('read_private_designs');
+		// $admin_role->add_cap('delete_private_designs');
+		// $admin_role->add_cap('delete_published_designs');
+		// $admin_role->add_cap('delete_others_designs');
+		// $admin_role->add_cap('edit_private_designs');
+		// $admin_role->add_cap('edit_published_designs');
+		// $admin_role->add_cap('design_view');
+		// $admin_role->add_cap('design_edit');
+
+		// $admin_role->add_cap('manage_design_cats');
+		// $admin_role->add_cap('edit_design_cats');
+		// $admin_role->add_cap('delete_design_cats');
+
+		// $admin_role->add_cap('edit_construction');
+		// $admin_role->add_cap('read_construction');
+		// $admin_role->add_cap('delete_construction');
+		// $admin_role->add_cap('edit_constructions');
+		// $admin_role->add_cap('edit_others_constructions');
+		// $admin_role->add_cap('delete_constructions');
+		// $admin_role->add_cap('publish_constructions');
+		// $admin_role->add_cap('read_private_constructions');
+		// $admin_role->add_cap('delete_private_constructions');
+		// $admin_role->add_cap('delete_published_constructions');
+		// $admin_role->add_cap('delete_others_constructions');
+		// $admin_role->add_cap('edit_private_constructions');
+		// $admin_role->add_cap('edit_published_constructions');
+		// $admin_role->add_cap('construction_view');
+		// $admin_role->add_cap('construction_edit');
+
+		// $admin_role->add_cap('manage_construction_cats');
+		// $admin_role->add_cap('edit_construction_cats');
+		// $admin_role->add_cap('delete_construction_cats');
 
 		// $admin_role->add_cap('edit_nha88');
 		// $admin_role->add_cap('read_nha88');
@@ -232,20 +269,6 @@ class Theme {
 		// $admin_role->add_cap('edit_private_estimates');
 		// $admin_role->add_cap('edit_published_estimates');
 
-		// $admin_role->add_cap('edit_partner');
-		// $admin_role->add_cap('read_partner');
-		// $admin_role->add_cap('delete_partner');
-		// $admin_role->add_cap('edit_partners');
-		// $admin_role->add_cap('edit_others_partners');
-		// $admin_role->add_cap('delete_partners');
-		// $admin_role->add_cap('publish_partners');
-		// $admin_role->add_cap('read_private_partners');
-		// $admin_role->add_cap('delete_private_partners');
-		// $admin_role->add_cap('delete_published_partners');
-		// $admin_role->add_cap('delete_others_partners');
-		// $admin_role->add_cap('edit_private_partners');
-		// $admin_role->add_cap('edit_published_partners');
-
 		// $admin_role->add_cap('edit_document');
 		// $admin_role->add_cap('read_document');
 		// $admin_role->add_cap('delete_document');
@@ -298,10 +321,6 @@ class Theme {
 		// $admin_role->add_cap('edit_estimate_cats');
 		// $admin_role->add_cap('delete_estimate_cats');
 
-		// $admin_role->add_cap('manage_partner_cats');
-		// $admin_role->add_cap('edit_partner_cats');
-		// $admin_role->add_cap('delete_partner_cats');
-
 		// $admin_role->add_cap('manage_document_cats');
 		// $admin_role->add_cap('edit_document_cats');
 		// $admin_role->add_cap('delete_document_cats');
@@ -319,12 +338,6 @@ class Theme {
 
 		// $admin_role->add_cap('estimate_customer_view');
 		// $admin_role->add_cap('estimate_customer_edit');
-
-		// $admin_role->add_cap('estimate_manage_view');
-		// $admin_role->add_cap('estimate_manage_edit');
-
-		// $admin_role->add_cap('partner_view');
-		// $admin_role->add_cap('partner_edit');
 
 		// $admin_role->add_cap('document_view');
 		// $admin_role->add_cap('document_edit');

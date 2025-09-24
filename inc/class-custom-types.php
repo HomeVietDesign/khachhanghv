@@ -290,51 +290,6 @@ class Custom_Types {
 		register_post_type( 'efurniture', $args );
 
 		$labels = array(
-			'name'               => 'Đối tác',
-			'singular_name'      => 'Đối tác',
-			'add_new'            => 'Thêm mới Đối tác',
-			'add_new_item'       => 'Thêm mới Đối tác',
-			'edit_item'          => 'Sửa Đối tác',
-			'new_item'           => 'Đối tác mới',
-			'view_item'          => 'Xem Đối tác',
-			'search_items'       => 'Tìm Đối tác',
-			'not_found'          => 'Không có Đối tác nào',
-			'not_found_in_trash' => 'Không có Đối tác nào trong Thùng rác',
-			'parent_item_colon'  => 'Đối tác cấp trên:',
-			'menu_name'          => 'Đối tác',
-		);
-		$args = array(
-			'labels'              => $labels,
-			'hierarchical'        => false,
-			//'description'         => 'description',
-			//'taxonomies'          => array('contractor_cat'),
-			'public'              => false,
-			'show_ui'             => false,
-			'show_in_menu'        => true,
-			'show_in_admin_bar'   => true,
-			'menu_position'       => 4,
-			'menu_icon'           => 'dashicons-admin-post',
-			'show_in_nav_menus'   => false,
-			'publicly_queryable'  => false, // ẩn bài viết ở front-end
-			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
-			'has_archive'         => false,
-			'query_var'           => true,
-			'can_export'          => true,
-			'rewrite'             => false,
-			'capability_type'     => 'partner',
-			'map_meta_cap'     => true,
-			'supports'            => array(
-				'title',
-				'thumbnail',
-				//'editor',
-				'excerpt',
-				//'revisions',
-				//'page-attributes',
-			),
-		);
-		//register_post_type( 'partner', $args );
-
-		$labels = array(
 			'name'               => 'Hồ sơ thiết kế',
 			'singular_name'      => 'Hồ sơ thiết kế',
 			'add_new'            => 'Thêm mới Hồ sơ thiết kế',
@@ -546,7 +501,7 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'post',
+			'capability_type'     => 'nha88',
 			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
@@ -560,18 +515,18 @@ class Custom_Types {
 		register_post_type( 'nha88', $args );
 
 		$labels = array(
-			'name'               => 'Nha88',
-			'singular_name'      => 'Nha88',
-			'add_new'            => 'Thêm mới Nha88',
-			'add_new_item'       => 'Thêm mới Nha88',
-			'edit_item'          => 'Sửa Nha88',
-			'new_item'           => 'Nha88 mới',
-			'view_item'          => 'Xem Nha88',
-			'search_items'       => 'Tìm Nha88',
-			'not_found'          => 'Không có Nha88 nào',
-			'not_found_in_trash' => 'Không có Nha88 nào trong Thùng rác',
-			'parent_item_colon'  => 'Nha88 cấp trên:',
-			'menu_name'          => 'Nha88',
+			'name'               => 'Thiết kế',
+			'singular_name'      => 'Thiết kế',
+			'add_new'            => 'Thêm mới Thiết kế',
+			'add_new_item'       => 'Thêm mới Thiết kế',
+			'edit_item'          => 'Sửa Thiết kế',
+			'new_item'           => 'Thiết kế mới',
+			'view_item'          => 'Xem Thiết kế',
+			'search_items'       => 'Tìm Thiết kế',
+			'not_found'          => 'Không có Thiết kế nào',
+			'not_found_in_trash' => 'Không có Thiết kế nào trong Thùng rác',
+			'parent_item_colon'  => 'Thiết kế cấp trên:',
+			'menu_name'          => 'Thiết kế',
 		);
 		$args = array(
 			'labels'              => $labels,
@@ -583,7 +538,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 5,
-			'menu_icon'           => 'dashicons-admin-multisite',
+			'menu_icon'           => 'dashicons-art',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -591,7 +546,7 @@ class Custom_Types {
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => false,
-			'capability_type'     => 'nha88',
+			'capability_type'     => 'design',
 			'map_meta_cap'     => true,
 			'supports'            => array(
 				'title',
@@ -602,7 +557,52 @@ class Custom_Types {
 				//'page-attributes',
 			),
 		);
-		register_post_type( 'nha88', $args );
+		register_post_type( 'design', $args );
+
+		$labels = array(
+			'name'               => 'Thi công',
+			'singular_name'      => 'Thi công',
+			'add_new'            => 'Thêm mới Thi công',
+			'add_new_item'       => 'Thêm mới Thi công',
+			'edit_item'          => 'Sửa Thi công',
+			'new_item'           => 'Thi công mới',
+			'view_item'          => 'Xem Thi công',
+			'search_items'       => 'Tìm Thi công',
+			'not_found'          => 'Không có Thi công nào',
+			'not_found_in_trash' => 'Không có Thi công nào trong Thùng rác',
+			'parent_item_colon'  => 'Thi công cấp trên:',
+			'menu_name'          => 'Thi công',
+		);
+		$args = array(
+			'labels'              => $labels,
+			'hierarchical'        => false,
+			//'description'         => 'description',
+			//'taxonomies'          => array('contractor_cat'),
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 5,
+			'menu_icon'           => 'dashicons-hammer',
+			'show_in_nav_menus'   => false,
+			'publicly_queryable'  => false, // ẩn bài viết ở front-end
+			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
+			'has_archive'         => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'rewrite'             => false,
+			'capability_type'     => 'construction',
+			'map_meta_cap'     => true,
+			'supports'            => array(
+				'title',
+				'thumbnail',
+				//'editor',
+				//'excerpt',
+				//'revisions',
+				//'page-attributes',
+			),
+		);
+		register_post_type( 'construction', $args );
 	}
 
 	/**
@@ -914,38 +914,6 @@ class Custom_Types {
 
 		// Add new taxonomy, make it hierarchical (like categories)
 		$labels = array(
-			'name'              => 'Nhóm đối tác',
-			'singular_name'     => 'Nhóm đối tác',
-			'search_items'      => 'Tìm Nhóm đối tác',
-			'all_items'         => 'Tất cả Nhóm đối tác',
-			'edit_item'         => 'Sửa Nhóm đối tác',
-			'update_item'       => 'Cập nhật Nhóm đối tác',
-			'add_new_item'      => 'Thêm Nhóm đối tác mới',
-			'new_item_name'     => 'Nhóm đối tác mới',
-			'menu_name'         => 'Nhóm đối tác',
-		);
-
-		$args = array(
-			'hierarchical'      => true,
-			'labels'            => $labels,
-			'show_ui'           => true,
-			'show_admin_column' => true,
-			'query_var'         => false,
-			'rewrite'           => false,
-			'capabilities'      => [
-				'manage_terms' => 'manage_partner_cats',
-				'edit_terms'   => 'edit_partner_cats',
-				'delete_terms' => 'delete_partner_cats',
-				'assign_terms' => 'edit_partners',
-			],
-			'public' => false,
-			'show_in_nav_menus' => false,
-			'show_tagcloud' => false,
-		);
-		//register_taxonomy( 'partner_cat', 'partner', $args ); // our new 'format' taxonomy
-
-		// Add new taxonomy, make it hierarchical (like categories)
-		$labels = array(
 			'name'              => 'Nhóm hồ sơ thiết kế',
 			'singular_name'     => 'Nhóm hồ sơ thiết kế',
 			'search_items'      => 'Tìm Nhóm hồ sơ thiết kế',
@@ -1124,6 +1092,70 @@ class Custom_Types {
 			'show_tagcloud' => false,
 		);
 		register_taxonomy( 'nha88_cat', 'nha88', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm thiết kế',
+			'singular_name'     => 'Nhóm thiết kế',
+			'search_items'      => 'Tìm Nhóm thiết kế',
+			'all_items'         => 'Tất cả Nhóm thiết kế',
+			'edit_item'         => 'Sửa Nhóm thiết kế',
+			'update_item'       => 'Cập nhật Nhóm thiết kế',
+			'add_new_item'      => 'Thêm Nhóm thiết kế mới',
+			'new_item_name'     => 'Nhóm thiết kế mới',
+			'menu_name'         => 'Nhóm thiết kế',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_design_cats',
+				'edit_terms'   => 'edit_design_cats',
+				'delete_terms' => 'delete_design_cats',
+				'assign_terms' => 'edit_designs',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'design_cat', 'design', $args ); // our new 'format' taxonomy
+
+		// Add new taxonomy, make it hierarchical (like categories)
+		$labels = array(
+			'name'              => 'Nhóm thi công',
+			'singular_name'     => 'Nhóm thi công',
+			'search_items'      => 'Tìm Nhóm thi công',
+			'all_items'         => 'Tất cả Nhóm thi công',
+			'edit_item'         => 'Sửa Nhóm thi công',
+			'update_item'       => 'Cập nhật Nhóm thi công',
+			'add_new_item'      => 'Thêm Nhóm thi công mới',
+			'new_item_name'     => 'Nhóm thi công mới',
+			'menu_name'         => 'Nhóm thi công',
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => false,
+			'rewrite'           => false,
+			'capabilities'      => [
+				'manage_terms' => 'manage_construction_cats',
+				'edit_terms'   => 'edit_construction_cats',
+				'delete_terms' => 'delete_construction_cats',
+				'assign_terms' => 'edit_constructions',
+			],
+			'public' => false,
+			'show_in_nav_menus' => false,
+			'show_tagcloud' => false,
+		);
+		register_taxonomy( 'construction_cat', 'construction', $args ); // our new 'format' taxonomy
 	}
 	
 	public static function instance() {

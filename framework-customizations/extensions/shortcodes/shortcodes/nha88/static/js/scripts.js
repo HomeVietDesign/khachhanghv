@@ -5,11 +5,9 @@ document.addEventListener('DOMContentLoaded', function(e){
 			let $modal = $(this),
 				$button = $(event.relatedTarget)
 				,$body = $modal.find('.modal-body')
-				,nha88_type = $button.data('nha88_type')
 				,nha88 = $button.data('nha88')
 				,nha88_title = $button.data('nha88-title')
 				;
-			console.log($modal);
 			$('#edit-nha88-label').text(nha88_title);
 
 			$.ajax({
@@ -17,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 				type: 'GET',
 				data: {
 					action: 'get_edit_nha88_form',
-					nha88_type:nha88_type,
 					nha88:nha88
 				},
 				beforeSend: function(xhr) {
@@ -64,23 +61,24 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					if(response['code']>0) {
+						
 						$.ajax({
 							url: theme.ajax_url+'?action=get_nha88_info',
 							type: 'GET',
 							cache: false,
 							dataType: 'json',
-							data: {nha88_type:formData.get('nha88_type'), nha88:formData.get('nha88_id')},
+							data: {nha88:formData.get('nha88')},
 							success: function(response) {
-								$('.nha88-'+formData.get('nha88_id')+' .zalo-link').html(response['zalo']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-info').html(response['info']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-required').html(response['required']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-created').html(response['created']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-completed').html(response['completed']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-sent').html(response['sent']);
-								$('.nha88-'+formData.get('nha88_id')+' .nha88-sold').html(response['sold']);
+
+								$('.nha88-'+formData.get('nha88')+' .nha88-zalo').html(response['nha88_zalo']);
+								$('.nha88-'+formData.get('nha88')+' .nha88-url').html(response['nha88_url']);
+								$('.nha88-'+formData.get('nha88')+' .nha88-info').html(response['nha88_info']);
+								$('.nha88-'+formData.get('nha88')+' .dates').html(response['nha88_dates']);
+
 								$('#edit-nha88 .btn-close').trigger('click');
 							}
 						});
+						
 					}
 					$response.html(response['msg']);
 				},
@@ -93,17 +91,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 			});
 		});
 
-		$(document).on('click', '#nha88_remove_attachment', function(e){
-			e.preventDefault();
-			let $this = $(this);
-			$('#nha88_attachment_id').val('');
-			$this.closest('.input-group').remove();
-		});
-
-		$(document).on('input', '#nha88_attachment', function() {
-			let $input = $(this);
-			$input.closest('[for="nha88_attachment"]').find('.form-control').text($input.val().split('\\').pop());
-		});
+		/*
 
 		$('.nha88-hide').on('click', function(e){
 			let $this = $(this),
@@ -132,42 +120,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 			}
 		});
 
-		if($('#nha88-filter-form').length) {
-			let none = 0, required = 0, created = 0, completed = 0, sent = 0, sold = 0;
-			$('#nha88-filter-form').find('.nha88-item:not(.hide)').each(function(i, el){
-				let $el = $(el), isNone = true;
-
-				if($el.find('.nha88-required').hasClass('on')) {
-					required += 1;
-					isNone = false;
-				}
-				if($el.find('.nha88-created').hasClass('on')) {
-					created += 1;
-					isNone = false;
-				}
-				if($el.find('.nha88-completed').hasClass('on')) {
-					completed += 1;
-					isNone = false;
-				}
-				if($el.find('.nha88-sent').hasClass('on')) {
-					sent += 1;
-					isNone = false;
-				}
-				if($el.find('.nha88-sold').hasClass('on')) {
-					sold += 1;
-					isNone = false;
-				}
-				if(isNone) {
-					none += 1;
-				}
-			});
-			$('label[for="progress-none"] span').text(none);
-			$('label[for="progress-required"] span').text(required);
-			$('label[for="progress-created"] span').text(created);
-			$('label[for="progress-completed"] span').text(completed);
-			$('label[for="progress-sent"] span').text(sent);
-			$('label[for="progress-sold"] span').text(sold);
-		}
-		
+		*/
 	});
 });

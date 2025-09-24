@@ -42,14 +42,13 @@
 	height: 100%;
 	object-fit: cover;
 }
-
 .fw-shortcode-econstructions .estimate-item .econstruction-thumbnail .thumbnail-image,
 .fw-shortcode-econstructions .estimate-item .econstruction-info {
 	opacity: 0.3;
 }
 .fw-shortcode-econstructions .estimate-item .progressing-bar,
 .fw-shortcode-econstructions .estimate-item .econstruction-thumbnail .econstruction-control {
-	opacity: 0.7;
+	opacity: 0.6;
 }
 .fw-shortcode-econstructions .estimate-item.active .progressing-bar,
 .fw-shortcode-econstructions .estimate-item.active .econstruction-thumbnail .thumbnail-image,

@@ -2,7 +2,13 @@
 
 class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 {
-	
+	public $default = [
+		'value'=>'',
+		'unit'=>'',
+		'zalo'=>'',
+		'attachment_id'=>''
+	];
+
 	public function _init()
 	{
       add_action( 'wp_footer', [$this, 'edit_modal'] );
@@ -54,7 +60,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			];
 
 			$estimates = get_post_meta($contractor_id, '_estimate_customer', true);
-			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$current_client->term_id])?$estimates[$current_client->term_id]:$this->default;
+			$estimate += $this->default;
 
 			if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 			if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -135,7 +142,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		if((current_user_can('estimate_customer_edit')) && check_ajax_referer( 'edit-estimate-customer', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
-			//$estimate_drawing_id = isset($_POST['estimate_drawing_id'])?absint($_POST['estimate_drawing_id']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):0;
 			$estimate_value = isset($_POST['estimate_value'])?sanitize_text_field($_POST['estimate_value']):'';
 			$estimate_unit = isset($_POST['estimate_unit'])?sanitize_text_field($_POST['estimate_unit']):'';
@@ -145,7 +151,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			if($estimate_client && $estimate_contractor) {
 				$estimates = get_post_meta($estimate_contractor, '_estimate_customer', true);
 				if(empty($estimates)) $estimates = [];
-				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+				$estimate = isset($estimates[$estimate_client])?$estimates[$estimate_client]:$this->default;
+				$estimate += $this->default;
 
 				$new_estimate = [
 					'value' => $estimate_value,
@@ -191,7 +198,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 
 		if($client && $contractor) {
 			$estimates = get_post_meta($contractor, '_estimate_customer', true);
-			$estimate = isset($estimates[$client])?$estimates[$client]:['value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+			$estimate = isset($estimates[$client])?$estimates[$client]:$this->default;
+			$estimate += $this->default;
 
 			$attachment_url = ($estimate['attachment_id'])?wp_get_attachment_url($estimate['attachment_id']):'';
 			?>
@@ -201,13 +209,16 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate-customer', 'nonce' ); ?>
 				<div id="edit-estimate-customer-response"></div>
 				<div class="col mb-3">
-					<input type="text" id="estimate_value" name="estimate_value" placeholder="Giá trị" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
+					Giá trị
+					<input type="text" id="estimate_value" name="estimate_value" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
 				</div>
 				<div class="col mb-3">
-					<input type="text" id="estimate_unit" name="estimate_unit" placeholder="Ghi chú" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+					Ghi chú
+					<input type="text" id="estimate_unit" name="estimate_unit" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
 				</div>
 				<div class="mb-3">
-					<input type="text" id="estimate_zalo" name="estimate_zalo" placeholder="Link nhóm zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
+					Link nhóm zalo
+					<input type="text" id="estimate_zalo" name="estimate_zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
 				</div>
 				<div class="mb-3">
 					<div class="form-label mb-1">File dự toán</div>
@@ -227,7 +238,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">
-								<!-- <input type="file" id="estimate_attachment" name="estimate_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control"> -->
 								<input type="file" id="estimate_attachment" name="estimate_attachment" class="form-control">
 							</div>
 						</label>
@@ -259,7 +269,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		<?php
 	}
 
-	public static function display_contractor($contractor_id, $client, $contractor_customer_hide=[]) {
+	public function display_contractor($contractor_id, $client, $contractor_customer_hide=[]) {
 		
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id, 'estimate_attachment');
 		$default_estimate = [
@@ -272,7 +282,8 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		$estimate_content = fw_get_db_post_option($contractor_id, 'estimate_content');
 
 		$estimates = get_post_meta($contractor_id, '_estimate_customer', true);
-		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:[ 'value'=>'', 'unit'=>'', 'zalo'=>'', 'attachment_id'=>''];
+		$estimate = isset($estimates[$client->term_id])?$estimates[$client->term_id]:$this->default;
+		$estimate += $this->default;
 		
 		if(empty($estimate['value'])) $estimate['value'] = $default_estimate['value'];
 		if(empty($estimate['unit'])) $estimate['unit'] = $default_estimate['unit'];
@@ -280,8 +291,6 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		if(empty($estimate['attachment_id'])) $estimate['attachment_id'] = $default_estimate['attachment_id'];
 
 		$phone_number = get_post_meta($contractor_id, '_phone_number', true);
-		// $external_url = get_post_meta($contractor_id, '_external_url', true);
-		// $external_url = ($external_url!='')?esc_url($external_url):'#';
 
 		$item_class = '';
 		

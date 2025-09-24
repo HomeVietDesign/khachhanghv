@@ -2,13 +2,14 @@
 	die( 'Forbidden' );
 }
 
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('efurniture');
+
 /**
  * @var array $atts
  */
 global $current_client;
 
 $efurniture_cats = get_terms(['taxonomy' => 'efurniture_cat','parent'=>0]);
-$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($efurniture_cats && $current_client) {
 
@@ -57,71 +58,15 @@ if($efurniture_cats && $current_client) {
 								'file_id' => (!empty($default_efurniture_file))?$default_efurniture_file['attachment_id']:'',
 							];
 
-							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'draw_id'=>'', 'slideshow_id'=>'', 'file_id'=>'', 'quote'=>''];
+							$efurniture_data = isset($data[$efurniture_id])?$data[$efurniture_id]:$shortcode->default;
+							$efurniture_data += $shortcode->default;
 
 							if(empty($efurniture_data['value'])) $efurniture_data['value'] = $default_data['value'];
 							if(empty($efurniture_data['unit'])) $efurniture_data['unit'] = $default_data['unit'];
 							if(empty($efurniture_data['zalo'])) $efurniture_data['zalo'] = $default_data['zalo'];
 							if(empty($efurniture_data['file_id'])) $efurniture_data['file_id'] = $default_data['file_id'];
 
-							$display = empty($progress) ? true : false;
-
-							if(!$display) {
-								$display_none = true;
-								if('none'==$progress) {
-									$display_none = false;
-									if(empty($efurniture_data['required']) && empty($efurniture_data['received']) && empty($efurniture_data['completed']) && empty($efurniture_data['sent']) && empty($efurniture_data['quote'])) {
-										$display_none = true;
-									}
-								}
-
-								$display_required = true;
-								if('required'==$progress) {
-									$display_required = false;
-									if(isset($efurniture_data['required']) && $efurniture_data['required']!='' ) {
-										$display_required = true;
-									}
-								}
-
-								$display_received = true;
-								if('received'==$progress) {
-									$display_received = false;
-									if(isset($efurniture_data['received']) && $efurniture_data['received']!='' ) {
-										$display_received = true;
-									}
-								}
-
-								$display_completed = true;
-								if('completed'==$progress) {
-									$display_completed = false;
-									if(isset($efurniture_data['completed']) && $efurniture_data['completed']!='' ) {
-										$display_completed = true;
-									}
-								}
-
-								$display_sent = true;
-								if('sent'==$progress) {
-									$display_sent = false;
-									if(isset($efurniture_data['sent']) && $efurniture_data['sent']!='' ) {
-										$display_sent = true;
-									}
-								}
-
-								$display_quote = true;
-								if('quote'==$progress) {
-									$display_quote = false;
-									if(isset($efurniture_data['quote']) && $efurniture_data['quote']!='' ) {
-										$display_quote = true;
-									}
-								}
-
-							}
-
 							$item_class = '';
-
-							if(!$display && !($display_none && $display_required && $display_received && $display_completed && $display_sent && $display_quote)) {
-								$item_class = ' hidden';
-							}
 
 							if(in_array($efurniture_id, $efurniture_hide)) {
 								$item_class .= ' active';
@@ -130,44 +75,44 @@ if($efurniture_cats && $current_client) {
 							<div class="col-lg-3 col-md-6 estimate-item efurniture-item mb-4<?=$item_class?>">
 								<div class="efurniture efurniture-<?=$efurniture_id?> border border-dark h-100 bg-black">
 									<div class="row g-0 progressing-bar efurniture-progress text-center text-yellow">
-										<div class="col estimate-required efurniture-required<?php echo (isset($efurniture_data['required']) && $efurniture_data['required']!='')?' on':''; ?>">
+										<div class="col estimate-required efurniture-required">
 										<?php
-										if(isset($efurniture_data['required']) && $efurniture_data['required']!='') {
+										if($efurniture_data['required']!='') {
 											?>
-											<div class="bg-danger" title="Ngày gửi yêu cầu">
+											<div class="bg-danger" title="<?=esc_attr($efurniture_data['required_label'])?>">
 												<?php echo esc_html(date('d/m', strtotime($efurniture_data['required']))); ?>
 											</div>
 											<?php
 										}
 										?>
 										</div>
-										<div class="col estimate-received efurniture-received<?php echo (isset($efurniture_data['received']) && $efurniture_data['received']!='')?' on':''; ?>">
+										<div class="col estimate-received efurniture-received">
 											<?php
-											if(isset($efurniture_data['received']) && $efurniture_data['received']!='') {
+											if($efurniture_data['received']!='') {
 												?>
-												<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">
+												<div class="bg-danger" title="<?=esc_attr($efurniture_data['received_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($efurniture_data['received']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col estimate-completed efurniture-completed<?php echo (isset($efurniture_data['completed']) && $efurniture_data['completed']!='')?' on':''; ?>">
+										<div class="col estimate-completed efurniture-completed">
 											<?php
-											if(isset($efurniture_data['completed']) && $efurniture_data['completed']!='') {
+											if($efurniture_data['completed']!='') {
 												?>
-												<div class="bg-danger" title="Ngày làm xong dự toán">
+												<div class="bg-danger" title="<?=esc_attr($efurniture_data['completed_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($efurniture_data['completed']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col estimate-sent efurniture-sent<?php echo (isset($efurniture_data['sent']) && $efurniture_data['sent']!='')?' on':''; ?>">
+										<div class="col estimate-sent efurniture-sent">
 											<?php
-											if(isset($efurniture_data['sent']) && $efurniture_data['sent']!='') {
+											if($efurniture_data['sent']!='') {
 												?>
-												<div class="bg-danger" title="Ngày gửi khách">
+												<div class="bg-danger" title="<?=esc_attr($efurniture_data['sent_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($efurniture_data['sent']))); ?>
 												</div>
 												<?php
@@ -179,7 +124,7 @@ if($efurniture_cats && $current_client) {
 										<div class="efurniture-control position-absolute top-0 start-0 p-1 z-3 d-flex">
 											<div class="efurniture-require-content">
 											<?php
-											if(isset($efurniture_content) && $efurniture_content!='') {
+											if($efurniture_content!='') {
 												$efurniture_content = '<div class="copy-text">'.wp_get_the_content($efurniture_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
 												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($efurniture_content)?>" data-bs-html="true">Đề bài</button>
@@ -189,7 +134,7 @@ if($efurniture_cats && $current_client) {
 											</div>
 											<div class="file-download">
 											<?php
-											if(isset($efurniture_data['file_id']) && $efurniture_data['file_id']!='') {
+											if($efurniture_data['file_id']!='') {
 												$attachment_url = wp_get_attachment_url($efurniture_data['file_id']);
 												if($attachment_url) {
 												?>
@@ -203,9 +148,9 @@ if($efurniture_cats && $current_client) {
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $efurniture_id, 'full' ); ?></span>
 
 										<div class="efurniture-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="estimate-quote efurniture-quote<?php echo (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?' on':''; ?>">
+											<div class="estimate-quote efurniture-quote">
 												<?php
-												if(isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes') {
+												if($efurniture_data['quote']=='yes') {
 													?>
 													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã chọn"><span class="dashicons dashicons-yes"></span></span>
 													<?php
@@ -213,8 +158,6 @@ if($efurniture_cats && $current_client) {
 												?>
 											</div>
 											<?php if(current_user_can('edit_efurnitures')) { ?>
-											
-											<!-- <button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="Ẩn <?php echo esc_attr('"'.get_the_title( $efurniture_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button> -->
 
 											<button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="<?php echo esc_attr(get_the_title( $efurniture_id )); ?>" title="Ẩn/Hiện"></button>
 
@@ -272,17 +215,6 @@ if($efurniture_cats && $current_client) {
 												<?php
 											}
 
-											if(isset($efurniture_data['draw_id']) && $efurniture_data['draw_id']) {
-												?>
-												<a class="btn btn-sm btn-warning my-1 mx-1" href="<?=esc_url(wp_get_attachment_url($efurniture_data['draw_id']))?>" target="_blank">Bản vẽ</a>
-												<?php
-											}
-
-											if(isset($efurniture_data['slideshow_id']) && $efurniture_data['slideshow_id']) {
-												?>
-												<a class="btn btn-sm btn-info my-1 mx-1" href="<?=esc_url(wp_get_attachment_url($efurniture_data['slideshow_id']))?>" target="_blank">Bản thuyết trình</a>
-												<?php
-											}
 											?>
 										</div>
 									</div>

@@ -1,5 +1,3 @@
-
-.fw-shortcode-estimate-manage .accordion,
 .fw-shortcode-estimates .accordion {
 	--bs-accordion-color: #fff;
 	--bs-accordion-bg: transparent;
@@ -14,52 +12,43 @@
 	--bs-accordion-btn-color: #fff;
 	--bs-accordion-btn-bg: #000;
 }
-.fw-shortcode-estimate-manage .accordion .accordion-button,
 .fw-shortcode-estimates .accordion .accordion-button {
 	font-size: 30px;
 	font-weight: 600;
 	justify-content: center;
 	text-align: center;
 }
-.fw-shortcode-estimate-manage .accordion .accordion-button:not(.collapsed),
 .fw-shortcode-estimates .accordion .accordion-button:not(.collapsed) {
 	background: #000;
 }
-.fw-shortcode-estimate-manage .accordion .accordion-button::after,
 .fw-shortcode-estimates .accordion .accordion-button::after {
 	display: none;
 }
-.fw-shortcode-estimate-manage .accordion .accordion-item:not(:first-of-type),
 .fw-shortcode-estimates .accordion .accordion-item:not(:first-of-type) {
 	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
 }
-.fw-shortcode-estimate-manage .accordion .accordion-button:focus,
 .fw-shortcode-estimates .accordion .accordion-button:focus {
 	box-shadow: none;
 }
-.fw-shortcode-estimate-manage .estimate-thumbnail,
 .fw-shortcode-estimates .contractor-thumbnail {
 	padding-bottom: 60%;
 	overflow: hidden;
 }
-.fw-shortcode-estimate-manage .thumbnail-image,
 .fw-shortcode-estimates .thumbnail-image {
 	background: #0e0d0d;
 }
-.fw-shortcode-estimate-manage .thumbnail-image img,
 .fw-shortcode-estimates .thumbnail-image img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 }
-
 .fw-shortcode-estimates .estimate-item .contractor-thumbnail .thumbnail-image,
 .fw-shortcode-estimates .estimate-item .contractor-info {
 	opacity: 0.3;
 }
 .fw-shortcode-estimates .estimate-item .progressing-bar,
 .fw-shortcode-estimates .estimate-item .contractor-thumbnail .contractor-control {
-	opacity: 0.7;
+	opacity: 0.6;
 }
 .fw-shortcode-estimates .estimate-item.active .progressing-bar,
 .fw-shortcode-estimates .estimate-item.active .contractor-thumbnail .thumbnail-image,

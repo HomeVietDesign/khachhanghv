@@ -1,10 +1,56 @@
+.fw-shortcode-estimates-customer .accordion {
+	--bs-accordion-color: #fff;
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
+	--bs-accordion-border-radius: 0;
+	--bs-accordion-inner-border-radius: 0;
+	--bs-accordion-active-color: #ff0;
+	--bs-accordion-active-bg: transparent;
+	--bs-accordion-body-padding-x: 1rem;
+	--bs-accordion-body-padding-y: 1rem;
+
+	--bs-accordion-btn-color: #fff;
+	--bs-accordion-btn-bg: #000;
+}
+.fw-shortcode-estimates-customer .accordion .accordion-button {
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
+}
+.fw-shortcode-estimates-customer .accordion .accordion-button:not(.collapsed) {
+	background: #000;
+}
+.fw-shortcode-estimates-customer .accordion .accordion-button::after {
+	display: none;
+}
+.fw-shortcode-estimates-customer .accordion .accordion-item:not(:first-of-type) {
+	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-estimates-customer .accordion .accordion-button:focus {
+	box-shadow: none;
+}
+.fw-shortcode-estimates-customer .contractor-thumbnail {
+	padding-bottom: 60%;
+	overflow: hidden;
+}
+.fw-shortcode-estimates-customer .thumbnail-image {
+	background: #0e0d0d;
+}
+.fw-shortcode-estimates-customer .thumbnail-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 .fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail .thumbnail-image,
 .fw-shortcode-estimates-customer .estimate-item .contractor-info {
 	opacity: 0.3;
 }
+
 .fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail .contractor-control {
-	opacity: 0.7;
+	opacity: 0.6;
 }
+
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .thumbnail-image,
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .contractor-control,
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-info {

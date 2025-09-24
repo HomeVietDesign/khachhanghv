@@ -54,25 +54,7 @@ $options = array(
 			),
 		),
 	),
-	'images' => array(
-		'context' => 'advanced',
-		'title'   => 'Các hình ảnh',
-		'type'    => 'box',
-        'options' => array(
-        	'project_images' => array(
-				'type' => 'multi-upload',
-				'label' => 'Ảnh thực tế',
-				'images_only' => true,
-				'files_ext' => array( 'png', 'jpg', 'jpeg', 'webp' ),
-			),
-			'texture_images' => array(
-				'type' => 'multi-upload',
-				'label' => 'Ảnh MAP',
-				'images_only' => true,
-				'files_ext' => array( 'png', 'jpg', 'jpeg', 'webp' ),
-			),
-		),
-	),
+	
 	'info'=>array(
 		'context' => 'advanced',
 		'title'   => 'Cài đặt nâng cao',

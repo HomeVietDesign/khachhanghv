@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'FW' ) ) {
 	die( 'Forbidden' );
 }
-
+$shortcode = fw_ext('shortcodes')->get_shortcode('estimate_customer');
 /**
  * @var array $atts
  */
@@ -62,9 +62,10 @@ if($current_client) {
 									<?php
 									$contractor_customer_hide = get_term_meta($current_client->term_id, 'contractor_customer_hide', true);
 									if(empty($contractor_customer_hide)) $contractor_customer_hide = [];
+									
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											\FW_Shortcode_Estimate_Customer::display_contractor($contractor_id, $current_client, $contractor_customer_hide);
+											$shortcode->display_contractor($contractor_id, $current_client, $contractor_customer_hide);
 										} else {
 											break;
 										}

@@ -8,10 +8,10 @@ wp_enqueue_style(
 	'1.0'
 );
 
-wp_enqueue_script(
-	'fw-shortcode-gzalo',
-	$shortcodes_extension->locate_URI('/shortcodes/gzalo/static/js/scripts.js'),
-	array('jquery'),
-	'1.0',
-	true
-);
+// wp_enqueue_script(
+// 	'fw-shortcode-gzalo',
+// 	$shortcodes_extension->locate_URI('/shortcodes/gzalo/static/js/scripts.js'),
+// 	array('jquery'),
+// 	'1.0',
+// 	true
+// );

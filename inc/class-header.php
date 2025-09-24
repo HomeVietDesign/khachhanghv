@@ -178,34 +178,6 @@ class Header {
 				$menu_html .= '</li>';
 			}
 
-			$estimate_signed_page = Common::get_custom_page('estimate-signed.php');
-			if( $estimate_signed_page && current_user_can('estimate_contractor_view') ) {
-				$estimate_signed_page_url = get_permalink($estimate_signed_page);
-				$this_template = is_page_template('estimate-signed.php') ? true : false;
-				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-				if($this_template) {
-					$menu_html .= ' current-menu-ancestor current-menu-parent';
-				}
-				$menu_html .= '">';
-				$menu_html .= '<a href="#">'.esc_html($estimate_signed_page->post_title).'</a>';
-				$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-				$menu_html .= '<ul class="sub-menu position-absolute">';
-				foreach ($passwords as $key => $value) {
-					if(has_role('viewer')&&(!isset($user_passwords[$current_user->user_login]) || !in_array($value->term_id, $user_passwords[$current_user->user_login]['passwords']))) {
-						// debug_log($value);
-						// debug_log($user_passwords[$current_user->user_login]['passwords']);
-						continue;
-					}
-					$menu_html .= '<li class="menu-item';
-					$menu_html .= ($this_template && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-					$menu_html .= '">';
-					$menu_html .= '<a href="'.esc_url($estimate_signed_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
-					$menu_html .= '</li>';
-				}
-				$menu_html .= '</ul>';
-				$menu_html .= '</li>';
-			}
-
 			$estimate_customer_page = Common::get_custom_page('estimate-customer.php');
 			if($estimate_customer_page && current_user_can('estimate_customer_view') ) {
 				$estimate_customer_page_url = get_permalink($estimate_customer_page);
@@ -227,35 +199,6 @@ class Header {
 				}
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
-			}
-
-		
-			$estimate_manage_pages = Common::get_custom_pages('estimate-manage.php');
-			if( $estimate_manage_pages ) {
-				$this_template = is_page_template('estimate-manage.php') ? true : false;
-				foreach ($estimate_manage_pages as $estimate_manage_page) {
-					if(current_user_can('estimate_manage_'.$estimate_manage_page->post_name.'_view')) {
-						$estimate_manage_page_url = get_permalink($estimate_manage_page);
-						
-						$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
-						if($this_template && $object->ID==$estimate_manage_page->ID) {
-							$menu_html .= ' current-menu-ancestor current-menu-parent';
-						}
-						$menu_html .= '">';
-						$menu_html .= '<a href="#">'.esc_html($estimate_manage_page->post_title).'</a>';
-						$menu_html .= '<a href="javascript:void(0)" class="toggle-sub-menu d-flex align-items-center"><span class="dashicons dashicons-arrow-down-alt2"></span></a>';
-						$menu_html .= '<ul class="sub-menu position-absolute">';
-						foreach ($passwords as $key => $value) {
-							$menu_html .= '<li class="menu-item';
-							$menu_html .= ($this_template && $object->ID==$estimate_manage_page->ID && $current_client && $value->term_id==$current_client->term_id)?' current-menu-item':'';
-							$menu_html .= '">';
-							$menu_html .= '<a href="'.esc_url($estimate_manage_page_url).'?client='.absint($value->term_id).'">'.esc_html($value->name).'</a>';
-							$menu_html .= '</li>';
-						}
-						$menu_html .= '</ul>';
-						$menu_html .= '</li>';
-					}
-				}
 			}
 
 			$estimate_construction_page = Common::get_custom_page('estimate-construction.php');
@@ -349,52 +292,52 @@ class Header {
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
 			}
-			
-			$gzalo_page = Common::get_custom_page('gzalo.php');
-			if( $gzalo_page && current_user_can('gzalo_view') ) {
-				$gzalo_page_url = get_permalink($gzalo_page);
-				$this_template = is_page_template('gzalo.php') ? true : false;
-				$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
-				if($this_template) {
-					$menu_html .= ' current-menu-item';
-				}
-				$menu_html .= '">';
-				$menu_html .= '<a href="'.esc_url($gzalo_page_url).'">'.esc_html($gzalo_page->post_title).'</a>';
-				$menu_html .= '</li>';
-			}
-
-			$media_page = Common::get_custom_page('media.php');
-			if( $media_page && current_user_can('media_view') ) {
-				$media_page_url = get_permalink($media_page);
-				$this_template = is_page_template('media.php') ? true : false;
-				$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
-				if($this_template) {
-					$menu_html .= ' current-menu-item';
-				}
-				$menu_html .= '">';
-				$menu_html .= '<a href="'.esc_url($media_page_url).'">'.esc_html($media_page->post_title).'</a>';
-				$menu_html .= '</li>';
-			}
-
-			// $nha88_page = Common::get_custom_page('nha88.php');
-			// if( $nha88_page && current_user_can('nha88_view') ) {
-			// 	$nha88_page_url = get_permalink($nha88_page);
-			// 	$this_template = is_page_template('nha88.php') ? true : false;
-			// 	$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
-			// 	if($this_template) {
-			// 		$menu_html .= ' current-menu-item';
-			// 	}
-			// 	$menu_html .= '">';
-			// 	$menu_html .= '<a href="'.esc_url($nha88_page_url).'">'.esc_html($nha88_page->post_title).'</a>';
-			// 	$menu_html .= '</li>';
-			// }
 		}
 
+		$gzalo_page = Common::get_custom_page('gzalo.php');
+		if( $gzalo_page && current_user_can('gzalo_view') ) {
+			$gzalo_page_url = get_permalink($gzalo_page);
+			$this_template = is_page_template('gzalo.php') ? true : false;
+			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			if($this_template) {
+				$menu_html .= ' current-menu-item';
+			}
+			$menu_html .= '">';
+			$menu_html .= '<a href="'.esc_url($gzalo_page_url).'">'.esc_html($gzalo_page->post_title).'</a>';
+			$menu_html .= '</li>';
+		}
+
+		$media_page = Common::get_custom_page('media.php');
+		if( $media_page && current_user_can('media_view') ) {
+			$media_page_url = get_permalink($media_page);
+			$this_template = is_page_template('media.php') ? true : false;
+			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			if($this_template) {
+				$menu_html .= ' current-menu-item';
+			}
+			$menu_html .= '">';
+			$menu_html .= '<a href="'.esc_url($media_page_url).'">'.esc_html($media_page->post_title).'</a>';
+			$menu_html .= '</li>';
+		}
+
+		$nha88_page = Common::get_custom_page('nha88.php');
+		if( $nha88_page && current_user_can('nha88_view') ) {
+			$nha88_page_url = get_permalink($nha88_page);
+			$this_template = is_page_template('nha88.php') ? true : false;
+			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			if($this_template) {
+				$menu_html .= ' current-menu-item';
+			}
+			$menu_html .= '">';
+			$menu_html .= '<a href="'.esc_url($nha88_page_url).'">'.esc_html($nha88_page->post_title).'</a>';
+			$menu_html .= '</li>';
+		}
+
+		/*
 		$nha88_types = get_terms([
 			'taxonomy' => 'nha88_type',
 			'hide_empty' => false,
 		]);
-
 		if($nha88_types) {
 			$nha88_page = Common::get_custom_page('nha88.php');
 			if( $nha88_page && current_user_can('nha88_view') ) {
@@ -418,6 +361,33 @@ class Header {
 				$menu_html .= '</ul>';
 				$menu_html .= '</li>';
 			}
+		}
+		*/
+
+		$design_page = Common::get_custom_page('design.php');
+		if( $design_page && current_user_can('design_view') ) {
+			$design_page_url = get_permalink($design_page);
+			$this_template = is_page_template('design.php') ? true : false;
+			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			if($this_template) {
+				$menu_html .= ' current-menu-item';
+			}
+			$menu_html .= '">';
+			$menu_html .= '<a href="'.esc_url($design_page_url).'">'.esc_html($design_page->post_title).'</a>';
+			$menu_html .= '</li>';
+		}
+
+		$construction_page = Common::get_custom_page('construction.php');
+		if( $construction_page && current_user_can('construction_view') ) {
+			$construction_page_url = get_permalink($construction_page);
+			$this_template = is_page_template('construction.php') ? true : false;
+			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
+			if($this_template) {
+				$menu_html .= ' current-menu-item';
+			}
+			$menu_html .= '">';
+			$menu_html .= '<a href="'.esc_url($construction_page_url).'">'.esc_html($construction_page->post_title).'</a>';
+			$menu_html .= '</li>';
 		}
 
 		return $menu_html;

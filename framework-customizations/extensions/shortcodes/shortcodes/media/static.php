@@ -5,13 +5,13 @@ wp_enqueue_style(
 	'fw-shortcode-media',
 	$shortcodes_extension->locate_URI( '/shortcodes/media/static/css/styles.css' ),
 	[],
-	'1.0'
+	'1.1'
 );
 
 wp_enqueue_script(
 	'fw-shortcode-media',
 	$shortcodes_extension->locate_URI('/shortcodes/media/static/js/scripts.js'),
 	array('jquery'),
-	'1.0',
+	'1.1',
 	true
 );

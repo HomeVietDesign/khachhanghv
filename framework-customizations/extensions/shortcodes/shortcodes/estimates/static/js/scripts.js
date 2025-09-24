@@ -75,11 +75,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.estimate-'+formData.get('estimate_contractor')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .attachment-download').html(response['attachment']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .contractor-info').html(response['info']);
-								// $('.estimate-'+formData.get('estimate_contractor')+' .estimate-require-content').html(response['require_content']);
-								// let popover = $('.estimate-'+formData.get('estimate_contractor')+' .estimate-require-content').find('[data-bs-toggle="popover"]');
-								// if(popover.length>0){ 
-								// 	new bootstrap.Popover(popover.get(0));
-								// }
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-required').html(response['required']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-received').html(response['received']);
 								$('.estimate-'+formData.get('estimate_contractor')+' .estimate-completed').html(response['completed']);
@@ -110,66 +105,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 		$(document).on('input', '#estimate_attachment', function() {
 			let $input = $(this);
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
-		});
-
-		$('.btn-add-signed').on('click', function(e){
-			let $this = $(this),
-				$that = $this.parent('.toggle-signed').find('.btn-remove-signed'),
-				client = $this.data('client'),
-				contractor = $this.data('contractor'),
-				contractor_title = $this.data('contractorTitle'),
-				$estimate = $this.closest('.estimate-item');
-
-			if(confirm('"'+contractor_title+'" đã ký ?')) {
-				$.ajax({
-					url: theme.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {nonce: theme.nonce, action: 'estimate_contractor_add_signed', client: client, contractor: contractor},
-					beforeSend: function() {
-						$this.prop('disabled', true);
-					},
-					success: function(response) {
-						if(response) {
-							$this.addClass('d-none');
-							$that.removeClass('d-none');
-						}
-					},
-					complete: function(){
-						$this.prop('disabled', false);
-					}
-				});
-			}
-		});
-
-		$('.btn-remove-signed').on('click', function(e){
-			let $this = $(this),
-				$that = $this.parent('.toggle-signed').find('.btn-add-signed'),
-				client = $this.data('client'),
-				contractor = $this.data('contractor'),
-				contractor_title = $this.data('contractorTitle'),
-				$estimate = $this.closest('.estimate-item');
-
-			if(confirm('"'+contractor_title+'" chưa ký ?')) {
-				$.ajax({
-					url: theme.ajax_url,
-					type: 'POST',
-					dataType: 'json',
-					data: {nonce: theme.nonce, action: 'estimate_contractor_remove_signed', client: client, contractor: contractor},
-					beforeSend: function() {
-						$this.prop('disabled', true);
-					},
-					success: function(response) {
-						if(response) {
-							$this.addClass('d-none');
-							$that.removeClass('d-none');
-						}
-					},
-					complete: function(){
-						$this.prop('disabled', false);
-					}
-				});
-			}
 		});
 
 		$('.estimate-contractor-hide').on('click', function(e){

@@ -5,7 +5,7 @@ wp_enqueue_style(
 	'fw-shortcode-documents',
 	$shortcodes_extension->locate_URI( '/shortcodes/documents/static/css/styles.css' ),
 	[],
-	'1.0'
+	'1.1'
 );
 
 wp_enqueue_script(

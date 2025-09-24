@@ -1,6 +1,7 @@
 <?php if ( ! defined( 'FW' ) ) {
 	die( 'Forbidden' );
 }
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('econstruction');
 
 /**
  * @var array $atts
@@ -8,14 +9,12 @@
 global $current_client;
 
 $econstruction_cats = get_terms(['taxonomy' => 'econstruction_cat','parent'=>0]);
-$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
 
 if($econstruction_cats && $current_client) {
 
 	$econstruction_hide = get_term_meta($current_client->term_id, 'econstruction_hide', true);
 	if(empty($econstruction_hide)) $econstruction_hide = [];
 
-	// $data = fw_get_db_term_option($current_client->term_id, 'passwords', 'econstruction', []); // bỏ vì gây lỗi mất dữ liệu
 	$data = get_term_meta($current_client->term_id, 'econstruction', true);
 	if(empty($data)) $data = [];
 
@@ -58,71 +57,15 @@ if($econstruction_cats && $current_client) {
 								'file_id' => (!empty($default_econstruction_file))?$default_econstruction_file['attachment_id']:'',
 							];
 
-							$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'file_id'=>'', 'quote'=>''];
+							$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:$shortcode->default;
+							$econstruction_data += $shortcode->default;
 
 							if(empty($econstruction_data['value'])) $econstruction_data['value'] = $default_data['value'];
 							if(empty($econstruction_data['unit'])) $econstruction_data['unit'] = $default_data['unit'];
 							if(empty($econstruction_data['zalo'])) $econstruction_data['zalo'] = $default_data['zalo'];
 							if(empty($econstruction_data['file_id'])) $econstruction_data['file_id'] = $default_data['file_id'];
 
-							$display = empty($progress) ? true : false;
-
-							if(!$display) {
-								$display_none = true;
-								if('none'==$progress) {
-									$display_none = false;
-									if(empty($econstruction_data['required']) && empty($econstruction_data['received']) && empty($econstruction_data['completed']) && empty($econstruction_data['sent']) && empty($econstruction_data['quote'])) {
-										$display_none = true;
-									}
-								}
-
-								$display_required = true;
-								if('required'==$progress) {
-									$display_required = false;
-									if(isset($econstruction_data['required']) && $econstruction_data['required']!='' ) {
-										$display_required = true;
-									}
-								}
-
-								$display_received = true;
-								if('received'==$progress) {
-									$display_received = false;
-									if(isset($econstruction_data['received']) && $econstruction_data['received']!='' ) {
-										$display_received = true;
-									}
-								}
-
-								$display_completed = true;
-								if('completed'==$progress) {
-									$display_completed = false;
-									if(isset($econstruction_data['completed']) && $econstruction_data['completed']!='' ) {
-										$display_completed = true;
-									}
-								}
-
-								$display_sent = true;
-								if('sent'==$progress) {
-									$display_sent = false;
-									if(isset($econstruction_data['sent']) && $econstruction_data['sent']!='' ) {
-										$display_sent = true;
-									}
-								}
-
-								$display_quote = true;
-								if('quote'==$progress) {
-									$display_quote = false;
-									if(isset($econstruction_data['quote']) && $econstruction_data['quote']!='' ) {
-										$display_quote = true;
-									}
-								}
-
-							}
-
 							$item_class = '';
-
-							if(!$display && !($display_none && $display_required && $display_received && $display_completed && $display_sent && $display_quote)) {
-								$item_class = ' hidden';
-							}
 
 							if(in_array($econstruction_id, $econstruction_hide)) {
 								$item_class .= ' active';
@@ -131,44 +74,44 @@ if($econstruction_cats && $current_client) {
 							<div class="col-lg-3 col-md-6 estimate-item econstruction-item mb-4<?=$item_class?>">
 								<div class="econstruction econstruction-<?=$econstruction_id?> border border-dark h-100 bg-black">
 									<div class="row g-0 progressing-bar econstruction-progress text-center text-yellow">
-										<div class="col estimate-required econstruction-required<?php echo (isset($econstruction_data['required']) && $econstruction_data['required']!='')?' on':''; ?>">
+										<div class="col estimate-required econstruction-required">
 										<?php
-										if(isset($econstruction_data['required']) && $econstruction_data['required']!='') {
+										if($econstruction_data['required']!='') {
 											?>
-											<div class="bg-danger" title="Ngày gửi yêu cầu">
+											<div class="bg-danger" title="<?=esc_attr($econstruction_data['required_label'])?>">
 												<?php echo esc_html(date('d/m', strtotime($econstruction_data['required']))); ?>
 											</div>
 											<?php
 										}
 										?>
 										</div>
-										<div class="col estimate-received econstruction-received<?php echo (isset($econstruction_data['received']) && $econstruction_data['received']!='')?' on':''; ?>">
+										<div class="col estimate-received econstruction-received">
 											<?php
-											if(isset($econstruction_data['received']) && $econstruction_data['received']!='') {
+											if($econstruction_data['received']!='') {
 												?>
-												<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">
+												<div class="bg-danger" title="<?=esc_attr($econstruction_data['received_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($econstruction_data['received']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col estimate-completed econstruction-completed<?php echo (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?' on':''; ?>">
+										<div class="col estimate-completed econstruction-completed">
 											<?php
-											if(isset($econstruction_data['completed']) && $econstruction_data['completed']!='') {
+											if($econstruction_data['completed']!='') {
 												?>
-												<div class="bg-danger" title="Ngày làm xong dự toán">
+												<div class="bg-danger" title="<?=esc_attr($econstruction_data['completed_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($econstruction_data['completed']))); ?>
 												</div>
 												<?php
 											}
 											?>
 										</div>
-										<div class="col estimate-sent econstruction-sent<?php echo (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?' on':''; ?>">
+										<div class="col estimate-sent econstruction-sent">
 											<?php
-											if(isset($econstruction_data['sent']) && $econstruction_data['sent']!='') {
+											if($econstruction_data['sent']!='') {
 												?>
-												<div class="bg-danger" title="Ngày gửi khách">
+												<div class="bg-danger" title="<?=esc_attr($econstruction_data['sent_label'])?>">
 													<?php echo esc_html(date('d/m', strtotime($econstruction_data['sent']))); ?>
 												</div>
 												<?php
@@ -216,8 +159,6 @@ if($econstruction_cats && $current_client) {
 											<?php if(current_user_can('edit_econstructions')) { ?>
 											
 											<button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>" title="Ẩn/Hiện"></button>
-
-											<!-- <button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="Ẩn <?php echo esc_attr('"'.get_the_title( $econstruction_id ).'" ?'); ?>"><span class="dashicons dashicons-visibility"></span></button> -->
 
 											<a href="<?php echo get_edit_post_link( $econstruction_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 											<?php } ?>

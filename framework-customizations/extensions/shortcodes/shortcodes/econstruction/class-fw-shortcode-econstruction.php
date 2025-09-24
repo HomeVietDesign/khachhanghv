@@ -2,7 +2,25 @@
 
 class FW_Shortcode_Econstruction extends FW_Shortcode
 {
-	
+	public $default = [
+		'required_label'=>'',
+		'required'=>'',
+		'received_label'=>'',
+		'received'=>'',
+		'completed_label'=>'',
+		'completed'=>'',
+		'sent_label'=>'',
+		'sent'=>'',
+		'value'=>'',
+		'unit'=>'',
+		'zalo'=>'',
+		'url'=>'',
+		'url2'=>'',
+		'url3'=>'',
+		'file_id'=>'',
+		'quote'=>''
+	];
+
 	public function _init()
 	{
       add_action( 'wp_footer', [$this, 'edit_modal'] );
@@ -59,10 +77,11 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 				'file_id' => (!empty($default_econstruction_file))?$default_econstruction_file['attachment_id']:'',
 			];
 
-			//$data = fw_get_db_term_option($client, 'passwords', 'econstruction', []); // bỏ vì gây mất dữ liệu khi sửa password ở trong quản trị
 			$data = get_term_meta($client, 'econstruction', true);
 			if(empty($data)) $data = [];
-			$econstruction_data = isset($data[$econstruction])?$data[$econstruction]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'file_id'=>'', 'quote'=>''];
+			
+			$econstruction_data = isset($data[$econstruction])?$data[$econstruction]:$this->default;
+			$econstruction_data += $this->default;
 
 			if(empty($econstruction_data['value'])) $econstruction_data['value'] = $default_data['value'];
 			if(empty($econstruction_data['unit'])) $econstruction_data['unit'] = $default_data['unit'];
@@ -72,10 +91,10 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			$response['zalo'] = ($econstruction_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($econstruction_data['zalo']).'" target="_blank">Zalo</a>':'';
 			$response['file'] = ($econstruction_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($econstruction_data['file_id'])).'" target="_blank">Tải</a>':'';
 			
-			$response['required'] = (isset($econstruction_data['required']) && $econstruction_data['required']!='')?'<div class="bg-danger" title="Ngày gửi yêu cầu">'.esc_html(date('d/m', strtotime($econstruction_data['required']))).'</div>':'';
-			$response['received'] = (isset($econstruction_data['received']) && $econstruction_data['received']!='')?'<div class="bg-danger" title="Ngày nhận dự toán nhà thầu">'.esc_html(date('d/m', strtotime($econstruction_data['received']))).'</div>':'';
-			$response['completed'] = (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?'<div class="bg-danger" title="Ngày làm xong dự toán">'.esc_html(date('d/m', strtotime($econstruction_data['completed']))).'</div>':'';
-			$response['sent'] = (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?'<div class="bg-danger" title="Ngày gửi khách">'.esc_html(date('d/m', strtotime($econstruction_data['sent']))).'</div>':'';
+			$response['required'] = (isset($econstruction_data['required']) && $econstruction_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['required_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['required']))).'</div>':'';
+			$response['received'] = (isset($econstruction_data['received']) && $econstruction_data['received']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['received_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['received']))).'</div>':'';
+			$response['completed'] = (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['completed_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['completed']))).'</div>':'';
+			$response['sent'] = (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['sent_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['sent']))).'</div>':'';
 			
 			$response['quote'] = (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
@@ -128,10 +147,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			'data' => []
 		];
 
-		// debug_log($_POST);
-		// debug_log($_FILES);
-		// wp_send_json( $response );
-
 		if(current_user_can('econstruction_edit') && check_ajax_referer( 'edit-econstruction', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$econstruction_id = isset($_POST['econstruction'])?absint($_POST['econstruction']):0;
@@ -145,22 +160,32 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			$econstruction_file_id = isset($_POST['econstruction_file_id'])?absint($_POST['econstruction_file_id']):0;
 			$econstruction_file = isset($_FILES['econstruction_file']) ? $_FILES['econstruction_file'] : null;
 
+			$econstruction_required_label = isset($_POST['econstruction_required_label']) ? $_POST['econstruction_required_label'] : '';
 			$econstruction_required = isset($_POST['econstruction_required']) ? $_POST['econstruction_required'] : '';
+			$econstruction_received_label = isset($_POST['econstruction_received_label']) ? $_POST['econstruction_received_label'] : '';
 			$econstruction_received = isset($_POST['econstruction_received']) ? $_POST['econstruction_received'] : '';
+			$econstruction_completed_label = isset($_POST['econstruction_completed_label']) ? $_POST['econstruction_completed_label'] : '';
 			$econstruction_completed = isset($_POST['econstruction_completed']) ? $_POST['econstruction_completed'] : '';
+			$econstruction_sent_label = isset($_POST['econstruction_sent_label']) ? $_POST['econstruction_sent_label'] : '';
 			$econstruction_sent = isset($_POST['econstruction_sent']) ? $_POST['econstruction_sent'] : '';
 			$econstruction_quote = isset($_POST['econstruction_quote']) ? $_POST['econstruction_quote'] : '';
 			
 			if($client && $econstruction_id) {
-				// $data = fw_get_db_term_option($client, 'passwords', 'econstruction', []); // bỏ vì gây mất dữ liệu khi sửa password trong quản trị
+	
 				$data = get_term_meta($client, 'econstruction', true);
 				if(empty($data)) $data = [];
-				$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'file_id'=>'', 'quote'=>''];
+				
+				$econstruction_data = isset($data[$econstruction_id])?$data[$econstruction_id]:$this->default;
+				$econstruction_data += $this->default;
 
 				$new_econstruction_data = [
+					'required_label' => $econstruction_required_label,
 					'required' => $econstruction_required,
+					'received_label' => $econstruction_received_label,
 					'received' => $econstruction_received,
+					'completed_label' => $econstruction_completed_label,
 					'completed' => $econstruction_completed,
+					'sent_label' => $econstruction_sent_label,
 					'sent' => $econstruction_sent,
 					'value' => $econstruction_value,
 					'unit' => $econstruction_unit,
@@ -211,10 +236,12 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 		$econstruction = isset($_GET['econstruction'])?absint($_GET['econstruction']):0;
 
 		if($client && $econstruction) {
-			//$data = fw_get_db_term_option($client, 'passwords', 'econstruction', []); // bỏ vì gây mất dữ liệu khi sửa password trong quản trị
+			
 			$data = get_term_meta($client, 'econstruction', true);
 			if(empty($data)) $data = [];
-			$econstruction_data = isset($data[$econstruction])?$data[$econstruction]:[ 'required'=>'', 'received'=>'', 'completed'=>'', 'sent'=>'', 'value'=>'', 'unit'=>'', 'zalo'=>'', 'url'=>'', 'url2'=>'', 'url3'=>'', 'file_id'=>'', 'quote'=>''];
+			
+			$econstruction_data = isset($data[$econstruction])?$data[$econstruction]:$this->default;
+			$econstruction_data += $this->default;
 
 			$file_url = (isset($econstruction_data['file_id']) && $econstruction_data['file_id']!='')?wp_get_attachment_url($econstruction_data['file_id']):'';
 			?>
@@ -224,19 +251,19 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-econstruction', 'nonce' ); ?>
 				<div id="edit-econstruction-response"></div>
 				<div class="mb-3">
-					Gửi yêu cầu
+					<input class="form-control mb-2" type="text" value="<?php echo (isset($econstruction_data['required_label'])&&$econstruction_data['required_label']!='')?esc_html($econstruction_data['required_label']):''; ?>" name="econstruction_required_label" id="econstruction_required_label" placeholder="Ghi chú ngày 1">
 					<input class="form-control" type="date" value="<?php echo (isset($econstruction_data['required'])&&$econstruction_data['required']!='')?esc_html(date('Y-m-d', strtotime($econstruction_data['required']))):''; ?>" name="econstruction_required" id="econstruction_required">
 				</div>
 				<div class="mb-3">
-					Dự toán nhà thầu
+					<input class="form-control mb-2" type="text" value="<?php echo (isset($econstruction_data['received_label'])&&$econstruction_data['received_label']!='')?esc_html($econstruction_data['received_label']):''; ?>" name="econstruction_received_label" id="econstruction_received_label" placeholder="Ghi chú ngày 2">
 					<input class="form-control" type="date" value="<?php echo (isset($econstruction_data['received'])&&$econstruction_data['received']!='')?esc_html(date('Y-m-d', strtotime($econstruction_data['received']))):''; ?>" name="econstruction_received" id="econstruction_received">
 				</div>
 				<div class="mb-3">
-					Xong dự toán
+					<input class="form-control mb-2" type="text" value="<?php echo (isset($econstruction_data['completed_label'])&&$econstruction_data['completed_label']!='')?esc_html($econstruction_data['completed_label']):''; ?>" name="econstruction_completed_label" id="econstruction_completed_label" placeholder="Ghi chú ngày 3">
 					<input class="form-control" type="date" value="<?php echo (isset($econstruction_data['completed'])&&$econstruction_data['completed']!='')?esc_html(date('Y-m-d', strtotime($econstruction_data['completed']))):''; ?>" name="econstruction_completed" id="econstruction_completed">
 				</div>
 				<div class="mb-3">
-					Ngày gửi khách
+					<input class="form-control mb-2" type="text" value="<?php echo (isset($econstruction_data['sent_label'])&&$econstruction_data['sent_label']!='')?esc_html($econstruction_data['sent_label']):''; ?>" name="econstruction_sent_label" id="econstruction_sent_label" placeholder="Ghi chú ngày 4">
 					<input class="form-control" type="date" value="<?php echo (isset($econstruction_data['sent'])&&$econstruction_data['sent']!='')?esc_html(date('Y-m-d', strtotime($econstruction_data['sent']))):''; ?>" name="econstruction_sent" id="econstruction_sent">
 				</div>
 				<div class="mb-3">
@@ -282,7 +309,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 								<span class="btn btn-primary">Bấm tải lên</span>
 							</div>
 							<div style="width: 0;height: 0;overflow: hidden;">
-								<!-- <input type="file" id="econstruction_file" name="econstruction_file" accept=".doc,.docx,.xls,.xlsx,.pdf" class="form-control"> -->
 								<input type="file" id="econstruction_file" name="econstruction_file" class="form-control">
 							</div>
 						</label>
