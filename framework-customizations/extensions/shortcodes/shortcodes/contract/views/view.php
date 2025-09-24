@@ -22,7 +22,7 @@ if($contract_cats && $current_client) {
 		foreach ($contract_cats as $key => $value) {
 		?>
 		<section class="accordion-item mb-3">
-			<h2 class="accordion-header">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
 				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 			</h2>
 			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">

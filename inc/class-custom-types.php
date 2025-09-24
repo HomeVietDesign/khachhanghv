@@ -127,7 +127,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 3,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-groups',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -223,7 +223,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 4,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-calculator',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -268,7 +268,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 4,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-calculator',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -313,7 +313,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 4,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-book',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -358,7 +358,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 4,
-			'menu_icon'           => 'dashicons-admin-post',
+			'menu_icon'           => 'dashicons-media-text',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm
@@ -493,7 +493,7 @@ class Custom_Types {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => 5,
-			'menu_icon'           => 'dashicons-admin-multisite',
+			'menu_icon'           => 'dashicons-bank',
 			'show_in_nav_menus'   => false,
 			'publicly_queryable'  => false, // ẩn bài viết ở front-end
 			'exclude_from_search' => true, // loại khỏi kết quả tìm kiếm

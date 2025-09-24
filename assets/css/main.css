@@ -442,9 +442,11 @@ video {
 	top: var(--site-header--height);
 	z-index: 9;
 	background: #1c1c1c;
+	border-bottom: transparent 1px solid;
+}
+.client-heading .client-name {
 	font-size: 28px;
 	font-weight: 600;
-	border-bottom: transparent 1px solid;
 }
 .client-heading.is-stuck {
 	border-color: rgb(33 37 41);

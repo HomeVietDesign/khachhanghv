@@ -26,7 +26,7 @@ if($efurniture_cats && $current_client) {
 		foreach ($efurniture_cats as $key => $value) {
 		?>
 		<section class="accordion-item mb-3">
-			<h2 class="accordion-header">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
 				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$value->term_id?>" aria-expanded="true" aria-controls="panels-<?=$value->term_id?>"><?=esc_html($value->name)?></button>
 			</h2>
 			<div id="panels-<?=$value->term_id?>" class="accordion-collapse collapse show">

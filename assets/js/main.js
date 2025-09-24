@@ -11,6 +11,26 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	jQuery(function($){
 
+		let $ancho = $('#ancho');
+		if($ancho.length>0) {
+			let $dropdown_menu = $ancho.find('ul.dropdown-menu')
+			$('.accordion-header').each(function(index, el){
+				let $el = $(el);
+				$dropdown_menu.append('<li><a class="dropdown-item" href="javascript:void(0)" data-to="'+($el.attr('id'))+'">'+($el.text())+'</a></li>');
+			});
+		}
+
+		$(document).on('click', '#ancho a.dropdown-item', function(e){
+			let $this = $(this);
+			let $to = $('#'+$this.data('to'));
+
+			$("html, body").animate({
+				scrollTop: $to.offset().top - ($('#wpadminbar').height()+$('#site-header').height()+2*$('.client-heading').height())
+			}, 500, 'linear');
+	
+			return false;
+		});
+
 		let debounced_contractor_search = debounce((event) => {
 			let kw = $('#contractor-search-input').val().trim(),
 				province = parseInt($('#contractor-search-province').val()),

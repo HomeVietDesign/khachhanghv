@@ -53,7 +53,7 @@ if($current_client) {
 						$total = ($per>0)?ceil(count($contractors)/$per):0;
 						?>
 						<section class="accordion-item contractor-cat-section contractor-cat-section-<?=$value->term_id?> mb-3">
-							<h2 class="accordion-header position-relative">
+							<h2 class="accordion-header position-relative" id="accordion-header-<?=$value->term_id?>">
 								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 							</h2>
 							<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
