@@ -46,9 +46,7 @@ if($document_cats && $current_client) {
 					if($documents) {
 						foreach($documents as $document_id) {
 							$document_content = fw_get_db_post_option($document_id, 'document_content');
-							$default_data = [
-								'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
-							];
+							$default_zalo = fw_get_db_post_option($document_id, 'document_zalo');
 
 							// url dự toán gốc
 							$default_url = fw_get_db_post_option($document_id, 'document_default_url');
@@ -56,8 +54,6 @@ if($document_cats && $current_client) {
 							$data = get_post_meta($document_id, '_data', true);
 							$document_data = isset($data[$current_client->term_id])?$data[$current_client->term_id]:$shortcode->default;
 							$document_data += $shortcode->default;
-							
-							if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
 							
 							$item_class = '';
 
@@ -119,7 +115,17 @@ if($document_cats && $current_client) {
 											<?php
 											if($document_content!='') {
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($document_content))?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($document_content))?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="required-content">
+											<?php
+											if($document_data['required_content']!='') {
+												$required_content = '<div class="copy-text">'.wp_get_the_content($document_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
 												<?php
 											}
 											?>
@@ -130,7 +136,7 @@ if($document_cats && $current_client) {
 												$attachment_url = wp_get_attachment_url($document_data['attachment_id']);
 												if($attachment_url) {
 												?>
-												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-2" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
 												<?php
 												}
 											}
@@ -162,17 +168,17 @@ if($document_cats && $current_client) {
 											
 											<a href="<?php echo get_edit_post_link( $document_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 
-											<?php } ?>
-
-											<?php if(current_user_can('document_edit')) { ?>
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-document" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 											<?php } ?>
 
 										</div>
 										
-										<div class="document-control zalo-link position-absolute top-0 end-0 p-1">
+										<div class="document-control zalo-link position-absolute top-0 end-0 p-1 d-flex">
 										<?php if($document_data['zalo']) { ?>
-											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($document_data['zalo'])?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($document_data['zalo'])?>" target="_blank">RIÊNG</a>
+										<?php } ?>
+										<?php if($default_zalo) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($default_zalo)?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 									</div>

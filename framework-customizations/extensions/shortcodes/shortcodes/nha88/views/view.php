@@ -2,6 +2,8 @@
 	die( 'Forbidden' );
 }
 
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('gzalo');
+
 /**
  * @var array $atts
  */
@@ -17,7 +19,7 @@ if($nha88_cats) {
 		foreach ($nha88_cats as $key => $value) {
 		?>
 		<section class="accordion-item mb-3">
-			<h2 class="accordion-header">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
 				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 			</h2>
 			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
@@ -75,6 +77,10 @@ if($nha88_cats) {
 								}
 							}
 
+							$nha88_data = get_post_meta($nha88_id, '_data', true);
+							if(empty($nha88_data)) $nha88_data = $shortcode->default;
+							$nha88_data += $shortcode->default;
+
 							?>
 							<div class="col-lg-3 col-md-6 nha88-item mb-4">
 								<div class="nha88 nha88-<?=$nha88_id?> border border-dark h-100 bg-black">
@@ -127,7 +133,17 @@ if($nha88_cats) {
 											if(isset($nha88_content) && $nha88_content!='') {
 												$nha88_content = '<div class="copy-text mb-3">'.wp_get_the_content($nha88_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($nha88_content))?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($nha88_content))?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="required-content">
+											<?php
+											if($nha88_data['required_content']!='') {
+												$required_content = '<div class="copy-text">'.wp_get_the_content($nha88_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
 												<?php
 											}
 											?>
@@ -153,9 +169,12 @@ if($nha88_cats) {
 
 										</div>
 										
-										<div class="nha88-control nha88-zalo zalo-link position-absolute top-0 end-0 p-1">
+										<div class="nha88-control nha88-zalo zalo-link position-absolute top-0 end-0 p-1 d-flex">
+										<?php if($nha88_data['zalo']) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($nha88_data['zalo'])?>" target="_blank">RIÊNG</a>
+										<?php } ?>
 										<?php if($nha88_zalo) { ?>
-											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($nha88_zalo)?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($nha88_zalo)?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 									</div>
@@ -165,7 +184,6 @@ if($nha88_cats) {
 										</div>
 										<?php if($nha88_value!='') { ?>
 										<div class="nha88-value mb-1">
-											<span>Tổng giá trị: </span>
 											<span class="text-red fw-bold"><?php echo esc_html($nha88_value); ?></span>
 										</div>
 										<?php } ?>

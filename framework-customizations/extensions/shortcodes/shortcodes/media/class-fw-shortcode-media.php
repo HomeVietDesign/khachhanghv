@@ -87,9 +87,11 @@ class FW_Shortcode_Media extends FW_Shortcode
 				<div id="edit-media-response"></div>
 				
 				<div class="mb-3">
+					Liên kết 1
 					<input type="text" id="media_web" name="media_web" placeholder="Link Web" class="form-control" value="<?php echo esc_url($web); ?>">
 				</div>
 				<div class="mb-3">
+					Liên kết 2
 					<input type="text" id="media_fb" name="media_fb" placeholder="Link facebook" class="form-control" value="<?php echo esc_url($fb); ?>">
 				</div>
 				<div class="mb-3">

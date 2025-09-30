@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					$body.html(response);
+					// Khởi tạo lại TinyMCE
+					wp.editor.initialize("required_content", JSON.parse($('#required_content_settings').val()));
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -43,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 		}).on('hidden.bs.modal', function (e) {
 			let $modal = $(this),
 				$body = $modal.find('.modal-body');
+
+			wp.editor.remove('required_content');
 
 			$('#edit-efurniture-label').text('');
 			$body.text('');
@@ -59,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 				cache: false,
 				data: {client:client, efurniture:efurniture},
 				success: function(response) {
+					$('.efurniture-'+efurniture+' .required-content').html(response['required_content']);
 					$('.efurniture-'+efurniture+' .efurniture-info').html(response['info']);
 					$('.efurniture-'+efurniture+' .zalo-link').html(response['zalo']);
 					$('.efurniture-'+efurniture+' .file-download').html(response['file']);
@@ -240,43 +245,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 				}
 			}
 		});
-
-		if($('#efurniture-filter-form').length) {
-			let none = 0, required = 0, received = 0, completed = 0, sent = 0, quote = 0;
-			$('#efurniture-filter-form').find('.efurniture-item:not(.hide)').each(function(i, el){
-				let $el = $(el), isNone = true;
-					
-				if($el.find('.efurniture-required').hasClass('on')) {
-					required += 1;
-					isNone = false;
-				}
-				if($el.find('.efurniture-received').hasClass('on')) {
-					received += 1;
-					isNone = false;
-				}
-				if($el.find('.efurniture-completed').hasClass('on')) {
-					completed += 1;
-					isNone = false;
-				}
-				if($el.find('.efurniture-sent').hasClass('on')) {
-					sent += 1;
-					isNone = false;
-				}
-				if($el.find('.efurniture-quote').hasClass('on')) {
-					quote += 1;
-					isNone = false;
-				}
-				if(isNone) {
-					none += 1;
-				}
-			});
-			$('label[for="progress-none"] span').text(none);
-			$('label[for="progress-required"] span').text(required);
-			$('label[for="progress-received"] span').text(received);
-			$('label[for="progress-completed"] span').text(completed);
-			$('label[for="progress-sent"] span').text(sent);
-			$('label[for="progress-quote"] span').text(quote);
-		}
 
 		$('.efurniture-hide').on('click', function(e){
 			let $this = $(this),

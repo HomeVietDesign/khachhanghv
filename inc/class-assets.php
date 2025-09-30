@@ -9,9 +9,14 @@ class Assets {
 		//add_filter( 'tiny_mce_before_init', [$this, 'tiny_mce_before_init'] );
 		//add_filter( 'after_setup_theme', [$this, 'editor_style'] );
 
+		add_action('wp_enqueue_scripts', [$this, 'enqueue_editor'], 10);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_styles'], 50);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 50);
 
+	}
+
+	public function enqueue_editor() {
+		wp_enqueue_editor();
 	}
 
 	public function editor_style() {

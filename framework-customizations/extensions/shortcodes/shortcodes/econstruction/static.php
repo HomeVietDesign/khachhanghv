@@ -5,13 +5,13 @@ wp_enqueue_style(
 	'fw-shortcode-econstruction',
 	$shortcodes_extension->locate_URI( '/shortcodes/econstruction/static/css/styles.css' ),
 	[],
-	'1.1'
+	'1.2'
 );
 
 wp_enqueue_script(
 	'fw-shortcode-econstruction',
 	$shortcodes_extension->locate_URI('/shortcodes/econstruction/static/js/scripts.js'),
 	array('jquery'),
-	'1.1',
+	'1.2',
 	true
 );

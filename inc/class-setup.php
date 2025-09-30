@@ -220,6 +220,18 @@ class Setup {
 
 		add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
+		// Xoá auto-embed
+		remove_filter( 'the_content', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
+		remove_filter( 'the_content', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
+
+		// Ngăn xử lý embed trong oEmbed discovery
+		remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+		remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+		remove_filter( 'oembed_dataparse', 'wp_filter_oembed_result', 10 );
+
+		// Ngăn auto oembed URL
+		remove_filter( 'the_content', 'wp_filter_oembed_result', 9999 );
+
 	}
 
 	public static function instance() {

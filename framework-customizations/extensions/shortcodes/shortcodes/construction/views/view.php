@@ -15,7 +15,7 @@ if($construction_cats) {
 		foreach ($construction_cats as $key => $value) {
 		?>
 		<section class="accordion-item mb-3">
-			<h2 class="accordion-header">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
 				<button class="accordion-button text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 			</h2>
 			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">

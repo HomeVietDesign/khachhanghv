@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					$body.html(response);
+					// Khởi tạo lại TinyMCE
+					wp.editor.initialize("required_content", JSON.parse($('#required_content_settings').val()));
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -37,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 		}).on('hidden.bs.modal', function (e) {
 			let $modal = $(this),
 				$body = $modal.find('.modal-body');
+
+			wp.editor.remove('required_content');
 
 			$('#edit-contract-label').text('');
 			$body.text('');
@@ -71,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 							dataType: 'json',
 							data: {client:formData.get('contract_client'), contract:formData.get('contract_id')},
 							success: function(response) {
+								$('.contract-'+formData.get('contract_id')+' .required-content').html(response['required_content']);
 								$('.contract-'+formData.get('contract_id')+' .zalo-link').html(response['zalo']);
 								$('.contract-'+formData.get('contract_id')+' .contract-info').html(response['info']);
 								$('.contract-'+formData.get('contract_id')+' .contract-required').html(response['required']);

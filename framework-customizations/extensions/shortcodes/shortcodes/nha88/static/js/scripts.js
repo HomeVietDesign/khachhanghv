@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					$body.html(response);
+					// Khởi tạo lại TinyMCE
+					wp.editor.initialize("required_content", JSON.parse($('#required_content_settings').val()));
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -35,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 			let $modal = $(this),
 				$body = $modal.find('.modal-body');
 
+			wp.editor.remove('required_content');
+			
 			$('#edit-nha88-label').text('');
 			$body.text('');
 		});
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 							dataType: 'json',
 							data: {nha88:formData.get('nha88')},
 							success: function(response) {
-
+								$('.nha88-'+formData.get('nha88')+' .required-content').html(response['required_content']);
 								$('.nha88-'+formData.get('nha88')+' .nha88-zalo').html(response['nha88_zalo']);
 								$('.nha88-'+formData.get('nha88')+' .nha88-url').html(response['nha88_url']);
 								$('.nha88-'+formData.get('nha88')+' .nha88-info').html(response['nha88_info']);

@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					$body.html(response);
-					//$body.find('#document_value').inputNumber({'negative':false});
+					// Khởi tạo lại TinyMCE
+					wp.editor.initialize("required_content", JSON.parse($('#required_content_settings').val()));
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -39,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 		}).on('hidden.bs.modal', function (e) {
 			let $modal = $(this),
 				$body = $modal.find('.modal-body');
+
+			wp.editor.remove('required_content');
 
 			$('#edit-document-label').text('');
 			$body.text('');
@@ -73,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 							dataType: 'json',
 							data: {client:formData.get('document_client'), document:formData.get('document_id')},
 							success: function(response) {
+								$('.document-'+formData.get('document_id')+' .required-content').html(response['required_content']);
 								$('.document-'+formData.get('document_id')+' .zalo-link').html(response['zalo']);
 								$('.document-'+formData.get('document_id')+' .attachment-download').html(response['attachment']);
 								$('.document-'+formData.get('document_id')+' .document-info').html(response['info']);

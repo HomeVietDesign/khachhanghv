@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 				},
 				success: function(response) {
 					$body.html(response);
+					// Khởi tạo lại TinyMCE
+					wp.editor.initialize("required_content", JSON.parse($('#required_content_settings').val()));
 				},
 				error: function() {
 					$body.text('Lỗi khi tải. Tắt mở lại.');
@@ -38,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function(e){
 		}).on('hidden.bs.modal', function (e) {
 			let $modal = $(this),
 				$body = $modal.find('.modal-body');
+
+			wp.editor.remove('required_content');
 
 			$('#edit-estimate-furniture-label').text('');
 			$body.text('');
@@ -72,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function(e){
 							dataType: 'json',
 							data: {client:formData.get('estimate_furniture_client'), contractor:formData.get('estimate_furniture_contractor')},
 							success: function(response) {
+								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .required-content').html(response['required_content']);
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .zalo-link').html(response['zalo']);
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .attachment-download').html(response['attachment']);
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .contractor-info').html(response['info']);

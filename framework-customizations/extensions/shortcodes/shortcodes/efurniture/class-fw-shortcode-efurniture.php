@@ -3,6 +3,7 @@
 class FW_Shortcode_Efurniture extends FW_Shortcode
 {
 	public $default = [
+		'required_content'=>'',
 		'required_label'=>'',
 		'required'=>'',
 		'received_label'=>'',
@@ -63,6 +64,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		$efurniture = isset($_GET['efurniture'])?absint($_GET['efurniture']):0;
 
 		$response = [
+			'required_content' => '',
 			'info' => '',
 			'zalo' => '',
 			'required' => '',
@@ -75,10 +77,10 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		
 		if($client && $efurniture) {
 			$default_efurniture_file = fw_get_db_post_option($efurniture,'efurniture_file');
+			$default_zalo = fw_get_db_post_option($efurniture,'efurniture_zalo');
 			$default_data = [
 				'value' => fw_get_db_post_option($efurniture,'efurniture_value'),
 				'unit' => fw_get_db_post_option($efurniture,'efurniture_unit'),
-				'zalo' => fw_get_db_post_option($efurniture,'efurniture_zalo'),
 				'file_id' => (!empty($default_efurniture_file))?$default_efurniture_file['attachment_id']:'',
 			];
 
@@ -89,10 +91,11 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 
 			if(empty($efurniture_data['value'])) $efurniture_data['value'] = $default_data['value'];
 			if(empty($efurniture_data['unit'])) $efurniture_data['unit'] = $default_data['unit'];
-			if(empty($efurniture_data['zalo'])) $efurniture_data['zalo'] = $default_data['zalo'];
 			if(empty($efurniture_data['file_id'])) $efurniture_data['file_id'] = $default_data['file_id'];
 
-			$response['zalo'] = ($efurniture_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($efurniture_data['zalo']).'" target="_blank">Zalo</a>':'';
+			$response['zalo'] = ($efurniture_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($efurniture_data['zalo']).'" target="_blank">RIÊNG</a>':'';
+			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
+
 			$response['file'] = ($efurniture_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($efurniture_data['file_id'])).'" target="_blank">Tải</a>':'';
 			
 			$response['required'] = (isset($efurniture_data['required']) && $efurniture_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($efurniture_data['required_label']).'">'.esc_html(date('d/m', strtotime($efurniture_data['required']))).'</div>':'';
@@ -103,19 +106,29 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			$response['quote'] = (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
+			
+			if($efurniture_data['required_content']!='') {
+				$required_content = '<div class="copy-text">'.wp_get_the_content($efurniture_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+				?>
+				<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
+				<?php
+			}
+
+			$response['required_content'] = ob_get_clean();
+
+			ob_start();
 		?>
 			<div class="efurniture-title pt-3 mb-1 fs-5 text-green text-uppercase">
 				<?php echo esc_html(get_the_title( $efurniture )); ?>
 			</div>
 			<?php if($efurniture_data['value']) { ?>
 			<div class="efurniture-value mb-1">
-				<span>Tổng giá trị:</span>
 				<span class="text-red fw-bold"><?php echo esc_html($efurniture_data['value']); ?></span>
 			</div>
 			<?php } ?>
 			<?php if($efurniture_data['unit']) { ?>
 			<div class="efurniture-unit mb-1">
-				<div class="text-red"><?php echo esc_html($efurniture_data['unit']); ?></div>
+				<div class="text-red fw-bold"><?php echo esc_html($efurniture_data['unit']); ?></div>
 			</div>
 			<?php } ?>
 			<div class="d-flex flex-wrap justify-content-center efurniture-url mb-3">
@@ -161,7 +174,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		if(current_user_can('efurniture_edit') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$efurniture_id = isset($_POST['efurniture'])?absint($_POST['efurniture']):0;
-
+			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
 			$efurniture_value = isset($_POST['efurniture_value'])?sanitize_text_field($_POST['efurniture_value']):'';
 			$efurniture_unit = isset($_POST['efurniture_unit'])?sanitize_text_field($_POST['efurniture_unit']):'';
 			$efurniture_zalo = isset($_POST['efurniture_zalo'])?sanitize_text_field($_POST['efurniture_zalo']):'';
@@ -188,6 +201,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 				$efurniture_data += $this->default;
 
 				$new_efurniture_data = [
+					'required_content' => $required_content,
 					'required_label' => $efurniture_required_label,
 					'required' => $efurniture_required,
 					'received_label' => $efurniture_received_label,
@@ -359,89 +373,128 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 				<input type="hidden" id="efurniture" name="efurniture" value="<?=$efurniture?>">
 				<?php wp_nonce_field( 'edit-efurniture', 'nonce' ); ?>
 				<div id="edit-efurniture-response"></div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['required_label']!='')?esc_html($efurniture_data['required_label']):''; ?>" name="efurniture_required_label" id="efurniture_required_label" placeholder="Ghi chú ngày 1">
-					<input class="form-control" type="date" value="<?php echo ($efurniture_data['required']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['required']))):''; ?>" name="efurniture_required" id="efurniture_required">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['received_label']!='')?esc_html($efurniture_data['received_label']):''; ?>" name="efurniture_received_label" id="efurniture_received_label" placeholder="Ghi chú ngày 2">
-					<input class="form-control" type="date" value="<?php echo ($efurniture_data['received']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['received']))):''; ?>" name="efurniture_received" id="efurniture_received">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['completed_label']!='')?esc_html($efurniture_data['completed_label']):''; ?>" name="efurniture_completed_label" id="efurniture_completed_label" placeholder="Ghi chú ngày 3">
-					<input class="form-control" type="date" value="<?php echo ($efurniture_data['completed']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['completed']))):''; ?>" name="efurniture_completed" id="efurniture_completed">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['sent_label']!='')?esc_html($efurniture_data['sent_label']):''; ?>" name="efurniture_sent_label" id="efurniture_sent_label" placeholder="Ghi chú ngày 4">
-					<input class="form-control" type="date" value="<?php echo ($efurniture_data['sent']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['sent']))):''; ?>" name="efurniture_sent" id="efurniture_sent">
-				</div>
-				<div class="mb-3">
-					Giá trị
-					<input type="text" id="efurniture_value" name="efurniture_value" class="form-control" value="<?php echo esc_attr($efurniture_data['value']); ?>">
-				</div>
-				<div class="mb-3">
-					Ghi chú
-					<input type="text" id="efurniture_unit" name="efurniture_unit" class="form-control" value="<?php echo esc_attr($efurniture_data['unit']); ?>">
-				</div>
-				<div class="mb-3">
-					Link nhóm zalo
-					<input type="text" id="efurniture_zalo" name="efurniture_zalo" class="form-control" value="<?php echo esc_attr($efurniture_data['zalo']); ?>">
-				</div>
-				<div class="mb-3">
-					Link dự toán 1
-					<input type="text" id="efurniture_url" name="efurniture_url" class="form-control" value="<?php echo ($efurniture_data['url'])?esc_url($efurniture_data['url']):''; ?>">
-				</div>
-				<div class="mb-3">
-					Link dự toán 2
-					<input type="text" id="efurniture_url2" name="efurniture_url2" class="form-control" value="<?php echo ($efurniture_data['url2'])?esc_url($efurniture_data['url2']):''; ?>">
-				</div>
-				<div class="mb-3">
-					Link dự toán 3
-					<input type="text" id="efurniture_url3" name="efurniture_url3" class="form-control" value="<?php echo ($efurniture_data['url3'])?esc_url($efurniture_data['url3']):''; ?>">
-				</div>
-				<div class="mb-3">
-					<div class="form-label mb-1">File dữ liệu</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col">
-							<div id="attachment-uploaded">
-								<input type="hidden" id="efurniture_file_id" name="efurniture_file_id" value="<?=esc_attr($efurniture_data['file_id'])?>">
-								<!-- <input type="hidden" id="efurniture_file_id_new" name="efurniture_file_id_new" value=""> -->
-								<div class="input-group input-group-sm">
-									<div class="form-control text-truncate">
-										<?php
-										if($file_url) {
-											echo esc_html(basename($file_url));
-										}
-										?>	
+				<div class="row">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+						<div class="mb-3">
+							Nội dung áp dụng
+							<?php
+							$settings = [
+								'media_buttons' => false,
+								'teeny'         => false,
+								'quicktags'     => false,
+								'editor_height' => '710',
+								'tinymce'       => [
+									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,undo,redo,fullscreen',
+									'toolbar2' => 'forecolor,pastetext,removeformat,charmap',
+									'content_style' => 'body { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }'
+								]
+							];
+							wp_editor( $efurniture_data['required_content'], 'required_content', $settings);
+							?>
+							<input type="hidden" id="required_content_settings" value="<?=esc_attr(json_encode($settings))?>">
+						</div>
+						<style>
+							.mce-container, .mce-container *, .mce-widget, .mce-widget * {
+								color: #333;
+							}
+							.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, .mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, .mce-menu .mce-menu-item.mce-selected, .mce-menu .mce-menu-item:focus, .mce-menu .mce-menu-item:hover {
+								color: #fff;
+							}
+							.mce-widget.mce-tooltip {
+								color: #fff;
+							}
+						</style>
+					</div>
+					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['required_label']!='')?esc_html($efurniture_data['required_label']):''; ?>" name="efurniture_required_label" id="efurniture_required_label" placeholder="Ghi chú ngày 1">
+							<input class="form-control" type="date" value="<?php echo ($efurniture_data['required']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['required']))):''; ?>" name="efurniture_required" id="efurniture_required">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['received_label']!='')?esc_html($efurniture_data['received_label']):''; ?>" name="efurniture_received_label" id="efurniture_received_label" placeholder="Ghi chú ngày 2">
+							<input class="form-control" type="date" value="<?php echo ($efurniture_data['received']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['received']))):''; ?>" name="efurniture_received" id="efurniture_received">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['completed_label']!='')?esc_html($efurniture_data['completed_label']):''; ?>" name="efurniture_completed_label" id="efurniture_completed_label" placeholder="Ghi chú ngày 3">
+							<input class="form-control" type="date" value="<?php echo ($efurniture_data['completed']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['completed']))):''; ?>" name="efurniture_completed" id="efurniture_completed">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['sent_label']!='')?esc_html($efurniture_data['sent_label']):''; ?>" name="efurniture_sent_label" id="efurniture_sent_label" placeholder="Ghi chú ngày 4">
+							<input class="form-control" type="date" value="<?php echo ($efurniture_data['sent']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['sent']))):''; ?>" name="efurniture_sent" id="efurniture_sent">
+						</div>
+						<div class="mb-3">
+							Tên - Số điện thoại
+							<input type="text" id="efurniture_value" name="efurniture_value" class="form-control" value="<?php echo esc_attr($efurniture_data['value']); ?>">
+						</div>
+						<div class="mb-3">
+							Ghi chú
+							<input type="text" id="efurniture_unit" name="efurniture_unit" class="form-control" value="<?php echo esc_attr($efurniture_data['unit']); ?>">
+						</div>
+						<div class="mb-3">
+							Link nhóm zalo
+							<input type="text" id="efurniture_zalo" name="efurniture_zalo" class="form-control" value="<?php echo esc_attr($efurniture_data['zalo']); ?>">
+						</div>
+						<div class="mb-3">
+							Link dự toán 1
+							<input type="text" id="efurniture_url" name="efurniture_url" class="form-control" value="<?php echo ($efurniture_data['url'])?esc_url($efurniture_data['url']):''; ?>">
+						</div>
+						<div class="mb-3">
+							Link dự toán 2
+							<input type="text" id="efurniture_url2" name="efurniture_url2" class="form-control" value="<?php echo ($efurniture_data['url2'])?esc_url($efurniture_data['url2']):''; ?>">
+						</div>
+						<div class="mb-3">
+							Link dự toán 3
+							<input type="text" id="efurniture_url3" name="efurniture_url3" class="form-control" value="<?php echo ($efurniture_data['url3'])?esc_url($efurniture_data['url3']):''; ?>">
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="mb-3">
+							<div class="form-label mb-1">File dữ liệu</div>
+							<div class="row row-cols-2 g-0 p-2 border rounded-2">
+								<div class="col">
+									<div id="attachment-uploaded">
+										<input type="hidden" id="efurniture_file_id" name="efurniture_file_id" value="<?=esc_attr($efurniture_data['file_id'])?>">
+										<!-- <input type="hidden" id="efurniture_file_id_new" name="efurniture_file_id_new" value=""> -->
+										<div class="input-group input-group-sm">
+											<div class="form-control text-truncate">
+												<?php
+												if($file_url) {
+													echo esc_html(basename($file_url));
+												}
+												?>	
+											</div>
+											<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button" <?php disabled( '', $file_url, true ); ?>>Xóa file</button>
+										</div>
+										
 									</div>
-									<button class="btn btn-sm btn-warning" id="efurniture_remove_file" type="button" <?php disabled( '', $file_url, true ); ?>>Xóa file</button>
+									<div id="attachment-uploaded-error" class="d-none"></div>
+									<div id="attachment-upload-bar" class="d-none">
+										<div class="progress flex-grow-1 position-relative" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 31px;">
+											<div class="progress-bar"></div>
+											<div class="percent position-absolute start-50 top-50 translate-middle text-danger"></div>
+										</div>
+										<button type="button" class="abort btn btn-sm btn-danger ms-2">Hủy</button>
+									</div>
 								</div>
-								
-							</div>
-							<div id="attachment-uploaded-error" class="d-none"></div>
-							<div id="attachment-upload-bar" class="d-none">
-								<div class="progress flex-grow-1 position-relative" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 31px;">
-									<div class="progress-bar"></div>
-									<div class="percent position-absolute start-50 top-50 translate-middle text-danger"></div>
-								</div>
-								<button type="button" class="abort btn btn-sm btn-danger ms-2">Hủy</button>
+								<label class="col d-block ps-5" for="efurniture_file">
+									<div class="input-group input-group-sm">
+										<div class="form-control text-nowrap text-truncate">Chọn file cần tải lên</div>
+										<span class="btn btn-primary">Bấm tải lên</span>
+									</div>
+									<div style="width: 0;height: 0;overflow: hidden;">
+										<input type="file" id="efurniture_file" name="efurniture_file" class="form-control">
+									</div>
+								</label>
 							</div>
 						</div>
-						<label class="col d-block ps-5" for="efurniture_file">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap text-truncate">Chọn file cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
+						<div class="mb-3 text-center">
+							<div class="d-inline-block">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="yes" name="efurniture_quote" id="efurniture_quote" <?php checked( ($efurniture_data['quote']=='yes'), true, true ); ?>>
+									<label class="form-check-label" for="efurniture_quote">Được khách hàng lựa chọn?</label>
+								</div>
 							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="efurniture_file" name="efurniture_file" class="form-control">
-							</div>
-						</label>
-					</div>
-				</div>
-				<div class="mb-3">
-					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="yes" name="efurniture_quote" id="efurniture_quote" <?php checked( ($efurniture_data['quote']=='yes'), true, true ); ?>>
-						<label class="form-check-label" for="efurniture_quote">Được khách hàng lựa chọn?</label>
+						</div>
 					</div>
 				</div>
 				<div class="mb-3">
@@ -457,7 +510,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-efurniture" tabindex="-1" role="dialog" aria-labelledby="edit-efurniture-label">
-			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-efurniture-label"></h5>

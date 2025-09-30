@@ -50,10 +50,10 @@ if($econstruction_cats && $current_client) {
 							$econstruction_content = fw_get_db_post_option($econstruction_id, 'econstruction_content');
 							$default_econstruction_file = fw_get_db_post_option($econstruction_id,'econstruction_file');
 							$default_url = fw_get_db_post_option($econstruction_id,'econstruction_url');
+							$default_zalo = fw_get_db_post_option($econstruction_id,'econstruction_zalo');
 							$default_data = [
 								'value' => fw_get_db_post_option($econstruction_id,'econstruction_value'),
 								'unit' => fw_get_db_post_option($econstruction_id,'econstruction_unit'),
-								'zalo' => fw_get_db_post_option($econstruction_id,'econstruction_zalo'),
 								'file_id' => (!empty($default_econstruction_file))?$default_econstruction_file['attachment_id']:'',
 							];
 
@@ -62,7 +62,6 @@ if($econstruction_cats && $current_client) {
 
 							if(empty($econstruction_data['value'])) $econstruction_data['value'] = $default_data['value'];
 							if(empty($econstruction_data['unit'])) $econstruction_data['unit'] = $default_data['unit'];
-							if(empty($econstruction_data['zalo'])) $econstruction_data['zalo'] = $default_data['zalo'];
 							if(empty($econstruction_data['file_id'])) $econstruction_data['file_id'] = $default_data['file_id'];
 
 							$item_class = '';
@@ -126,7 +125,17 @@ if($econstruction_cats && $current_client) {
 											if(isset($econstruction_content) && $econstruction_content!='') {
 												$econstruction_content = '<div class="copy-text">'.wp_get_the_content($econstruction_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($econstruction_content)?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($econstruction_content)?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="required-content">
+											<?php
+											if($econstruction_data['required_content']!='') {
+												$required_content = '<div class="copy-text">'.wp_get_the_content($econstruction_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
 												<?php
 											}
 											?>
@@ -137,7 +146,7 @@ if($econstruction_cats && $current_client) {
 												$attachment_url = wp_get_attachment_url($econstruction_data['file_id']);
 												if($attachment_url) {
 												?>
-												<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
 												<?php
 												}
 											}
@@ -147,9 +156,9 @@ if($econstruction_cats && $current_client) {
 										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $econstruction_id, 'full' ); ?></span>
 
 										<div class="econstruction-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="estimate-quote econstruction-quote<?php echo (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?' on':''; ?>">
+											<div class="estimate-quote econstruction-quote">
 												<?php
-												if(isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes') {
+												if($econstruction_data['quote']=='yes') {
 													?>
 													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã chọn"><span class="dashicons dashicons-yes"></span></span>
 													<?php
@@ -168,15 +177,18 @@ if($econstruction_cats && $current_client) {
 											<?php } ?>
 										</div>
 										
-										<div class="econstruction-control zalo-link position-absolute top-0 end-0 p-1">
+										<div class="econstruction-control zalo-link position-absolute top-0 end-0 p-1 d-flex">
 										<?php if($econstruction_data['zalo']) { ?>
-											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($econstruction_data['zalo'])?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($econstruction_data['zalo'])?>" target="_blank">RIÊNG</a>
+										<?php } ?>
+										<?php if($default_zalo) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($default_zalo)?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 
 										<div class="econstruction-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>
-											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
+											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-1" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
 											<?php } ?>
 										</div>
 									</div>
@@ -186,13 +198,12 @@ if($econstruction_cats && $current_client) {
 										</div>
 										<?php if($econstruction_data['value']) { ?>
 										<div class="econstruction-value mb-1">
-											<span>Tổng giá trị:</span>
 											<span class="text-red fw-bold"><?php echo esc_html($econstruction_data['value']); ?></span>
 										</div>
 										<?php } ?>
 										<?php if($econstruction_data['unit']) { ?>
 										<div class="econstruction-unit mb-1">
-											<div class="text-red"><?php echo esc_html($econstruction_data['unit']); ?></div>
+											<div class="text-red fw-bold"><?php echo esc_html($econstruction_data['unit']); ?></div>
 										</div>
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center econstruction-url mb-3">

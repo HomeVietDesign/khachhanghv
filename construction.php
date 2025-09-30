@@ -11,11 +11,24 @@ if(current_user_can( 'construction_view' )) {
 	while (have_posts()) {
 		the_post();
 		?>
-		<form id="construction-filter-form" action="<?=esc_url(fw_current_url())?>" method="GET">
-			<div id="site-content">
-				<?php the_content(); ?>
+		<div class="client-heading text-center py-3 text-yellow m-0 position-sticky">
+			<div class="container">
+				<div class="d-flex justify-content-between align-items-center">
+					<div class="client-name text-uppercase">
+						<div><?php the_title(); ?></div>
+					</div>
+					<div id="ancho">
+						<div class="dropdown">
+							<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Nhảy tới mục</button>
+							<ul class="dropdown-menu"></ul>
+						</div>
+					</div>
+				</div>
 			</div>
-		</form>
+		</div>
+		<div id="site-content">
+			<?php the_content(); ?>
+		</div>
 		<?php
 	}
 

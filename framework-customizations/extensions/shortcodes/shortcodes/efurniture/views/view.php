@@ -51,10 +51,10 @@ if($efurniture_cats && $current_client) {
 							$efurniture_content = fw_get_db_post_option($efurniture_id, 'efurniture_content');
 							$default_efurniture_file = fw_get_db_post_option($efurniture_id,'efurniture_file');
 							$default_url = fw_get_db_post_option($efurniture_id,'efurniture_url');
+							$default_zalo = fw_get_db_post_option($efurniture_id,'efurniture_zalo');
 							$default_data = [
 								'value' => fw_get_db_post_option($efurniture_id,'efurniture_value'),
 								'unit' => fw_get_db_post_option($efurniture_id,'efurniture_unit'),
-								'zalo' => fw_get_db_post_option($efurniture_id,'efurniture_zalo'),
 								'file_id' => (!empty($default_efurniture_file))?$default_efurniture_file['attachment_id']:'',
 							];
 
@@ -63,7 +63,6 @@ if($efurniture_cats && $current_client) {
 
 							if(empty($efurniture_data['value'])) $efurniture_data['value'] = $default_data['value'];
 							if(empty($efurniture_data['unit'])) $efurniture_data['unit'] = $default_data['unit'];
-							if(empty($efurniture_data['zalo'])) $efurniture_data['zalo'] = $default_data['zalo'];
 							if(empty($efurniture_data['file_id'])) $efurniture_data['file_id'] = $default_data['file_id'];
 
 							$item_class = '';
@@ -127,7 +126,18 @@ if($efurniture_cats && $current_client) {
 											if($efurniture_content!='') {
 												$efurniture_content = '<div class="copy-text">'.wp_get_the_content($efurniture_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-2" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($efurniture_content)?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($efurniture_content)?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="required-content">
+											<?php
+										
+											if($efurniture_data['required_content']!='') {
+												$required_content = '<div class="copy-text">'.wp_get_the_content($efurniture_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
 												<?php
 											}
 											?>
@@ -138,7 +148,7 @@ if($efurniture_cats && $current_client) {
 												$attachment_url = wp_get_attachment_url($efurniture_data['file_id']);
 												if($attachment_url) {
 												?>
-												<a class="btn-shadow btn btn-sm btn-primary fw-bold" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
 												<?php
 												}
 											}
@@ -168,9 +178,12 @@ if($efurniture_cats && $current_client) {
 											<?php } ?>
 										</div>
 										
-										<div class="efurniture-control zalo-link position-absolute top-0 end-0 p-1">
+										<div class="efurniture-control zalo-link position-absolute top-0 end-0 p-1 d-flex">
 										<?php if($efurniture_data['zalo']) { ?>
-											<a class="btn btn-sm btn-shadow fw-bold" href="<?=esc_url($efurniture_data['zalo'])?>" target="_blank">Zalo</a>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($efurniture_data['zalo'])?>" target="_blank">RIÊNG</a>
+										<?php } ?>
+										<?php if($default_zalo) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($default_zalo)?>" target="_blank">Zalo</a>
 										<?php } ?>
 										</div>
 
@@ -186,13 +199,12 @@ if($efurniture_cats && $current_client) {
 										</div>
 										<?php if($efurniture_data['value']) { ?>
 										<div class="efurniture-value mb-1">
-											<span>Tổng giá trị:</span>
 											<span class="text-red fw-bold"><?php echo esc_html($efurniture_data['value']); ?></span>
 										</div>
 										<?php } ?>
 										<?php if($efurniture_data['unit']) { ?>
 										<div class="efurniture-unit mb-1">
-											<div class="text-red"><?php echo esc_html($efurniture_data['unit']); ?></div>
+											<div class="text-red fw-bold"><?php echo esc_html($efurniture_data['unit']); ?></div>
 										</div>
 										<?php } ?>
 										<div class="d-flex flex-wrap justify-content-center efurniture-url mb-3">

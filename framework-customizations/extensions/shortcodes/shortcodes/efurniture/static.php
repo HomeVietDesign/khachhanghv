@@ -12,6 +12,6 @@ wp_enqueue_script(
 	'fw-shortcode-efurniture',
 	$shortcodes_extension->locate_URI('/shortcodes/efurniture/static/js/scripts.js'),
 	array('jquery'),
-	'1.1',
+	'1.2',
 	true
 );

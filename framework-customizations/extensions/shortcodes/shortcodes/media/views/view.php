@@ -15,7 +15,7 @@ if($media_cats) {
 		foreach ($media_cats as $key => $value) {
 		?>
 		<section class="accordion-item mb-3">
-			<h2 class="accordion-header">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
 				<button class="accordion-button text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$key?>" aria-expanded="true" aria-controls="panels-<?=$key?>"><?=esc_html($value->name)?></button>
 			</h2>
 			<div id="panels-<?=$key?>" class="accordion-collapse collapse show">
@@ -51,7 +51,7 @@ if($media_cats) {
 								<div class="media media-<?=$media_id?> h-100 bg-black border border-dark">
 									<div class="links text-uppercase">
 										<div class="row g-0">
-											<div class="col media-web position-relative">
+											<div class="col media-web position-relative" data-bs-toggle="tooltip" data-bs-title="Liên kết 1">
 											<?php
 											if($web!='') {
 												?>
@@ -60,7 +60,7 @@ if($media_cats) {
 											}
 											?>
 											</div>
-											<div class="col media-fb position-relative">
+											<div class="col media-fb position-relative" data-bs-toggle="tooltip" data-bs-title="Liên kết 2">
 											<?php
 											if($fb!='') {
 												?>
@@ -69,7 +69,7 @@ if($media_cats) {
 											}
 											?>
 											</div>
-											<div class="col media-last_date position-relative">
+											<div class="col media-last_date position-relative" data-bs-toggle="tooltip" data-bs-title="Ngày save cũ nhất">
 											<?php
 											if($_last_date!='') {
 												$last_date = date('d/m/y', strtotime($_last_date));
@@ -79,7 +79,7 @@ if($media_cats) {
 											}
 											?>
 											</div>
-											<div class="col media-end_date position-relative">
+											<div class="col media-end_date position-relative" data-bs-toggle="tooltip" data-bs-title="Ngày save mới nhất">
 											<?php
 											if($_end_date!='') {
 												$end_date = date('d/m/y', strtotime($_end_date));

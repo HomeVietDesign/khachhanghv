@@ -12,6 +12,6 @@ wp_enqueue_script(
 	'fw-shortcode-estimates',
 	$shortcodes_extension->locate_URI('/shortcodes/estimates/static/js/scripts.js'),
 	array('jquery'),
-	'1.1',
+	'1.2',
 	true
 );

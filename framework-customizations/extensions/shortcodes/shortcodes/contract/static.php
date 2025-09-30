@@ -12,6 +12,6 @@ wp_enqueue_script(
 	'fw-shortcode-contract',
 	$shortcodes_extension->locate_URI('/shortcodes/contract/static/js/scripts.js'),
 	array('jquery'),
-	'1.0',
+	'1.1',
 	true
 );

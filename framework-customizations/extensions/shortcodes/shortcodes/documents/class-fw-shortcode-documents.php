@@ -3,6 +3,7 @@
 class FW_Shortcode_Documents extends FW_Shortcode
 {
 	public $default = [
+		'required_content' => '',
 		'required_label' => '',
 		'required' => '',
 		'created_label' => '',
@@ -56,23 +57,22 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		$document_id = isset($_GET['document'])?absint($_GET['document']):0;
 
 		$response = [
+			'required_content' => '',
 			'info' => '',
 			'zalo' => ''
 		];
 		
 		if($client && $document_id) {
-			$default_data = [
-				'zalo' => fw_get_db_post_option($document_id,'document_zalo'),
-			];
+			$default_zalo = fw_get_db_post_option($document_id,'document_zalo');
 
 			$data = get_post_meta($document_id, '_data', true);
 			$document_data = isset($data[$client])?$data[$client]:$this->default;
 			$document_data += $this->default;
 
-			if(empty($document_data['zalo'])) $document_data['zalo'] = $default_data['zalo'];
+			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($document_data['zalo']).'" target="_blank">RIÊNG</a>':'';
+			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
 
-			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold" href="'.esc_url($document_data['zalo']).'" target="_blank">Zalo</a>':'';
-			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
+			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary me-1" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
 			
 			$response['required'] = ($document_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['required_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
 			$response['created'] = ($document_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['created_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
@@ -80,6 +80,17 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$response['sent'] = ($document_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['sent_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
 
 			$response['selected'] = ($document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
+
+			ob_start();
+			
+			if($document_data['required_content']!='') {
+				$required_content = '<div class="copy-text">'.wp_get_the_content($document_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+				?>
+				<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
+				<?php
+			}
+
+			$response['required_content'] = ob_get_clean();
 
 			ob_start();
 		?>
@@ -126,6 +137,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_client = isset($_POST['document_client'])?absint($_POST['document_client']):0;
 			$document_id = isset($_POST['document_id'])?absint($_POST['document_id']):0;
 			$document_attachment_id = isset($_POST['document_attachment_id'])?absint($_POST['document_attachment_id']):'';
+			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
 			$document_value = isset($_POST['document_value'])?sanitize_text_field($_POST['document_value']):'';
 			$document_unit = isset($_POST['document_unit'])?sanitize_text_field($_POST['document_unit']):'';
 			$document_zalo = isset($_POST['document_zalo'])?sanitize_text_field($_POST['document_zalo']):'';
@@ -149,6 +161,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				$document_data += $this->default;
 
 				$new_document_data = [
+					'required_content' => $required_content,
 					'required_label' => $document_required_label,
 					'required' => $document_required,
 					'created_label' => $document_created_label,
@@ -213,57 +226,96 @@ class FW_Shortcode_Documents extends FW_Shortcode
 				<input type="hidden" id="document_id" name="document_id" value="<?=$document?>">
 				<?php wp_nonce_field( 'edit-document', 'nonce' ); ?>
 				<div id="edit-document-response"></div>
-				<div class="mb-3<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
-					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['required_label']!='')?esc_html($document_data['required_label']):''; ?>" name="document_required_label" id="document_required_label" placeholder="Ghi chú ngày 1">
-					<input class="form-control" type="date" value="<?php echo ($document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['created_label']!='')?esc_html($document_data['created_label']):''; ?>" name="document_created_label" id="document_created_label" placeholder="Ghi chú ngày 2">
-					<input class="form-control" type="date" value="<?php echo ($document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['completed_label']!='')?esc_html($document_data['completed_label']):''; ?>" name="document_completed_label" id="document_completed_label" placeholder="Ghi chú ngày 3">
-					<input class="form-control" type="date" value="<?php echo ($document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
-				</div>
-				<div class="mb-3">
-					<input class="form-control mb-2" type="text" value="<?php echo ($document_data['sent_label']!='')?esc_html($document_data['sent_label']):''; ?>" name="document_sent_label" id="document_sent_label" placeholder="Ghi chú ngày 4">
-					<input class="form-control" type="date" value="<?php echo ($document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
-				</div>
-				<div class="mb-3">
-					URL nhóm zalo
-					<input type="text" id="document_zalo" name="document_zalo" class="form-control" value="<?php echo esc_attr($document_data['zalo']); ?>">
-				</div>
-				<div class="mb-3">
-					Link dữ liệu
-					<input type="text" id="document_link" name="document_link" class="form-control" value="<?php echo esc_attr($document_data['link']); ?>">
-				</div>
-				<div class="mb-3">
-					<div class="form-label mb-1">File dữ liệu</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="document_attachment_id" name="document_attachment_id" value="<?=esc_attr($document_data['attachment_id'])?>">
-							<?php if($attachment_url) { ?>
-							<div class="input-group input-group-sm">
-								<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
-								<button class="btn btn-warning" id="document_remove_attachment" type="button">Xóa file</button>
-							</div>
-							<?php } ?>
+				<div class="row">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
+						<div class="mb-3">
+							Nội dung áp dụng
+							<?php
+							$settings = [
+								'media_buttons' => false,
+								'teeny'         => false,
+								'quicktags'     => false,
+								'editor_height' => '450',
+								'tinymce'       => [
+									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,forecolor,pastetext,removeformat,charmap,fullscreen',
+									'toolbar2' => '',
+									'content_style' => 'body { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }'
+								]
+							];
+							wp_editor( $document_data['required_content'], 'required_content', $settings);
+							?>
+							<input type="hidden" id="required_content_settings" value="<?=esc_attr(json_encode($settings))?>">
 						</div>
-						<label class="col d-block ps-5" for="document_attachment">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file dữ liệu cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
-							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="document_attachment" name="document_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
-							</div>
-						</label>
+						<style>
+							.mce-container, .mce-container *, .mce-widget, .mce-widget * {
+								color: #333;
+							}
+							.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, .mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, .mce-menu .mce-menu-item.mce-selected, .mce-menu .mce-menu-item:focus, .mce-menu .mce-menu-item:hover {
+								color: #fff;
+							}
+							.mce-widget.mce-tooltip {
+								color: #fff;
+							}
+						</style>
 					</div>
-				</div>
-				<div class="mb-3">
-					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( $document_data['selected']=='yes', true, true ); ?>>
-						<label class="form-check-label" for="document_selected">Được chọn?</label>
+					<div class="<?php echo (!current_user_can('edit_documents'))?' col-lg-12':'col-lg-5'; ?>">
+						<div class="mb-3<?php echo (!current_user_can('edit_documents'))?' hidden':''; ?>">
+							<input class="form-control mb-2" type="text" value="<?php echo ($document_data['required_label']!='')?esc_html($document_data['required_label']):''; ?>" name="document_required_label" id="document_required_label" placeholder="Ghi chú ngày 1">
+							<input class="form-control" type="date" value="<?php echo ($document_data['required']!='')?esc_html(date('Y-m-d', strtotime($document_data['required']))):''; ?>" name="document_required" id="document_required">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($document_data['created_label']!='')?esc_html($document_data['created_label']):''; ?>" name="document_created_label" id="document_created_label" placeholder="Ghi chú ngày 2">
+							<input class="form-control" type="date" value="<?php echo ($document_data['created']!='')?esc_html(date('Y-m-d', strtotime($document_data['created']))):''; ?>" name="document_created" id="document_created">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($document_data['completed_label']!='')?esc_html($document_data['completed_label']):''; ?>" name="document_completed_label" id="document_completed_label" placeholder="Ghi chú ngày 3">
+							<input class="form-control" type="date" value="<?php echo ($document_data['completed']!='')?esc_html(date('Y-m-d', strtotime($document_data['completed']))):''; ?>" name="document_completed" id="document_completed">
+						</div>
+						<div class="mb-3">
+							<input class="form-control mb-2" type="text" value="<?php echo ($document_data['sent_label']!='')?esc_html($document_data['sent_label']):''; ?>" name="document_sent_label" id="document_sent_label" placeholder="Ghi chú ngày 4">
+							<input class="form-control" type="date" value="<?php echo ($document_data['sent']!='')?esc_html(date('Y-m-d', strtotime($document_data['sent']))):''; ?>" name="document_sent" id="document_sent">
+						</div>
+						<div class="mb-3">
+							URL nhóm zalo
+							<input type="text" id="document_zalo" name="document_zalo" class="form-control" value="<?php echo esc_attr($document_data['zalo']); ?>">
+						</div>
+						<div class="mb-3">
+							Link dữ liệu
+							<input type="text" id="document_link" name="document_link" class="form-control" value="<?php echo esc_attr($document_data['link']); ?>">
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="mb-3">
+							<div class="form-label mb-1">File dữ liệu</div>
+							<div class="row row-cols-2 g-0 p-2 border rounded-2">
+								<div class="col attachment-uploaded">
+									<input type="hidden" id="document_attachment_id" name="document_attachment_id" value="<?=esc_attr($document_data['attachment_id'])?>">
+									<?php if($attachment_url) { ?>
+									<div class="input-group input-group-sm">
+										<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
+										<button class="btn btn-warning" id="document_remove_attachment" type="button">Xóa file</button>
+									</div>
+									<?php } ?>
+								</div>
+								<label class="col d-block ps-5" for="document_attachment">
+									<div class="input-group input-group-sm">
+										<div class="form-control text-nowrap">Chọn file dữ liệu cần tải lên</div>
+										<span class="btn btn-primary">Bấm tải lên</span>
+									</div>
+									<div style="width: 0;height: 0;overflow: hidden;">
+										<input type="file" id="document_attachment" name="document_attachment" accept=".doc,.docx,.xls,.xlsx,.pdf,.rar,.zip" class="form-control">
+									</div>
+								</label>
+							</div>
+						</div>
+						<div class="mb-3 text-center">
+							<div class="d-inline-block">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( $document_data['selected']=='yes', true, true ); ?>>
+									<label class="form-check-label" for="document_selected">Được chọn?</label>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="mb-3">
@@ -279,7 +331,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-document" tabindex="-1" role="dialog" aria-labelledby="edit-document-label">
-			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-document-label"></h5>

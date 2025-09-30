@@ -12,6 +12,6 @@ wp_enqueue_script(
 	'fw-shortcode-documents',
 	$shortcodes_extension->locate_URI('/shortcodes/documents/static/js/scripts.js'),
 	array('jquery'),
-	'1.0',
+	'1.1',
 	true
 );
