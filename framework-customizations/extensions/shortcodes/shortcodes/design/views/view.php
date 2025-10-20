@@ -154,12 +154,12 @@ if($design_cats) {
 										</div>
 
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
-											<?php if(current_user_can('edit_designs')) { ?>
+										<?php if(current_user_can('edit_designs')) { ?>
 											<a href="<?php echo get_edit_post_link( $design_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-designs" data-design="<?=$design_id?>" data-designs-title="<?php echo esc_attr(get_the_title( $design_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 
-											<?php } ?>
+										<?php } ?>
 										</div>
 									</div>
 									<div class="design-info text-center px-1">

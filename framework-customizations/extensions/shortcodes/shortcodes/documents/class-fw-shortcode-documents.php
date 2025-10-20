@@ -33,7 +33,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		global $current_client;
 		$doc_id = isset($_POST['doc']) ? absint($_POST['doc']) : 0;
 		$response = 0;
-		if(current_user_can('document_edit') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_documents') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$document_removed = get_term_meta($current_client->term_id, 'document_removed', true);
 			if(empty($document_removed)) $document_removed = [];
@@ -55,7 +55,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		global $current_client;
 		$doc_id = isset($_POST['doc']) ? absint($_POST['doc']) : 0;
 		$response = 0;
-		if(current_user_can('document_edit') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_documents') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$document_hide = get_term_meta($current_client->term_id, 'document_hide', true);
 			if(empty($document_hide)) $document_hide = [];
@@ -153,7 +153,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('document_edit') && check_ajax_referer( 'edit-document', 'nonce', false )) {
+		if(current_user_can('edit_documents') && check_ajax_referer( 'edit-document', 'nonce', false )) {
 			$document_client = isset($_POST['document_client'])?absint($_POST['document_client']):0;
 			$document_id = isset($_POST['document_id'])?absint($_POST['document_id']):0;
 			$document_attachment_id = isset($_POST['document_attachment_id'])?absint($_POST['document_attachment_id']):'';

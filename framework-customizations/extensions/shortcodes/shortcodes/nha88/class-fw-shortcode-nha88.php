@@ -20,7 +20,7 @@ class FW_Shortcode_Nha88 extends FW_Shortcode
 		global $current_nha88_type;
 		$nha88_id = isset($_POST['nha88']) ? absint($_POST['nha88']) : 0;
 		$response = 0;
-		if(current_user_can('nha88_edit') && $current_nha88_type && $nha88_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_nha88s') && $current_nha88_type && $nha88_id && check_ajax_referer( 'global', 'nonce', false )) {
 			
 			$nha88_hide = get_term_meta($current_nha88_type->term_id, 'nha88_hide', true);
 			if(empty($nha88_hide)) $nha88_hide = [];
@@ -155,7 +155,7 @@ class FW_Shortcode_Nha88 extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('nha88_edit') && check_ajax_referer( 'edit-nha88', 'nonce', false )) {
+		if(current_user_can('edit_nha88s') && check_ajax_referer( 'edit-nha88', 'nonce', false )) {
 			$nha88 = isset($_POST['nha88'])?absint($_POST['nha88']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
 			$nha88_value = isset($_POST['nha88_value'])?sanitize_text_field($_POST['nha88_value']):'';

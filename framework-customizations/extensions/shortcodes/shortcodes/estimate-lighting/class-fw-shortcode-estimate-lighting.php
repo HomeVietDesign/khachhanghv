@@ -36,7 +36,7 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = 0;
-		if(current_user_can('estimate_lighting_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$contractor_lighting_removed = get_term_meta($current_client->term_id, 'contractor_lighting_removed', true);
 			if(empty($contractor_lighting_removed)) $contractor_lighting_removed = [];
@@ -58,7 +58,7 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = 0;
-		if(current_user_can('estimate_lighting_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$contractor_lighting_hide = get_term_meta($current_client->term_id, 'contractor_lighting_hide', true);
 			if(empty($contractor_lighting_hide)) $contractor_lighting_hide = [];
@@ -218,7 +218,7 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can( 'estimate_lighting_edit' ) && check_ajax_referer( 'edit-estimate-lighting', 'nonce', false )) {
+		if(current_user_can( 'edit_elightings' ) && check_ajax_referer( 'edit-estimate-lighting', 'nonce', false )) {
 			$estimate_lighting_client = isset($_POST['estimate_lighting_client'])?absint($_POST['estimate_lighting_client']):0;
 			$estimate_lighting_contractor = isset($_POST['estimate_lighting_contractor'])?absint($_POST['estimate_lighting_contractor']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
@@ -318,7 +318,7 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate-lighting', 'nonce' ); ?>
 				<div id="edit-estimate-lighting-response"></div>
 				<div class="row">
-					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_elightings'))?' hidden':''; ?>">
 						<div class="mb-3">
 							Nội dung áp dụng
 							<?php
@@ -349,7 +349,7 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 							}
 						</style>
 					</div>
-					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+					<div class="<?php echo (!current_user_can('edit_elightings'))?' col-lg-12':'col-lg-5'; ?>">
 						<div class="mb-3">
 							<input class="form-control mb-2" type="text" value="<?php echo ($estimate['required_label']!='')?esc_html($estimate['required_label']):''; ?>" name="estimate_lighting_required_label" id="estimate_lighting_required_label" placeholder="Ghi chú ngày 1">
 							<input class="form-control" type="date" value="<?php echo ($estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_lighting_required" id="estimate_lighting_required">
@@ -580,15 +580,14 @@ class FW_Shortcode_Estimate_Lighting extends FW_Shortcode
 					</div>
 					<div class="contractor-control position-absolute bottom-0 end-0 m-1 d-flex">
 					
-						<?php if(current_user_can('edit_contractors')) { ?>
+						<?php if(current_user_can('edit_elightings')) { ?>
 
 						<button class="estimate-contractor-lighting-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="<?php echo (in_array($contractor_id, $contractor_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 						<button class="estimate-contractor-lighting-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="Ẩn/Hiện"></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						<?php } ?>
-						<?php if(current_user_can('estimate_lighting_edit')) { ?>
+					
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-lighting" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 						<?php } ?>
 					</div>

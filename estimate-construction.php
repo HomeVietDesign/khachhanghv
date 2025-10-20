@@ -6,29 +6,25 @@
 get_header();
 
 if(has_role('administrator')) {
-	$wp_users = get_users( ['role'=>'subscriber'] );
+	$wp_users = get_users( ['role'=>'subscriber', 'capability__in' => ['read_estimate_constructions', 'edit_estimate_constructions']] );
+	if($wp_users) {
 	?>
 	<div class="d-flex justify-content-center align-items-center flex-wrap mt-3">
-	<?php
-	foreach($wp_users as $wp_user) {
-		if($wp_user->has_cap( 'read_estimate_constructions' ) || $wp_user->has_cap( 'edit_estimate_constructions' )) {
-		?>
-		<div class="mx-1 px-2 text-bg-secondary rounded">
-			<?php
-			echo esc_html($wp_user->display_name);
-			if($wp_user->has_cap( 'edit_estimate_constructions' )) {
-				echo esc_html(' (Chỉnh sửa)');
-			} else {
-				echo esc_html(' (Chỉ xem)');
-			}
-			?>
-		</div>
 		<?php
+		foreach($wp_users as $wp_user) {
+			?>
+			<div class="mx-1 px-2 text-bg-secondary rounded">
+				<?php
+				echo esc_html($wp_user->display_name);
+				echo ($wp_user->has_cap( 'edit_estimate_constructions' )) ? esc_html(' (Chỉnh sửa)') : esc_html(' (Chỉ xem)');
+				?>
+			</div>
+			<?php
 		}
-	}
-	?>
+		?>
 	</div>
 	<?php
+	}
 }
 
 if(current_user_can( 'read_estimate_constructions' ) || current_user_can( 'edit_estimate_constructions' )) {

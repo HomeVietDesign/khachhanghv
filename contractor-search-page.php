@@ -3,7 +3,7 @@ get_header();
 ?>
 <div class="contractor-search-response pb-3 container-xxl">
 <?php
-if(current_user_can('contractor_view')) {
+if(current_user_can('read_contractors')) {
 	$kw = isset($_GET['kw'])?sanitize_text_field($_GET['kw']):'';
 	if($kw) {
 		$search_result = wp_do_shortcode('ratings_contractors', ['number'=>12]);

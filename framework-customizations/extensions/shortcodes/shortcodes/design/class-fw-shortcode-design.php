@@ -85,7 +85,7 @@ class FW_Shortcode_Design extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('design_edit') && check_ajax_referer( 'edit-design', 'nonce', false )) {
+		if(current_user_can('edit_designs') && check_ajax_referer( 'edit-design', 'nonce', false )) {
 			$design_id = isset($_POST['design'])?absint($_POST['design']):0;
 
 			$design_estimate_link = isset($_POST['design_estimate_link'])?sanitize_url($_POST['design_estimate_link']):'';

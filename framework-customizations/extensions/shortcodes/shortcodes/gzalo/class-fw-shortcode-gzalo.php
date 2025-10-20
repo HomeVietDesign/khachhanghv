@@ -55,7 +55,7 @@ class FW_Shortcode_Gzalo extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('gzalo_edit') && check_ajax_referer( 'edit-gzalo', 'nonce', false )) {
+		if(current_user_can('edit_gzalos') && check_ajax_referer( 'edit-gzalo', 'nonce', false )) {
 			$gzalo = isset($_POST['gzalo'])?absint($_POST['gzalo']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
 			$gzalo_zalo = isset($_POST['gzalo_zalo'])?sanitize_text_field($_POST['gzalo_zalo']):'';

@@ -173,8 +173,7 @@ if($work_cats && $current_employee) {
 										</div>
 
 										<div class="work-control position-absolute bottom-0 end-0 m-1 d-flex">
-
-											<?php if(current_user_can('edit_works')) { ?>
+										<?php if(current_user_can('edit_works')) { ?>
 
 											<button class="work-toggle btn btn-sm btn-warning ms-2" type="button" data-employee="<?=$current_employee->term_id?>" data-work="<?=$work_id?>" data-work-title="<?php echo esc_attr(get_the_title( $work_id )); ?>" title="<?php echo (in_array($work_id, $work_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
@@ -183,7 +182,7 @@ if($work_cats && $current_employee) {
 											<a href="<?php echo get_edit_post_link( $work_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 										
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-work" data-employee="<?=$current_employee->term_id?>" data-work="<?=$work_id?>" data-work-title="<?php echo esc_attr(get_the_title( $work_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
-											<?php } ?>
+										<?php } ?>
 										</div>
 										
 										<div class="work-control zalo-link position-absolute top-0 end-0 p-1 d-flex">

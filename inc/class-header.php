@@ -261,7 +261,7 @@ class Header {
 			}
 
 			$estimate_lighting_page = Common::get_custom_page('estimate-lighting.php');
-			if( $estimate_lighting_page && current_user_can('estimate_lighting_view') ) {
+			if( $estimate_lighting_page && (current_user_can('read_elightings')||current_user_can('edit_elightings')) ) {
 				$estimate_lighting_page_url = get_permalink($estimate_lighting_page);
 				$this_template = is_page_template('estimate-lighting.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -284,7 +284,7 @@ class Header {
 			}
 
 			$document_page = Common::get_custom_page('document.php');
-			if( $document_page && current_user_can('document_view') ) {
+			if( $document_page && (current_user_can('read_documents') || current_user_can('edit_documents')) ) {
 				$document_page_url = get_permalink($document_page);
 				$this_template = is_page_template('document.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -307,7 +307,7 @@ class Header {
 			}
 
 			$contract_page = Common::get_custom_page('contract.php');
-			if( $contract_page && current_user_can('contract_view') ) {
+			if( $contract_page && (current_user_can('read_contracts') || current_user_can('edit_contracts')) ) {
 				$contract_page_url = get_permalink($contract_page);
 				$this_template = is_page_template('contract.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -331,7 +331,7 @@ class Header {
 		}
 
 		$gzalo_page = Common::get_custom_page('gzalo.php');
-		if( $gzalo_page && current_user_can('gzalo_view') ) {
+		if( $gzalo_page && (current_user_can('read_gzalos') || current_user_can('edit_gzalos')) ) {
 			$gzalo_page_url = get_permalink($gzalo_page);
 			$this_template = is_page_template('gzalo.php') ? true : false;
 			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
@@ -344,7 +344,7 @@ class Header {
 		}
 
 		$media_page = Common::get_custom_page('media.php');
-		if( $media_page && current_user_can('media_view') ) {
+		if( $media_page && (current_user_can('read_medias') || current_user_can('edit_medias')) ) {
 			$media_page_url = get_permalink($media_page);
 			$this_template = is_page_template('media.php') ? true : false;
 			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
@@ -357,7 +357,7 @@ class Header {
 		}
 
 		$nha88_page = Common::get_custom_page('nha88.php');
-		if( $nha88_page && current_user_can('nha88_view') ) {
+		if( $nha88_page && (current_user_can( 'read_nha88s' ) || current_user_can( 'edit_nha88s' )) ) {
 			$nha88_page_url = get_permalink($nha88_page);
 			$this_template = is_page_template('nha88.php') ? true : false;
 			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
@@ -370,7 +370,7 @@ class Header {
 		}
 
 		$design_page = Common::get_custom_page('design.php');
-		if( $design_page && current_user_can('design_view') ) {
+		if( $design_page && (current_user_can('read_designs') || current_user_can('edit_designs')) ) {
 			$design_page_url = get_permalink($design_page);
 			$this_template = is_page_template('design.php') ? true : false;
 			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
@@ -383,7 +383,7 @@ class Header {
 		}
 
 		$construction_page = Common::get_custom_page('construction.php');
-		if( $construction_page && current_user_can('construction_view') ) {
+		if( $construction_page && (current_user_can('read_constructions') || current_user_can('edit_constructions')) ) {
 			$construction_page_url = get_permalink($construction_page);
 			$this_template = is_page_template('construction.php') ? true : false;
 			$menu_html .= '<li class="menu-item d-flex position-relative align-items-center';
@@ -397,7 +397,7 @@ class Header {
 
 		if($employees) {
 			$work_page = Common::get_custom_page('work.php');
-			if($work_page && current_user_can('edit_works') ) {
+			if($work_page && (current_user_can('read_works') || current_user_can('edit_works')) ) {
 				$work_page_url = get_permalink($work_page);
 				$this_template = is_page_template('work.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';
@@ -422,7 +422,7 @@ class Header {
 
 		if($investors) {
 			$investment_page = Common::get_custom_page('investment.php');
-			if($investment_page && current_user_can('edit_investments') ) {
+			if($investment_page && (current_user_can('read_investments') || current_user_can('edit_investments')) ) {
 				$investment_page_url = get_permalink($investment_page);
 				$this_template = is_page_template('investment.php') ? true : false;
 				$menu_html .= '<li class="menu-item menu-item-has-children d-flex position-relative align-items-center';

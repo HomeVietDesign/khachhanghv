@@ -34,7 +34,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		global $current_client;
 		$contract_id = isset($_POST['contract']) ? absint($_POST['contract']) : 0;
 		$response = 0;
-		if(current_user_can('contract_edit') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_contracts') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$contract_removed = get_term_meta($current_client->term_id, 'contract_removed', true);
 			if(empty($contract_removed)) $contract_removed = [];
@@ -56,7 +56,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		global $current_client;
 		$contract_id = isset($_POST['contract']) ? absint($_POST['contract']) : 0;
 		$response = 0;
-		if(current_user_can('contract_edit') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_contracts') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$contract_hide = get_term_meta($current_client->term_id, 'contract_hide', true);
 			if(empty($contract_hide)) $contract_hide = [];
@@ -168,7 +168,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('contract_edit') && check_ajax_referer( 'edit-contract', 'nonce', false )) {
+		if(current_user_can('edit_contracts') && check_ajax_referer( 'edit-contract', 'nonce', false )) {
 			$contract_client = isset($_POST['contract_client'])?absint($_POST['contract_client']):0;
 			$contract_id = isset($_POST['contract_id'])?absint($_POST['contract_id']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';

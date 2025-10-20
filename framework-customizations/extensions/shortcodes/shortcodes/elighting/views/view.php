@@ -177,18 +177,17 @@ if($elighting_cats && $current_client) {
 										</div>
 
 										<div class="elighting-control position-absolute bottom-0 end-0 m-1 d-flex">
-
-											<?php if(current_user_can('edit_elightings')) { ?>
+										<?php if(current_user_can('edit_elightings')) { ?>
 
 											<button class="elighting-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>" title="<?php echo (in_array($elighting_id, $elighting_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 											<button class="elighting-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $elighting_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<?php } ?>
-											<?php if(current_user_can('elighting_edit')) { ?>
+									
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-elighting" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
-											<?php } ?>
+
+										<?php } ?>
 										</div>
 										
 										<div class="elighting-control zalo-link position-absolute top-0 end-0 p-1 d-flex">

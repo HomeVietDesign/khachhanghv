@@ -4,30 +4,25 @@ get_header();
 global $current_province;
 
 if(has_role('administrator')) {
-	$wp_users = get_users( ['role'=>'subscriber'] );
+	$wp_users = get_users( ['role'=>'subscriber', 'capability__in' => ['read_contractors', 'edit_contractors']] );
+	if($wp_users) {
 	?>
 	<div class="d-flex justify-content-center align-items-center flex-wrap mt-3">
-	<?php
-	foreach($wp_users as $wp_user) {
-		if($wp_user->has_cap( 'read_contractors' ) || $wp_user->has_cap( 'edit_contractors' )) {
-	
-		?>
-		<div class="mx-1 px-2 text-bg-secondary rounded">
-			<?php
-			echo esc_html($wp_user->display_name);
-			if(user_can( $wp_user, 'edit_contractors' )) {
-				echo esc_html(' (Chỉnh sửa)');
-			} else {
-				echo esc_html(' (Chỉ xem)');
-			}
-			?>
-		</div>
 		<?php
+		foreach($wp_users as $wp_user) {
+			?>
+			<div class="mx-1 px-2 text-bg-secondary rounded">
+				<?php
+				echo esc_html($wp_user->display_name);
+				echo ($wp_user->has_cap( 'edit_contractors' )) ? esc_html(' (Chỉnh sửa)') : esc_html(' (Chỉ xem)');
+				?>
+			</div>
+			<?php
 		}
-	}
-	?>
+		?>
 	</div>
 	<?php
+	}
 }
 		
 if(current_user_can('read_contractors') || current_user_can('edit_contractors')) {

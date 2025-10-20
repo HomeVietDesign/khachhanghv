@@ -173,8 +173,7 @@ if($investment_cats && $current_investor) {
 										</div>
 
 										<div class="investment-control position-absolute bottom-0 end-0 m-1 d-flex">
-
-											<?php if(current_user_can('edit_investments')) { ?>
+										<?php if(current_user_can('edit_investments')) { ?>
 
 											<button class="investment-toggle btn btn-sm btn-warning ms-2" type="button" data-investor="<?=$current_investor->term_id?>" data-investment="<?=$investment_id?>" data-investment-title="<?php echo esc_attr(get_the_title( $investment_id )); ?>" title="<?php echo (in_array($investment_id, $investment_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
@@ -183,7 +182,7 @@ if($investment_cats && $current_investor) {
 											<a href="<?php echo get_edit_post_link( $investment_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 										
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-investment" data-investor="<?=$current_investor->term_id?>" data-investment="<?=$investment_id?>" data-investment-title="<?php echo esc_attr(get_the_title( $investment_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
-											<?php } ?>
+										<?php } ?>
 										</div>
 										
 										<div class="investment-control zalo-link position-absolute top-0 end-0 p-1 d-flex">

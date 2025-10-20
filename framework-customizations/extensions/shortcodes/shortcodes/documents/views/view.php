@@ -175,8 +175,7 @@ if($document_cats && $current_client) {
 										</div>
 
 										<div class="document-control position-absolute bottom-0 end-0 m-1 d-flex">
-											
-											<?php if(current_user_can('edit_documents')) { ?>
+										<?php if(current_user_can('edit_documents')) { ?>
 
 											<button class="document-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>" title="<?php echo (in_array($document_id, $document_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
@@ -185,8 +184,8 @@ if($document_cats && $current_client) {
 											<a href="<?php echo get_edit_post_link( $document_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-document" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											
 											<?php } ?>
-
 										</div>
 										
 										<div class="document-control zalo-link position-absolute top-0 end-0 p-1 d-flex">

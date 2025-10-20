@@ -172,8 +172,7 @@ if($contract_cats && $current_client) {
 											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="<?php echo esc_attr(get_the_title( $contract_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $contract_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<?php } ?>
-											<?php if(current_user_can('contract_edit')) { ?>
+
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-contract" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="<?php echo esc_attr(get_the_title( $contract_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 											<?php } ?>
 										</div>

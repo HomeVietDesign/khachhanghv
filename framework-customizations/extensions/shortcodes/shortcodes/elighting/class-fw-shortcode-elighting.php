@@ -39,7 +39,7 @@ class FW_Shortcode_Elighting extends FW_Shortcode
 		global $current_client;
 		$elighting_id = isset($_POST['elighting']) ? absint($_POST['elighting']) : 0;
 		$response = 0;
-		if(current_user_can('elighting_edit') && $current_client && $elighting_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && $current_client && $elighting_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$elighting_removed = get_term_meta($current_client->term_id, 'elighting_removed', true);
 			if(empty($elighting_removed)) $elighting_removed = [];
@@ -62,7 +62,7 @@ class FW_Shortcode_Elighting extends FW_Shortcode
 		global $current_client;
 		$elighting_id = isset($_POST['elighting']) ? absint($_POST['elighting']) : 0;
 		$response = 0;
-		if(current_user_can('elighting_edit') && $current_client && $elighting_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && $current_client && $elighting_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$elighting_hide = get_term_meta($current_client->term_id, 'elighting_hide', true);
 			if(empty($elighting_hide)) $elighting_hide = [];
@@ -191,7 +191,7 @@ class FW_Shortcode_Elighting extends FW_Shortcode
 		// debug_log($_FILES);
 		// wp_send_json( $response );
 
-		if(current_user_can('elighting_edit') && check_ajax_referer( 'edit-elighting', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && check_ajax_referer( 'edit-elighting', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$elighting_id = isset($_POST['elighting'])?absint($_POST['elighting']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
@@ -266,7 +266,7 @@ class FW_Shortcode_Elighting extends FW_Shortcode
 		// debug_log($_FILES);
 		// wp_send_json( $response );
 
-		if(!current_user_can('elighting_edit') || !check_ajax_referer( 'edit-elighting', 'nonce', false )) {
+		if(!current_user_can('edit_elightings') || !check_ajax_referer( 'edit-elighting', 'nonce', false )) {
 			$response['status'] = 403;
 			$response['message'] = "Forbiden.";
 			wp_send_json( $response, 403 );
@@ -281,7 +281,7 @@ class FW_Shortcode_Elighting extends FW_Shortcode
 	public function handle_elighting_chunk_upload() {
 		$response = ['success' => false, 'attachment_id' => 0, 'url' => '', 'filename' => '', 'msg' => ''];
 
-		if(current_user_can('elighting_edit') && check_ajax_referer( 'edit-elighting', 'nonce', false )) {
+		if(current_user_can('edit_elightings') && check_ajax_referer( 'edit-elighting', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$elighting_id = isset($_POST['elighting'])?absint($_POST['elighting']):0;
 
