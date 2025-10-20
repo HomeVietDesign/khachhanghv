@@ -63,10 +63,13 @@ if($current_client) {
 									<?php
 									$contractor_hide = get_term_meta($current_client->term_id, 'contractor_hide', true);
 									if(empty($contractor_hide)) $contractor_hide = [];
+
+									$contractor_removed = get_term_meta($current_client->term_id, 'contractor_removed', true);
+									if(empty($contractor_removed)) $contractor_removed = [];
 									
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											$shortcode->display_contractor($contractor_id, $current_client, $contractor_hide);
+											$shortcode->display_contractor($contractor_id, $current_client, $contractor_hide, $contractor_removed);
 										} else {
 											break;
 										}

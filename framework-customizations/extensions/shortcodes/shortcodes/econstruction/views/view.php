@@ -15,6 +15,9 @@ if($econstruction_cats && $current_client) {
 	$econstruction_hide = get_term_meta($current_client->term_id, 'econstruction_hide', true);
 	if(empty($econstruction_hide)) $econstruction_hide = [];
 
+	$econstruction_removed = get_term_meta($current_client->term_id, 'econstruction_removed', true);
+	if(empty($econstruction_removed)) $econstruction_removed = [];
+
 	$data = get_term_meta($current_client->term_id, 'econstruction', true);
 	if(empty($data)) $data = [];
 
@@ -68,6 +71,10 @@ if($econstruction_cats && $current_client) {
 
 							if(in_array($econstruction_id, $econstruction_hide)) {
 								$item_class .= ' active';
+							}
+
+							if(in_array($econstruction_id, $econstruction_removed)) {
+								$item_class .= ' removed';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 estimate-item econstruction-item mb-4<?=$item_class?>">
@@ -153,28 +160,31 @@ if($econstruction_cats && $current_client) {
 											?>
 											</div>
 										</div>
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $econstruction_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark">
+											<?php
+											if(has_post_thumbnail( $econstruction_id )) {
+												echo get_the_post_thumbnail( $econstruction_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($econstruction_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 
 										<div class="econstruction-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="estimate-quote econstruction-quote">
-												<?php
-												if($econstruction_data['quote']=='yes') {
-													?>
-													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã chọn"><span class="dashicons dashicons-yes"></span></span>
-													<?php
-												}
-												?>
-											</div>
-											<?php if(current_user_can('edit_econstructions')) { ?>
+										<?php if(current_user_can('edit_estimate_constructions')) { ?>
 											
+											<button class="econstruction-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>" title="<?php echo (in_array($econstruction_id, $econstruction_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
+
 											<button class="econstruction-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $econstruction_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<?php } ?>
-
-											<?php if(current_user_can('econstruction_edit')) { ?>
+									
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-econstruction" data-client="<?=$current_client->term_id?>" data-econstruction="<?=$econstruction_id?>" data-econstruction-title="<?php echo esc_attr(get_the_title( $econstruction_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
-											<?php } ?>
+										<?php } ?>
 										</div>
 										
 										<div class="econstruction-control zalo-link position-absolute top-0 end-0 p-1 d-flex">

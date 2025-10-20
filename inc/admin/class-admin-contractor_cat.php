@@ -198,8 +198,9 @@ class Admin_Contractor_Cat {
 	public function manage_edit_columns_value($row, $column_name, $term_id) {
 		$nonce = wp_create_nonce('quick_edit_'.$term_id);
 		$parent = wp_get_term_taxonomy_parent_id( $term_id, 'contractor_cat' );
+		$term = get_term_by( 'term_id', $term_id, 'contractor_cat' );
 		if( 'order' === $column_name ) {
-			echo '<input type="number" value="'.intval(get_term_meta($term_id, 'order', true)).'">';
+			echo '<input type="number" value="'.intval($term->term_order).'" style="width: 60px; text-align:right;">';
 		}
 		else if('parent_cat'==$column_name) {
 			echo '<div>';
@@ -245,13 +246,13 @@ class Admin_Contractor_Cat {
 		}
 		if(isset($columns['description'])) {
 			unset($columns['description']);
-			$columns['note'] = 'Ghi chú';
+			//$columns['note'] = 'Ghi chú';
 		}
 		if(isset($columns['posts'])) {
 			unset($columns['posts']);
 		}
 		//$columns['term_id'] = 'ID';
-		$columns['parent_cat'] = 'Cấp trên';
+		//$columns['parent_cat'] = 'Cấp trên';
 		$columns['page'] = 'Trang nhà thầu';
 		//$columns['order'] = 'STT';
 		
@@ -270,7 +271,7 @@ class Admin_Contractor_Cat {
 		// debug_log($taxonomy);
 		if(($hook=='edit-tags.php' || $hook=='term.php') && $taxonomy=='contractor_cat') {
 			wp_enqueue_style( 'manage-contractor_cat', THEME_URI.'/assets/css/manage-contractor_cat.css', [], '' );
-			wp_enqueue_script('manage-contractor_cat', THEME_URI.'/assets/js/manage-contractor_cat.js', array('jquery'), '');
+			wp_enqueue_script('manage-contractor_cat', THEME_URI.'/assets/js/manage-contractor_cat.js', array('jquery'), '0.1');
 		}
 	}
 

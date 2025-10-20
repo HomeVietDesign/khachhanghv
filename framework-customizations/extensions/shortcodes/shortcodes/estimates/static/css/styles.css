@@ -34,9 +34,6 @@
 	padding-bottom: 60%;
 	overflow: hidden;
 }
-.fw-shortcode-estimates .thumbnail-image {
-	background: #0e0d0d;
-}
 .fw-shortcode-estimates .thumbnail-image img {
 	width: 100%;
 	height: 100%;
@@ -56,6 +53,10 @@
 .fw-shortcode-estimates .estimate-item.active .contractor-info {
 	opacity: 1;
 }
+.fw-shortcode-estimates .estimate-item.removed .estimate {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+} 
 .fw-shortcode-estimates .estimate-item .contractor-thumbnail:after {
 	display: block;
 	content: "ẨN";
@@ -69,6 +70,7 @@
 .fw-shortcode-estimates .estimate-item.active .contractor-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-estimates .estimate-item .estimate-contractor-toggle::before,
 .fw-shortcode-estimates .estimate-item .estimate-contractor-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -84,4 +86,9 @@
 .fw-shortcode-estimates .estimate-item.active .estimate-contractor-hide::before {
 	content: "\f460";
 }
-
+.fw-shortcode-estimates .estimate-item .estimate-contractor-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-estimates .estimate-item.removed .estimate-contractor-toggle::before {
+	content: "\f147";
+}

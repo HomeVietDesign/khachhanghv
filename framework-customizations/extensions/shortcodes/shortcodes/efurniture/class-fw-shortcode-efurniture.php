@@ -18,8 +18,9 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		'url'=>'',
 		'url2'=>'',
 		'url3'=>'',
+		'url4'=>'',
+		'url5'=>'',
 		'file_id'=>'',
-		'quote'=>''
 	];
 
 	public function _init()
@@ -29,17 +30,41 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
       add_action( 'wp_ajax_update_efurniture', [$this, 'ajax_update_efurniture']);
       add_action( 'wp_ajax_get_efurniture_info', [$this, 'ajax_get_efurniture_info']);
       add_action( 'wp_ajax_efurniture_hide', [$this, 'ajax_efurniture_hide']);
+      add_action( 'wp_ajax_efurniture_toggle', [$this, 'ajax_efurniture_toggle']);
 
       add_action( 'wp_ajax_efurniture_chunk_upload', [$this, 'handle_efurniture_chunk_upload'] );
       add_action( 'wp_ajax_efurniture_check_chunks', [$this, 'check_uploaded_chunks'] );
       //add_action( 'wp_ajax_efurniture_file_upload', [$this, 'ajax_efurniture_file_upload']);
 	}
 
+	public function ajax_efurniture_toggle() {
+		global $current_client;
+		$efurniture_id = isset($_POST['efurniture']) ? absint($_POST['efurniture']) : 0;
+		$response = 0;
+		if(current_user_can('edit_estimate_furnitures') && $current_client && $efurniture_id && check_ajax_referer( 'global', 'nonce', false )) {
+
+			$efurniture_removed = get_term_meta($current_client->term_id, 'efurniture_removed', true);
+			if(empty($efurniture_removed)) $efurniture_removed = [];
+
+			if(in_array($efurniture_id, $efurniture_removed)) {
+				unset($efurniture_removed[array_search($efurniture_id, $efurniture_removed)]);
+				$response = -1;
+			} else {
+				$efurniture_removed[] = $efurniture_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'efurniture_removed', $efurniture_removed);
+
+		}
+		wp_send_json($response);
+	}
+
 	public function ajax_efurniture_hide() {
 		global $current_client;
 		$efurniture_id = isset($_POST['efurniture']) ? absint($_POST['efurniture']) : 0;
 		$response = 0;
-		if(current_user_can('efurniture_edit') && $current_client && $efurniture_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_estimate_furnitures') && $current_client && $efurniture_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$efurniture_hide = get_term_meta($current_client->term_id, 'efurniture_hide', true);
 			if(empty($efurniture_hide)) $efurniture_hide = [];
@@ -72,7 +97,6 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			'completed' => '',
 			'sent' => '',
 			'file_id' => '',
-			'quote' => '',
 		];
 		
 		if($client && $efurniture) {
@@ -96,14 +120,12 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			$response['zalo'] = ($efurniture_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($efurniture_data['zalo']).'" target="_blank">RIÊNG</a>':'';
 			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
 
-			$response['file'] = ($efurniture_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($efurniture_data['file_id'])).'" target="_blank">Tải</a>':'';
+			$response['file'] = ($efurniture_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="'.esc_url(wp_get_attachment_url($efurniture_data['file_id'])).'" target="_blank">Tải</a>':'';
 			
 			$response['required'] = (isset($efurniture_data['required']) && $efurniture_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($efurniture_data['required_label']).'">'.esc_html(date('d/m', strtotime($efurniture_data['required']))).'</div>':'';
 			$response['received'] = (isset($efurniture_data['received']) && $efurniture_data['received']!='')?'<div class="bg-danger" title="'.esc_attr($efurniture_data['received_label']).'">'.esc_html(date('d/m', strtotime($efurniture_data['received']))).'</div>':'';
 			$response['completed'] = (isset($efurniture_data['completed']) && $efurniture_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($efurniture_data['completed_label']).'">'.esc_html(date('d/m', strtotime($efurniture_data['completed']))).'</div>':'';
 			$response['sent'] = (isset($efurniture_data['sent']) && $efurniture_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($efurniture_data['sent_label']).'">'.esc_html(date('d/m', strtotime($efurniture_data['sent']))).'</div>':'';
-			
-			$response['quote'] = (isset($efurniture_data['quote']) && $efurniture_data['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 			
@@ -151,6 +173,18 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 					<?php
 				}
 
+				if(isset($efurniture_data['url4']) && $efurniture_data['url4']) {
+					?>
+					<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url4'])?>" target="_blank">Dự toán 4</a>
+					<?php
+				}
+
+				if(isset($efurniture_data['url5']) && $efurniture_data['url5']) {
+					?>
+					<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url5'])?>" target="_blank">Dự toán 5</a>
+					<?php
+				}
+
 				?>
 			</div>
 		<?php
@@ -171,7 +205,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		// debug_log($_FILES);
 		// wp_send_json( $response );
 
-		if(current_user_can('efurniture_edit') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
+		if(current_user_can('edit_estimate_furnitures') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$efurniture_id = isset($_POST['efurniture'])?absint($_POST['efurniture']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
@@ -181,6 +215,8 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			$efurniture_url = isset($_POST['efurniture_url'])?sanitize_url($_POST['efurniture_url']):'';
 			$efurniture_url2 = isset($_POST['efurniture_url2'])?sanitize_url($_POST['efurniture_url2']):'';
 			$efurniture_url3 = isset($_POST['efurniture_url3'])?sanitize_url($_POST['efurniture_url3']):'';
+			$efurniture_url4 = isset($_POST['efurniture_url4'])?sanitize_url($_POST['efurniture_url4']):'';
+			$efurniture_url5 = isset($_POST['efurniture_url5'])?sanitize_url($_POST['efurniture_url5']):'';
 			
 			$efurniture_file_id = isset($_POST['efurniture_file_id'])?absint($_POST['efurniture_file_id']):0;
 			
@@ -192,7 +228,6 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 			$efurniture_completed = isset($_POST['efurniture_completed']) ? $_POST['efurniture_completed'] : '';
 			$efurniture_sent_label = isset($_POST['efurniture_sent_label']) ? $_POST['efurniture_sent_label'] : '';
 			$efurniture_sent = isset($_POST['efurniture_sent']) ? $_POST['efurniture_sent'] : '';
-			$efurniture_quote = isset($_POST['efurniture_quote']) ? $_POST['efurniture_quote'] : '';
 			
 			if($client && $efurniture_id) {
 				$data = get_term_meta($client, 'efurniture', true);
@@ -216,8 +251,9 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 					'url' => $efurniture_url,
 					'url2' => $efurniture_url2,
 					'url3' => $efurniture_url3,
+					'url4' => $efurniture_url4,
+					'url5' => $efurniture_url5,
 					'file_id' => ($efurniture_file_id!=0)?$efurniture_file_id:'',
-					'quote' => $efurniture_quote,
 				];
 
 				if($new_efurniture_data['file_id']=='' || $new_efurniture_data['file_id']==0) {
@@ -248,7 +284,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 		// debug_log($_FILES);
 		// wp_send_json( $response );
 
-		if(!current_user_can('efurniture_edit') || !check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
+		if(!current_user_can('edit_estimate_furnitures') || !check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
 			$response['status'] = 403;
 			$response['message'] = "Forbiden.";
 			wp_send_json( $response, 403 );
@@ -263,7 +299,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 	public function handle_efurniture_chunk_upload() {
 		$response = ['success' => false, 'attachment_id' => 0, 'url' => '', 'filename' => '', 'msg' => ''];
 
-		if(current_user_can('efurniture_edit') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
+		if(current_user_can('edit_estimate_furnitures') && check_ajax_referer( 'edit-efurniture', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$efurniture_id = isset($_POST['efurniture'])?absint($_POST['efurniture']):0;
 
@@ -374,7 +410,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-efurniture', 'nonce' ); ?>
 				<div id="edit-efurniture-response"></div>
 				<div class="row">
-					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_estimate_furnitures'))?' hidden':''; ?>">
 						<div class="mb-3">
 							Nội dung áp dụng
 							<?php
@@ -382,7 +418,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 								'media_buttons' => false,
 								'teeny'         => false,
 								'quicktags'     => false,
-								'editor_height' => '710',
+								'editor_height' => '730',
 								'tinymce'       => [
 									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,undo,redo,fullscreen',
 									'toolbar2' => 'forecolor,pastetext,removeformat,charmap',
@@ -405,7 +441,7 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 							}
 						</style>
 					</div>
-					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+					<div class="<?php echo (!current_user_can('edit_estimate_furnitures'))?' col-lg-12':'col-lg-5'; ?>">
 						<div class="mb-3">
 							<input class="form-control mb-2" type="text" value="<?php echo ($efurniture_data['required_label']!='')?esc_html($efurniture_data['required_label']):''; ?>" name="efurniture_required_label" id="efurniture_required_label" placeholder="Ghi chú ngày 1">
 							<input class="form-control" type="date" value="<?php echo ($efurniture_data['required']!='')?esc_html(date('Y-m-d', strtotime($efurniture_data['required']))):''; ?>" name="efurniture_required" id="efurniture_required">
@@ -446,6 +482,14 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 							Link dự toán 3
 							<input type="text" id="efurniture_url3" name="efurniture_url3" class="form-control" value="<?php echo ($efurniture_data['url3'])?esc_url($efurniture_data['url3']):''; ?>">
 						</div>
+						<div class="mb-3">
+							Link dự toán 4
+							<input type="text" id="efurniture_url4" name="efurniture_url4" class="form-control" value="<?php echo ($efurniture_data['url4'])?esc_url($efurniture_data['url4']):''; ?>">
+						</div>
+						<div class="mb-3">
+							Link dự toán 5
+							<input type="text" id="efurniture_url5" name="efurniture_url5" class="form-control" value="<?php echo ($efurniture_data['url5'])?esc_url($efurniture_data['url5']):''; ?>">
+						</div>
 					</div>
 					<div class="col-lg-12">
 						<div class="mb-3">
@@ -485,14 +529,6 @@ class FW_Shortcode_Efurniture extends FW_Shortcode
 										<input type="file" id="efurniture_file" name="efurniture_file" class="form-control">
 									</div>
 								</label>
-							</div>
-						</div>
-						<div class="mb-3 text-center">
-							<div class="d-inline-block">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="yes" name="efurniture_quote" id="efurniture_quote" <?php checked( ($efurniture_data['quote']=='yes'), true, true ); ?>>
-									<label class="form-check-label" for="efurniture_quote">Được khách hàng lựa chọn?</label>
-								</div>
 							</div>
 						</div>
 					</div>

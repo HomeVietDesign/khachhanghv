@@ -31,7 +31,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
          $response['terms'] = $provinces;
          
-        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'change-province-'.$id, 'nonce', false )) {
+        if(current_user_can('edit_contractors') && $id && check_ajax_referer( 'change-province-'.$id, 'nonce', false )) {
 
             $terms = wp_set_object_terms( $id, $provinces, 'province', false );
             $response['code'] = (is_array($terms) && !empty($terms))?true:false;
@@ -55,7 +55,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $external_url = isset($_POST['external_url'])?sanitize_url($_POST['external_url']):'';
         $response['data'] = $external_url;
         
-        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'edit-external-url-'.$id, 'nonce', false )) {
+        if(current_user_can('edit_contractors') && $id && check_ajax_referer( 'edit-external-url-'.$id, 'nonce', false )) {
             
             update_post_meta( $id, '_external_url', $external_url );
             wp_cache_delete( $id, 'posts' );
@@ -75,7 +75,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $arrange = isset($_POST['arrange'])?$_POST['arrange']:'';
         $response['arrange'] = $arrange;
    
-        if(current_user_can('contractor_edit') && $id && check_ajax_referer( 'action-'.$id, 'nonce', false )) {
+        if(current_user_can('edit_contractors') && $id && check_ajax_referer( 'action-'.$id, 'nonce', false )) {
             $args = [
                 'post_type' => 'contractor',
                 'post_status' => 'publish',
@@ -125,7 +125,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $best = isset($_POST['best'])?$_POST['best']:'false';
         $response['best'] = $best;
         //debug_log($best);
-        if(current_user_can( 'contractor_edit' ) && $id && check_ajax_referer( 'toggle-best-'.$id, 'nonce', false )) {
+        if(current_user_can( 'edit_contractors' ) && $id && check_ajax_referer( 'toggle-best-'.$id, 'nonce', false )) {
             //debug_log($best);
             update_post_meta( $id, '_best', $best );
             wp_cache_delete( $id, 'posts' );
@@ -145,7 +145,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
         $paged = isset($_REQUEST['paged']) ? absint($_REQUEST['paged']) : 1;
         $args = isset($_REQUEST['query']) ? $_REQUEST['query'] : [];
 
-        if(current_user_can('contractor_view')) {
+        if(current_user_can('read_contractors') || current_user_can('edit_contractors')) {
 
             $args['paged'] = $paged;
 
@@ -253,7 +253,7 @@ class FW_Shortcode_Contractors extends FW_Shortcode
 
     public function html_modals() {
        
-        if(current_user_can('contractor_edit')) {
+        if(current_user_can('edit_contractors')) {
             global $current_province;
             ?>
             <div class="modal fade" id="edit-external-url-modal" tabindex="-1">

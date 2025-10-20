@@ -15,6 +15,9 @@ if($contract_cats && $current_client) {
 	$contract_hide = get_term_meta($current_client->term_id, 'contract_hide', true);
 	if(empty($contract_hide)) $contract_hide = [];
 
+	$contract_removed = get_term_meta($current_client->term_id, 'contract_removed', true);
+	if(empty($contract_removed)) $contract_removed = [];
+
 	?>
 	<div class="fw-shortcode-contracts">
 		<div class="accordion">
@@ -63,6 +66,10 @@ if($contract_cats && $current_client) {
 
 							if(in_array($contract_id, $contract_hide)) {
 								$item_class .= ' active';
+							}
+
+							if(in_array($contract_id, $contract_removed)) {
+								$item_class .= ' removed';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 contract-item mb-4<?=$item_class?>">
@@ -118,8 +125,9 @@ if($contract_cats && $current_client) {
 											<div class="contract-require-content">
 											<?php
 											if($contract_content!='') {
+												$contract_content = '<div class="copy-text">'.wp_get_the_content($contract_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($contract_content))?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($contract_content)?>" data-bs-html="true">Đề bài</button>
 												<?php
 											}
 											?>
@@ -135,7 +143,19 @@ if($contract_cats && $current_client) {
 											?>
 											</div>
 										</div>
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $contract_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark">
+											<?php
+											if(has_post_thumbnail( $contract_id )) {
+												echo get_the_post_thumbnail( $contract_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($contract_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 
 										<div class="contract-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($default_url) { ?>
@@ -144,16 +164,10 @@ if($contract_cats && $current_client) {
 										</div>
 
 										<div class="contract-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="contract-signed">
-												<?php
-												if($contract_data['signed']=='yes') {
-													?>
-													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>
-													<?php
-												}
-												?>
-											</div>
+											
 											<?php if(current_user_can('edit_contracts')) { ?>
+
+											<button class="contract-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="<?php echo esc_attr(get_the_title( $contract_id )); ?>" title="<?php echo (in_array($contract_id, $contract_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 											<button class="contract-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-contract="<?=$contract_id?>" data-contract-title="<?php echo esc_attr(get_the_title( $contract_id )); ?>" title="Ẩn/Hiện"></button>
 

@@ -19,7 +19,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 		'url2'=>'',
 		'url3'=>'',
 		'file_id'=>'',
-		'quote'=>''
 	];
 
 	public function _init()
@@ -29,13 +28,36 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
       add_action( 'wp_ajax_update_econstruction', [$this, 'ajax_update_econstruction']);
       add_action( 'wp_ajax_get_econstruction_info', [$this, 'ajax_get_econstruction_info']);
       add_action( 'wp_ajax_econstruction_hide', [$this, 'ajax_econstruction_hide']);
+      add_action( 'wp_ajax_econstruction_toggle', [$this, 'ajax_econstruction_toggle']);
+	}
+
+	public function ajax_econstruction_toggle() {
+		global $current_client;
+		$econstruction_id = isset($_POST['econstruction']) ? absint($_POST['econstruction']) : 0;
+		$response = 0;
+		if(current_user_can('edit_estimate_constructions') && $current_client && $econstruction_id && check_ajax_referer( 'global', 'nonce', false )) {
+
+			$econstruction_removed = get_term_meta($current_client->term_id, 'econstruction_removed', true);
+			if(empty($econstruction_removed)) $econstruction_removed = [];
+
+			if(in_array($econstruction_id, $econstruction_removed)) {
+				unset($econstruction_removed[array_search($econstruction_id, $econstruction_removed)]);
+				$response = -1;
+			} else {
+				$econstruction_removed[] = $econstruction_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'econstruction_removed', $econstruction_removed);
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_econstruction_hide() {
 		global $current_client;
 		$econstruction_id = isset($_POST['econstruction']) ? absint($_POST['econstruction']) : 0;
 		$response = 0;
-		if(current_user_can('econstruction_edit') && $current_client && $econstruction_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_estimate_constructions') && $current_client && $econstruction_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$econstruction_hide = get_term_meta($current_client->term_id, 'econstruction_hide', true);
 			if(empty($econstruction_hide)) $econstruction_hide = [];
@@ -67,7 +89,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			'completed' => '',
 			'sent' => '',
 			'file_id' => '',
-			'quote' => '',
 		];
 		
 		if($client && $econstruction) {
@@ -92,14 +113,12 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			$response['zalo'] = ($econstruction_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($econstruction_data['zalo']).'" target="_blank">RIÊNG</a>':'';
 			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
 
-			$response['file'] = ($econstruction_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary" href="'.esc_url(wp_get_attachment_url($econstruction_data['file_id'])).'" target="_blank">Tải</a>':'';
+			$response['file'] = ($econstruction_data['file_id'])?'<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="'.esc_url(wp_get_attachment_url($econstruction_data['file_id'])).'" target="_blank">Tải</a>':'';
 			
 			$response['required'] = (isset($econstruction_data['required']) && $econstruction_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['required_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['required']))).'</div>':'';
 			$response['received'] = (isset($econstruction_data['received']) && $econstruction_data['received']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['received_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['received']))).'</div>':'';
 			$response['completed'] = (isset($econstruction_data['completed']) && $econstruction_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['completed_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['completed']))).'</div>':'';
 			$response['sent'] = (isset($econstruction_data['sent']) && $econstruction_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($econstruction_data['sent_label']).'">'.esc_html(date('d/m', strtotime($econstruction_data['sent']))).'</div>':'';
-			
-			$response['quote'] = (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-secondary bg-green text-dark fw-bold ms-2" title="Đã gửi cho khách hàng"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 			
@@ -160,7 +179,7 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can('econstruction_edit') && check_ajax_referer( 'edit-econstruction', 'nonce', false )) {
+		if(current_user_can('edit_estimate_constructions') && check_ajax_referer( 'edit-econstruction', 'nonce', false )) {
 			$client = isset($_POST['client'])?absint($_POST['client']):0;
 			$econstruction_id = isset($_POST['econstruction'])?absint($_POST['econstruction']):0;
 
@@ -182,7 +201,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 			$econstruction_completed = isset($_POST['econstruction_completed']) ? $_POST['econstruction_completed'] : '';
 			$econstruction_sent_label = isset($_POST['econstruction_sent_label']) ? $_POST['econstruction_sent_label'] : '';
 			$econstruction_sent = isset($_POST['econstruction_sent']) ? $_POST['econstruction_sent'] : '';
-			$econstruction_quote = isset($_POST['econstruction_quote']) ? $_POST['econstruction_quote'] : '';
 			
 			if($client && $econstruction_id) {
 	
@@ -209,7 +227,6 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 					'url2' => $econstruction_url2,
 					'url3' => $econstruction_url3,
 					'file_id' => ($econstruction_file_id!=0)?$econstruction_file_id:'',
-					'quote' => $econstruction_quote,
 				];
 
 				// tải lên file dự toán
@@ -266,7 +283,7 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-econstruction', 'nonce' ); ?>
 				<div id="edit-econstruction-response"></div>
 				<div class="row">
-					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_estimate_constructions'))?' hidden':''; ?>">
 						<div class="mb-3">
 							Nội dung áp dụng
 							<?php
@@ -274,7 +291,7 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 								'media_buttons' => false,
 								'teeny'         => false,
 								'quicktags'     => false,
-								'editor_height' => '710',
+								'editor_height' => '730',
 								'tinymce'       => [
 									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,undo,redo,fullscreen',
 									'toolbar2' => 'forecolor,pastetext,removeformat,charmap',
@@ -297,7 +314,7 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 							}
 						</style>
 					</div>
-					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+					<div class="<?php echo (!current_user_can('edit_estimate_constructions'))?' col-lg-12':'col-lg-5'; ?>">
 						<div class="mb-3">
 							<input class="form-control mb-2" type="text" value="<?php echo (isset($econstruction_data['required_label'])&&$econstruction_data['required_label']!='')?esc_html($econstruction_data['required_label']):''; ?>" name="econstruction_required_label" id="econstruction_required_label" placeholder="Ghi chú ngày 1">
 							<input class="form-control" type="date" value="<?php echo (isset($econstruction_data['required'])&&$econstruction_data['required']!='')?esc_html(date('Y-m-d', strtotime($econstruction_data['required']))):''; ?>" name="econstruction_required" id="econstruction_required">
@@ -364,14 +381,7 @@ class FW_Shortcode_Econstruction extends FW_Shortcode
 							</label>
 						</div>
 					</div>
-					<div class="mb-3 text-center">
-						<div class="d-inline-block">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="yes" name="econstruction_quote" id="econstruction_quote" <?php checked( (isset($econstruction_data['quote']) && $econstruction_data['quote']=='yes'), true, true ); ?>>
-								<label class="form-check-label" for="econstruction_quote">Được khách hàng lựa chọn?</label>
-							</div>
-						</div>
-					</div>
+					
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-lg btn-danger text-uppercase fw-bold text-yellow text-nowrap d-block w-100" id="edit-econstruction-submit">Lưu lại</button>

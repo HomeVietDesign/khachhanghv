@@ -1,0 +1,98 @@
+.fw-shortcode-estimates-lighting .accordion {
+	--bs-accordion-color: #fff;
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
+	--bs-accordion-border-radius: 0;
+	--bs-accordion-inner-border-radius: 0;
+	--bs-accordion-active-color: #ff0;
+	--bs-accordion-active-bg: transparent;
+	--bs-accordion-body-padding-x: 1rem;
+	--bs-accordion-body-padding-y: 1rem;
+
+	--bs-accordion-btn-color: #fff;
+	--bs-accordion-btn-bg: #000;
+}
+.fw-shortcode-estimates-lighting .accordion .accordion-button {
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
+}
+.fw-shortcode-estimates-lighting .accordion .accordion-button:not(.collapsed) {
+	background: #000;
+}
+.fw-shortcode-estimates-lighting .accordion .accordion-button::after {
+	display: none;
+}
+.fw-shortcode-estimates-lighting .accordion .accordion-item:not(:first-of-type) {
+	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-estimates-lighting .accordion .accordion-button:focus {
+	box-shadow: none;
+}
+.fw-shortcode-estimates-lighting .contractor-thumbnail {
+	padding-bottom: 60%;
+	overflow: hidden;
+}
+.fw-shortcode-estimates-lighting .thumbnail-image {
+	background: #0e0d0d;
+}
+.fw-shortcode-estimates-lighting .thumbnail-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fw-shortcode-estimates-lighting .estimate-item .contractor-thumbnail .thumbnail-image,
+.fw-shortcode-estimates-lighting .estimate-item .contractor-info {
+	opacity: 0.3;
+}
+.fw-shortcode-estimates-lighting .estimate-item .progressing-bar,
+.fw-shortcode-estimates-lighting .estimate-item .contractor-thumbnail .contractor-control {
+	opacity: 0.7;
+}
+.fw-shortcode-estimates-lighting .estimate-item.active .progressing-bar,
+.fw-shortcode-estimates-lighting .estimate-item.active .contractor-thumbnail .thumbnail-image,
+.fw-shortcode-estimates-lighting .estimate-item.active .contractor-thumbnail .contractor-control,
+.fw-shortcode-estimates-lighting .estimate-item.active .contractor-info {
+	opacity: 1;
+}
+.fw-shortcode-estimates-lighting .estimate-item .contractor-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-estimates-lighting .estimate-item.active .contractor-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-estimates-lighting .estimate-item.removed .estimate {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-estimates-lighting .estimate-item .estimate-contractor-lighting-toggle::before,
+.fw-shortcode-estimates-lighting .estimate-item .estimate-contractor-lighting-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-estimates-lighting .estimate-item.active .estimate-contractor-lighting-hide::before {
+	content: "\f460";
+}
+.fw-shortcode-estimates-lighting .estimate-item .estimate-contractor-lighting-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-estimates-lighting .estimate-item.removed .estimate-contractor-lighting-toggle::before {
+	content: "\f147";
+}

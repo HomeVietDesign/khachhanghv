@@ -18,10 +18,20 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-contract.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-elighting.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-media.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-design.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-construction.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-work.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-investment.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-investment_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-rebate.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-rebate_cat.php';
 
+		require_once THEME_DIR.'/inc/admin/class-admin-product.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-investor.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-employee.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-work_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-passwords.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-province.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-contractor_page.php';
@@ -35,6 +45,7 @@ class Admin {
 		require_once THEME_DIR.'/inc/admin/class-admin-media_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-econstruction_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-efurniture_cat.php';
+		require_once THEME_DIR.'/inc/admin/class-admin-elighting_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-design_cat.php';
 		require_once THEME_DIR.'/inc/admin/class-admin-construction_cat.php';
 

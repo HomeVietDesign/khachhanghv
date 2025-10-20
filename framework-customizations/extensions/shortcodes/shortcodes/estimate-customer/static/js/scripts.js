@@ -105,6 +105,33 @@ document.addEventListener('DOMContentLoaded', function(e){
 			$input.closest('[for="estimate_attachment"]').find('.form-control').text($input.val().split('\\').pop());
 		});
 
+		$('.estimate-customer-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm('Loại bỏ/Sử dụng "'+contractor_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_customer_toggle', client: client, contractor: contractor},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$estimate.addClass('removed');
+						} else if(response===-1) {
+							$estimate.removeClass('removed');
+						}
+					}
+				});
+			}
+		});
+
 		$('.estimate-customer-hide').on('click', function(e){
 			let $this = $(this),
 				client = $this.data('client'),

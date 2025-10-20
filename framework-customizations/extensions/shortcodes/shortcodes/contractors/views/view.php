@@ -42,7 +42,7 @@ if($default_province) {
 	$provinces[] = $default_province;
 }
 
-if(current_user_can('contractor_view')) {
+if(current_user_can('read_contractors') || current_user_can('edit_contractors')) {
 	$allow_query = true;
 	
 	$orderby = [

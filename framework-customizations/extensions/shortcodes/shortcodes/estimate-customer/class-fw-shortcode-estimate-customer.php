@@ -17,13 +17,36 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
       add_action( 'wp_ajax_update_estimate_customer', [$this, 'ajax_update_estimate_customer']);
       add_action( 'wp_ajax_get_estimate_customer_info', [$this, 'ajax_get_estimate_customer_info']);
       add_action( 'wp_ajax_estimate_customer_hide', [$this, 'ajax_estimate_customer_hide']);
+      add_action( 'wp_ajax_estimate_customer_toggle', [$this, 'ajax_estimate_customer_toggle']);
+	}
+
+	public function ajax_estimate_customer_toggle() {
+		global $current_client;
+		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
+		$response = 0;
+		if(current_user_can('edit_estimate_customers') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+			$contractor_customer_removed = get_term_meta($current_client->term_id, 'contractor_customer_removed', true);
+			if(empty($contractor_customer_removed)) $contractor_customer_removed = [];
+
+			if(in_array($contractor_id, $contractor_customer_removed)) {
+				unset($contractor_customer_removed[array_search($contractor_id, $contractor_customer_removed)]);
+				$response = -1;
+			} else {
+				$contractor_customer_removed[] = $contractor_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'contractor_customer_removed', $contractor_customer_removed);
+		}
+		
+		wp_send_json($response);
 	}
 
 	public function ajax_estimate_customer_hide() {
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = 0;
-		if(current_user_can('estimate_customer_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_estimate_customers') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
 			$contractor_customer_hide = get_term_meta($current_client->term_id, 'contractor_customer_hide', true);
 			if(empty($contractor_customer_hide)) $contractor_customer_hide = [];
 
@@ -152,7 +175,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 			'data' => []
 		];
 
-		if((current_user_can('estimate_customer_edit')) && check_ajax_referer( 'edit-estimate-customer', 'nonce', false )) {
+		if((current_user_can('edit_estimate_customers')) && check_ajax_referer( 'edit-estimate-customer', 'nonce', false )) {
 			$estimate_client = isset($_POST['estimate_client'])?absint($_POST['estimate_client']):0;
 			$estimate_contractor = isset($_POST['estimate_contractor'])?absint($_POST['estimate_contractor']):0;
 			$estimate_attachment_id = isset($_POST['estimate_attachment_id'])?absint($_POST['estimate_attachment_id']):0;
@@ -223,68 +246,76 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 				<input type="hidden" id="estimate_contractor" name="estimate_contractor" value="<?=$contractor?>">
 				<?php wp_nonce_field( 'edit-estimate-customer', 'nonce' ); ?>
 				<div id="edit-estimate-customer-response"></div>
-				<div class="mb-3">
-					Nội dung áp dụng
-					<?php
-					$settings = [
-						'media_buttons' => false,
-						'teeny'         => false,
-						'quicktags'     => false,
-						'editor_height' => '600',
-						'tinymce'       => [
-							'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,undo,redo,fullscreen',
-							'toolbar2' => 'forecolor,pastetext,removeformat,charmap',
-							'content_style' => 'body { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }'
-						]
-					];
-					wp_editor( $estimate['required_content'], 'required_content', $settings);
-					?>
-					<input type="hidden" id="required_content_settings" value="<?=esc_attr(json_encode($settings))?>">
-				</div>
-				<style>
-					.mce-container, .mce-container *, .mce-widget, .mce-widget * {
-						color: #333;
-					}
-					.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, .mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, .mce-menu .mce-menu-item.mce-selected, .mce-menu .mce-menu-item:focus, .mce-menu .mce-menu-item:hover {
-						color: #fff;
-					}
-					.mce-widget.mce-tooltip {
-						color: #fff;
-					}
-				</style>
-				<div class="col mb-3">
-					Tên - Số điện thoại
-					<input type="text" id="estimate_value" name="estimate_value" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
-				</div>
-				<div class="col mb-3">
-					Ghi chú
-					<input type="text" id="estimate_unit" name="estimate_unit" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
-				</div>
-				<div class="mb-3">
-					Link nhóm zalo
-					<input type="text" id="estimate_zalo" name="estimate_zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
-				</div>
-				<div class="mb-3">
-					<div class="form-label mb-1">File dự toán</div>
-					<div class="row row-cols-2 g-0 p-2 border rounded-2">
-						<div class="col attachment-uploaded">
-							<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr($estimate['attachment_id'])?>">
-							<?php if($attachment_url) { ?>
-								<div class="input-group input-group-sm">
-									<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
-									<button class="btn btn-warning" id="estimate_customer_remove_attachment" type="button">Xóa file</button>
-								</div>
-							<?php } ?>
+				<div class="row">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+						<div class="mb-3">
+							Nội dung áp dụng
+							<?php
+							$settings = [
+								'media_buttons' => false,
+								'teeny'         => false,
+								'quicktags'     => false,
+								'editor_height' => '400',
+								'tinymce'       => [
+									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,undo,redo,fullscreen',
+									'toolbar2' => 'forecolor,pastetext,removeformat,charmap',
+									'content_style' => 'body { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }'
+								]
+							];
+							wp_editor( $estimate['required_content'], 'required_content', $settings);
+							?>
+							<input type="hidden" id="required_content_settings" value="<?=esc_attr(json_encode($settings))?>">
 						</div>
-						<label class="col d-block ps-5" for="estimate_attachment">
-							<div class="input-group input-group-sm">
-								<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
-								<span class="btn btn-primary">Bấm tải lên</span>
+						<style>
+							.mce-container, .mce-container *, .mce-widget, .mce-widget * {
+								color: #333;
+							}
+							.mce-menu .mce-menu-item.mce-active.mce-menu-item-normal, .mce-menu .mce-menu-item.mce-active.mce-menu-item-preview, .mce-menu .mce-menu-item.mce-selected, .mce-menu .mce-menu-item:focus, .mce-menu .mce-menu-item:hover {
+								color: #fff;
+							}
+							.mce-widget.mce-tooltip {
+								color: #fff;
+							}
+						</style>
+					</div>
+					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+						<div class="col mb-3">
+							Tên - Số điện thoại
+							<input type="text" id="estimate_value" name="estimate_value" class="form-control" value="<?php echo esc_attr($estimate['value']); ?>">
+						</div>
+						<div class="col mb-3">
+							Ghi chú
+							<input type="text" id="estimate_unit" name="estimate_unit" class="form-control" value="<?php echo esc_attr($estimate['unit']); ?>">
+						</div>
+						<div class="mb-3">
+							Link nhóm zalo
+							<input type="text" id="estimate_zalo" name="estimate_zalo" class="form-control" value="<?php echo esc_attr($estimate['zalo']); ?>">
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="mb-3">
+							<div class="form-label mb-1">File dự toán</div>
+							<div class="row row-cols-2 g-0 p-2 border rounded-2">
+								<div class="col attachment-uploaded">
+									<input type="hidden" id="estimate_attachment_id" name="estimate_attachment_id" value="<?=esc_attr($estimate['attachment_id'])?>">
+									<?php if($attachment_url) { ?>
+										<div class="input-group input-group-sm">
+											<div class="form-control text-truncate"><?=esc_html(basename($attachment_url))?></div>
+											<button class="btn btn-warning" id="estimate_customer_remove_attachment" type="button">Xóa file</button>
+										</div>
+									<?php } ?>
+								</div>
+								<label class="col d-block ps-5" for="estimate_attachment">
+									<div class="input-group input-group-sm">
+										<div class="form-control text-nowrap">Chọn file dự toán cần tải lên</div>
+										<span class="btn btn-primary">Bấm tải lên</span>
+									</div>
+									<div style="width: 0;height: 0;overflow: hidden;">
+										<input type="file" id="estimate_attachment" name="estimate_attachment" class="form-control">
+									</div>
+								</label>
 							</div>
-							<div style="width: 0;height: 0;overflow: hidden;">
-								<input type="file" id="estimate_attachment" name="estimate_attachment" class="form-control">
-							</div>
-						</label>
+						</div>
 					</div>
 				</div>
 				<div class="mb-3">
@@ -300,7 +331,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 	public function edit_modal() {
 		?>
 		<div class="modal fade" id="edit-estimate-customer" tabindex="-1" role="dialog" aria-labelledby="edit-estimate-customer-label">
-			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="edit-estimate-customer-label">Sửa dự toán</h5>
@@ -313,7 +344,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		<?php
 	}
 
-	public function display_contractor($contractor_id, $client, $contractor_customer_hide=[]) {
+	public function display_contractor($contractor_id, $client, $contractor_customer_hide=[], $contractor_customer_removed=[]) {
 		
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id, 'estimate_attachment');
 		$default_zalo = fw_get_db_post_option($contractor_id,'estimate_zalo');
@@ -345,6 +376,10 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 		if(in_array($contractor_id, $contractor_customer_hide)) {
 			$item_class .= ' active';
 		}
+
+		if(in_array($contractor_id, $contractor_customer_removed)) {
+			$item_class .= ' removed';
+		}
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100">
@@ -370,18 +405,32 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 						</div>
 					</div>
 
-					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0"><?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?></div>
+					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0">
+						<?php
+						if(has_post_thumbnail( $contractor_id )) {
+							echo get_the_post_thumbnail( $contractor_id, 'full' );
+						} else {
+							?>
+							<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+								<?=nl2br(esc_textarea(get_post_meta($contractor_id, '_thumbnail_title', true)))?>
+							</div>
+							<?php
+						}
+						?>
+					</div>
 					
 					<div class="position-absolute contractor-control bottom-0 end-0 m-1 d-flex">
 						
-						<?php if(current_user_can('estimate_customer_edit')) { ?>
+						<?php if(current_user_can('edit_estimate_customers')) { ?>
+
+						<button class="estimate-customer-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="<?php echo (in_array($contractor_id, $contractor_customer_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 						<button class="estimate-customer-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="Ẩn/Hiện"></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
 						
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-customer" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
-						<?php } // if(current_user_can('estimate_customer_edit')) ?>
+						<?php } // if(current_user_can('edit_estimate_customers')) ?>
 
 					</div>
 
@@ -394,15 +443,7 @@ class FW_Shortcode_Estimate_Customer extends FW_Shortcode
 					<?php } ?>
 					</div>
 					<div class="position-absolute contractor-control start-0 bottom-0 p-1 z-3 d-flex">
-						<?php if(!empty($project_images)) { ?>
-						<div class="position-relative project-images pswp-gallery me-2">
-							<?php foreach ($project_images as $key => $value) {
-							$src_full = wp_get_attachment_image_src( $value['attachment_id'], 'full' );
-							?>
-							<a class="btn btn-sm btn-primary btn-shadow<?php echo ($key>0)?' hidden':''; ?> text-nowrap" href="<?=esc_url($src_full[0])?>" data-pswp-width="<?=$src_full[1]?>" data-pswp-height="<?=$src_full[2]?>"><?php echo ($key==0)?'Hình ảnh':''; ?></a>
-							<?php } ?>
-						</div>
-						<?php } ?>
+						
 					</div>
 				</div>
 				<div class="contractor-info text-center px-1">

@@ -17,7 +17,7 @@ class Ajax {
 	public function ajax_estimate_paginate() {
 		global $current_client;
 		$contractors = $_GET['ids'];
-		if( has_role('administrator') || has_role('viewer') ) {
+		if( has_role('administrator') || has_role('subscriber') ) {
 			foreach($contractors as $contractor_id) {
 				\FW_Shortcode_Estimates::display_contractor($contractor_id, $current_client);
 			}

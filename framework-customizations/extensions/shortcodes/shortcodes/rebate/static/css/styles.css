@@ -1,0 +1,98 @@
+.fw-shortcode-rebates .accordion {
+	--bs-accordion-color: #fff;
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
+	--bs-accordion-border-radius: 0;
+	--bs-accordion-inner-border-radius: 0;
+	--bs-accordion-active-color: #ff0;
+	--bs-accordion-active-bg: transparent;
+	--bs-accordion-body-padding-x: 1rem;
+	--bs-accordion-body-padding-y: 1rem;
+
+	--bs-accordion-btn-color: #fff;
+	--bs-accordion-btn-bg: #000;
+}
+.fw-shortcode-rebates .accordion .accordion-button {
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
+}
+.fw-shortcode-rebates .accordion .accordion-button:not(.collapsed) {
+	background: #000;
+}
+.fw-shortcode-rebates .accordion .accordion-button::after {
+	display: none;
+}
+.fw-shortcode-rebates .accordion .accordion-item:not(:first-of-type) {
+	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-rebates .accordion .accordion-button:focus {
+	box-shadow: none;
+}
+.fw-shortcode-rebates .rebate-thumbnail {
+	padding-bottom: 60%;
+	overflow: hidden;
+}
+.fw-shortcode-rebates .thumbnail-image {
+	background: #0e0d0d;
+}
+.fw-shortcode-rebates .thumbnail-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fw-shortcode-rebates .rebate-item .rebate-thumbnail .thumbnail-image,
+.fw-shortcode-rebates .rebate-item .rebate-info {
+	opacity: 0.3;
+}
+.fw-shortcode-rebates .rebate-item .progressing-bar,
+.fw-shortcode-rebates .rebate-item .rebate-thumbnail .rebate-control {
+	opacity: 0.7;
+}
+.fw-shortcode-rebates .rebate-item.active .progressing-bar,
+.fw-shortcode-rebates .rebate-item.active .rebate-thumbnail .thumbnail-image,
+.fw-shortcode-rebates .rebate-item.active .rebate-thumbnail .rebate-control,
+.fw-shortcode-rebates .rebate-item.active .rebate-info {
+	opacity: 1;
+}
+.fw-shortcode-rebates .rebate-item .rebate-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-rebates .rebate-item.active .rebate-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-rebates .rebate-item.removed .rebate {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-rebates .rebate-item .rebate-toggle::before,
+.fw-shortcode-rebates .rebate-item .rebate-show::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-rebates .rebate-item.active .rebate-show::before {
+	content: "\f460";
+}
+.fw-shortcode-rebates .rebate-item .rebate-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-rebates .rebate-item.removed .rebate-toggle::before {
+	content: "\f147";
+}

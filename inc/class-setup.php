@@ -113,14 +113,17 @@ class Setup {
 
 	public function ajax_set_global_vars() {
 		if(defined('DOING_AJAX') && DOING_AJAX) {
-			global $current_client;
+			global $current_client, $current_employee, $current_investor, $current_product;
 			$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
+			$current_employee = isset($_REQUEST['em'])?get_term_by( 'id', absint($_REQUEST['em']), 'employee' ):null;
+			$current_investor = isset($_REQUEST['inv'])?get_term_by( 'id', absint($_REQUEST['inv']), 'investor' ):null;
+			$current_product = isset($_REQUEST['pro'])?get_term_by( 'id', absint($_REQUEST['pro']), 'product' ):null;
 			
 		}
 	}
 
 	public function wp_loaded() {
-		global $current_province, $current_client;
+		global $current_province, $current_client, $current_employee, $current_investor, $current_product;
 		
 		$province = isset($_REQUEST['province'])?absint($_REQUEST['province']):0;
 		$current_province = get_term_by( 'term_id', $province, 'province' );
@@ -130,6 +133,9 @@ class Setup {
 		}
 
 		$current_client = isset($_REQUEST['client'])?get_term_by( 'id', absint($_REQUEST['client']), 'passwords' ):null;
+		$current_employee = isset($_REQUEST['em'])?get_term_by( 'id', absint($_REQUEST['em']), 'employee' ):null;
+		$current_investor = isset($_REQUEST['inv'])?get_term_by( 'id', absint($_REQUEST['inv']), 'investor' ):null;
+		$current_product = isset($_REQUEST['pro'])?get_term_by( 'id', absint($_REQUEST['pro']), 'product' ):null;
 		
 	}
 

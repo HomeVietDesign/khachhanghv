@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.document-'+formData.get('document_id')+' .document-created').html(response['created']);
 								$('.document-'+formData.get('document_id')+' .document-completed').html(response['completed']);
 								$('.document-'+formData.get('document_id')+' .document-sent').html(response['sent']);
-								$('.document-'+formData.get('document_id')+' .document-selected').html(response['selected']);
 								$('#edit-document .btn-close').trigger('click');
 							}
 						});
@@ -133,6 +132,33 @@ document.addEventListener('DOMContentLoaded', function(e){
 							$doc.addClass('active');
 						} else if(response===-1) {
 							$doc.removeClass('active');
+						}
+					}
+				});
+			}
+		});
+
+		$('.document-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				doc = $this.data('document'),
+				doc_title = $this.data('documentTitle'),
+				$doc = $this.closest('.document-item');
+
+			if(confirm((($doc.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+doc_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'document_toggle', client: client, doc: doc},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$doc.addClass('removed');
+						} else if(response===-1) {
+							$doc.removeClass('removed');
 						}
 					}
 				});

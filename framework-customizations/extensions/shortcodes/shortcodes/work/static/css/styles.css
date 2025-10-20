@@ -1,0 +1,98 @@
+.fw-shortcode-works .accordion {
+	--bs-accordion-color: #fff;
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
+	--bs-accordion-border-radius: 0;
+	--bs-accordion-inner-border-radius: 0;
+	--bs-accordion-active-color: #ff0;
+	--bs-accordion-active-bg: transparent;
+	--bs-accordion-body-padding-x: 1rem;
+	--bs-accordion-body-padding-y: 1rem;
+
+	--bs-accordion-btn-color: #fff;
+	--bs-accordion-btn-bg: #000;
+}
+.fw-shortcode-works .accordion .accordion-button {
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
+}
+.fw-shortcode-works .accordion .accordion-button:not(.collapsed) {
+	background: #000;
+}
+.fw-shortcode-works .accordion .accordion-button::after {
+	display: none;
+}
+.fw-shortcode-works .accordion .accordion-item:not(:first-of-type) {
+	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-works .accordion .accordion-button:focus {
+	box-shadow: none;
+}
+.fw-shortcode-works .work-thumbnail {
+	padding-bottom: 60%;
+	overflow: hidden;
+}
+.fw-shortcode-works .thumbnail-image {
+	background: #0e0d0d;
+}
+.fw-shortcode-works .thumbnail-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fw-shortcode-works .work-item .work-thumbnail .thumbnail-image,
+.fw-shortcode-works .work-item .work-info {
+	opacity: 0.3;
+}
+.fw-shortcode-works .work-item .progressing-bar,
+.fw-shortcode-works .work-item .work-thumbnail .work-control {
+	opacity: 0.7;
+}
+.fw-shortcode-works .work-item.active .progressing-bar,
+.fw-shortcode-works .work-item.active .work-thumbnail .thumbnail-image,
+.fw-shortcode-works .work-item.active .work-thumbnail .work-control,
+.fw-shortcode-works .work-item.active .work-info {
+	opacity: 1;
+}
+.fw-shortcode-works .work-item .work-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-works .work-item.active .work-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-works .work-item.removed .work {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-works .work-item .work-toggle::before,
+.fw-shortcode-works .work-item .work-show::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-works .work-item.active .work-show::before {
+	content: "\f460";
+}
+.fw-shortcode-works .work-item .work-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-works .work-item.removed .work-toggle::before {
+	content: "\f147";
+}

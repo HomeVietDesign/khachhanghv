@@ -1,9 +1,36 @@
 <?php
 get_header();
 
-if(current_user_can('contractor_view')) {
+global $current_province;
 
-	global $current_province;
+if(has_role('administrator')) {
+	$wp_users = get_users( ['role'=>'subscriber'] );
+	?>
+	<div class="d-flex justify-content-center align-items-center flex-wrap mt-3">
+	<?php
+	foreach($wp_users as $wp_user) {
+		if($wp_user->has_cap( 'read_contractors' ) || $wp_user->has_cap( 'edit_contractors' )) {
+	
+		?>
+		<div class="mx-1 px-2 text-bg-secondary rounded">
+			<?php
+			echo esc_html($wp_user->display_name);
+			if(user_can( $wp_user, 'edit_contractors' )) {
+				echo esc_html(' (Chỉnh sửa)');
+			} else {
+				echo esc_html(' (Chỉ xem)');
+			}
+			?>
+		</div>
+		<?php
+		}
+	}
+	?>
+	</div>
+	<?php
+}
+		
+if(current_user_can('read_contractors') || current_user_can('edit_contractors')) {
 
 	while (have_posts()) {
 		the_post();
@@ -18,7 +45,9 @@ if(current_user_can('contractor_view')) {
 		$provinces = fw_get_db_settings_option('contractor_display_provinces', []);
 
 		$page_on_front = absint(get_option('page_on_front', 0));
-		//debug($permalink);
+		
+		//debug($provinces);
+		
 		if($post->ID!=$page_on_front) {
 		?>
 		<div class="provinces position-sticky text-center">
@@ -51,7 +80,7 @@ if(current_user_can('contractor_view')) {
 				<div class="loading text-center invisible mb-3"></div>
 			</div>
 		</div>
-	
+		
 		<div class="page-header bg-black py-3 mb-4">
 			<div class="container-xxl">
 				<h2 class="page-title text-center text-uppercase fw-bold p-0 m-0 d-flex justify-content-center align-items-center">

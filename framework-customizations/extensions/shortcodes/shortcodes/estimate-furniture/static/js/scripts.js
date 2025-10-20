@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .estimate-received').html(response['received']);
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .estimate-completed').html(response['completed']);
 								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .estimate-sent').html(response['sent']);
-								$('.estimate-'+formData.get('estimate_furniture_contractor')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate-furniture .btn-close').trigger('click');
 							}
 						});
@@ -138,5 +137,31 @@ document.addEventListener('DOMContentLoaded', function(e){
 			}
 		});
 
+		$('.estimate-contractor-furniture-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm((($estimate.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+contractor_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_contractor_furniture_toggle', client: client, contractor: contractor},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$estimate.addClass('removed');
+						} else if(response===-1) {
+							$estimate.removeClass('removed');
+						}
+					}
+				});
+			}
+		});
 	});
 });

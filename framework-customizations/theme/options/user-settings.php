@@ -51,7 +51,7 @@ $options = array(
 	),
 );
 
-$wp_users = get_users(['role__in'=>['viewer']]);
+$wp_users = get_users(['role__in'=>['subscriber']]);
 $picker_choices = [];
 $choices = [];
 $_passwords = get_terms(['taxonomy'=>'passwords', 'hide_empty'=>false]);

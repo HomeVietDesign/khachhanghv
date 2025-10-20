@@ -149,7 +149,19 @@ if($nha88_cats) {
 											?>
 											</div>
 										</div>
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $nha88_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark">
+											<?php
+											if(has_post_thumbnail( $nha88_id )) {
+												echo get_the_post_thumbnail( $nha88_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($nha88_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 
 										<div class="nha88-control nha88-url position-absolute start-0 bottom-0 p-1 z-3 d-flex">
 											<?php if($nha88_url) { ?>

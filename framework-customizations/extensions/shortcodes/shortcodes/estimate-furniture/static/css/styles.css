@@ -70,6 +70,11 @@
 .fw-shortcode-estimates-furniture .estimate-item.active .contractor-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-estimates-furniture .estimate-item.removed .estimate {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-estimates-furniture .estimate-item .estimate-contractor-furniture-toggle::before,
 .fw-shortcode-estimates-furniture .estimate-item .estimate-contractor-furniture-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -84,4 +89,10 @@
 }
 .fw-shortcode-estimates-furniture .estimate-item.active .estimate-contractor-furniture-hide::before {
 	content: "\f460";
+}
+.fw-shortcode-estimates-furniture .estimate-item .estimate-contractor-furniture-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-estimates-furniture .estimate-item.removed .estimate-contractor-furniture-toggle::before {
+	content: "\f147";
 }

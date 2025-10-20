@@ -26,7 +26,7 @@ if($estimate_content!='') {
    $view_estimate_content = ob_get_clean(); 
 }
 
-if( current_user_can('contractor_view') && !current_user_can('contractor_edit') ) {
+if( current_user_can('read_contractors') && !current_user_can('edit_contractors') ) {
 
     ?>
     <div class="contractor col-md-6 col-lg-3">
@@ -89,7 +89,7 @@ if( current_user_can('contractor_view') && !current_user_can('contractor_edit') 
         </div>
     </div>
     <?php
-} elseif (current_user_can('contractor_edit')) {
+} elseif (current_user_can('edit_contractors')) {
     $has_term = false;
     
     $_is_down = get_post_meta($post->ID, '_is_down', true);

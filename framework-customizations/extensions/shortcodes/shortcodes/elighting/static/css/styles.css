@@ -1,0 +1,98 @@
+.fw-shortcode-elightings .accordion {
+	--bs-accordion-color: #fff;
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: rgb(var(--bs-dark-rgb));
+	--bs-accordion-border-radius: 0;
+	--bs-accordion-inner-border-radius: 0;
+	--bs-accordion-active-color: #ff0;
+	--bs-accordion-active-bg: transparent;
+	--bs-accordion-body-padding-x: 1rem;
+	--bs-accordion-body-padding-y: 1rem;
+
+	--bs-accordion-btn-color: #fff;
+	--bs-accordion-btn-bg: #000;
+}
+.fw-shortcode-elightings .accordion .accordion-button {
+	font-size: 30px;
+	font-weight: 600;
+	justify-content: center;
+	text-align: center;
+}
+.fw-shortcode-elightings .accordion .accordion-button:not(.collapsed) {
+	background: #000;
+}
+.fw-shortcode-elightings .accordion .accordion-button::after {
+	display: none;
+}
+.fw-shortcode-elightings .accordion .accordion-item:not(:first-of-type) {
+	border-top: rgb(var(--bs-dark-rgb)) 1px solid;
+}
+.fw-shortcode-elightings .accordion .accordion-button:focus {
+	box-shadow: none;
+}
+.fw-shortcode-elightings .elighting-thumbnail {
+	padding-bottom: 60%;
+	overflow: hidden;
+}
+.fw-shortcode-elightings .thumbnail-image {
+	background: #0e0d0d;
+}
+.fw-shortcode-elightings .thumbnail-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fw-shortcode-elightings .estimate-item .elighting-thumbnail .thumbnail-image,
+.fw-shortcode-elightings .estimate-item .elighting-info {
+	opacity: 0.3;
+}
+.fw-shortcode-elightings .estimate-item .progressing-bar,
+.fw-shortcode-elightings .estimate-item .elighting-thumbnail .elighting-control {
+	opacity: 0.7;
+}
+.fw-shortcode-elightings .estimate-item.active .progressing-bar,
+.fw-shortcode-elightings .estimate-item.active .elighting-thumbnail .thumbnail-image,
+.fw-shortcode-elightings .estimate-item.active .elighting-thumbnail .elighting-control,
+.fw-shortcode-elightings .estimate-item.active .elighting-info {
+	opacity: 1;
+}
+.fw-shortcode-elightings .estimate-item .elighting-thumbnail:after {
+	display: block;
+	content: "ẨN";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+	font-size: 40px;
+}
+.fw-shortcode-elightings .estimate-item.active .elighting-thumbnail:after {
+	display: none;
+}
+.fw-shortcode-elightings .estimate-item.removed .elighting {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-elightings .estimate-item .elighting-toggle::before,
+.fw-shortcode-elightings .estimate-item .elighting-hide::before {
+	display: inline-block;
+	font-family: 'dashicons';
+	content: "\f543";
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: top;
+}
+.fw-shortcode-elightings .estimate-item.active .elighting-hide::before {
+	content: "\f460";
+}
+.fw-shortcode-elightings .estimate-item .elighting-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-elightings .estimate-item.removed .elighting-toggle::before {
+	content: "\f147";
+}

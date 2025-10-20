@@ -1,0 +1,261 @@
+<?php if ( ! defined( 'FW' ) ) {
+	die( 'Forbidden' );
+}
+
+$shortcode = fw_ext( 'shortcodes' )->get_shortcode('elighting');
+
+/**
+ * @var array $atts
+ */
+global $current_client;
+
+$elighting_cats = get_terms(['taxonomy' => 'elighting_cat','parent'=>0]);
+
+if($elighting_cats && $current_client) {
+
+	$elighting_hide = get_term_meta($current_client->term_id, 'elighting_hide', true);
+	if(empty($elighting_hide)) $elighting_hide = [];
+
+	$elighting_removed = get_term_meta($current_client->term_id, 'elighting_removed', true);
+	if(empty($elighting_removed)) $elighting_removed = [];
+
+	// $data = fw_get_db_term_option($current_client->term_id, 'passwords', 'elighting', []); // bỏ vì gây mất dữ liệu
+	$data = get_term_meta($current_client->term_id, 'elighting', true);
+	if(empty($data)) $data = [];
+	?>
+	<div class="fw-shortcode-elightings">
+		<div class="accordion">
+		<?php
+		foreach ($elighting_cats as $key => $value) {
+		?>
+		<section class="accordion-item mb-3">
+			<h2 class="accordion-header" id="accordion-header-<?=$value->term_id?>">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panels-<?=$value->term_id?>" aria-expanded="true" aria-controls="panels-<?=$value->term_id?>"><?=esc_html($value->name)?></button>
+			</h2>
+			<div id="panels-<?=$value->term_id?>" class="accordion-collapse collapse show">
+  				<div class="accordion-body">
+					<div class="row justify-content-center">
+					<?php
+					$elightings = get_posts([
+						'post_type' => 'elighting',
+						'posts_per_page' => -1,
+						'post_status' => 'publish',
+						'fields' => 'ids',
+						'tax_query' => [
+							'cat' => [
+								'taxonomy' => 'elighting_cat',
+								'field' => 'id',
+								'terms' => [$value->term_id]
+							]
+						]
+					]);
+					if($elightings) {
+						foreach($elightings as $elighting_id) {
+							$elighting_content = fw_get_db_post_option($elighting_id, 'elighting_content');
+							$default_elighting_file = fw_get_db_post_option($elighting_id,'elighting_file');
+							$default_url = fw_get_db_post_option($elighting_id,'elighting_url');
+							$default_zalo = fw_get_db_post_option($elighting_id,'elighting_zalo');
+							$default_data = [
+								'value' => fw_get_db_post_option($elighting_id,'elighting_value'),
+								'unit' => fw_get_db_post_option($elighting_id,'elighting_unit'),
+								'file_id' => (!empty($default_elighting_file))?$default_elighting_file['attachment_id']:'',
+							];
+
+							$elighting_data = isset($data[$elighting_id])?$data[$elighting_id]:$shortcode->default;
+							$elighting_data += $shortcode->default;
+
+							if(empty($elighting_data['value'])) $elighting_data['value'] = $default_data['value'];
+							if(empty($elighting_data['unit'])) $elighting_data['unit'] = $default_data['unit'];
+							if(empty($elighting_data['file_id'])) $elighting_data['file_id'] = $default_data['file_id'];
+
+							$item_class = '';
+
+							if(in_array($elighting_id, $elighting_hide)) {
+								$item_class .= ' active';
+							}
+
+							if(in_array($elighting_id, $elighting_removed)) {
+								$item_class .= ' removed';
+							}
+							?>
+							<div class="col-lg-3 col-md-6 estimate-item elighting-item mb-4<?=$item_class?>">
+								<div class="elighting elighting-<?=$elighting_id?> border border-dark h-100 bg-black">
+									<div class="row g-0 progressing-bar elighting-progress text-center text-yellow">
+										<div class="col estimate-required elighting-required">
+										<?php
+										if($elighting_data['required']!='') {
+											?>
+											<div class="bg-danger" title="<?=esc_attr($elighting_data['required_label'])?>">
+												<?php echo esc_html(date('d/m', strtotime($elighting_data['required']))); ?>
+											</div>
+											<?php
+										}
+										?>
+										</div>
+										<div class="col estimate-received elighting-received">
+											<?php
+											if($elighting_data['received']!='') {
+												?>
+												<div class="bg-danger" title="<?=esc_attr($elighting_data['received_label'])?>">
+													<?php echo esc_html(date('d/m', strtotime($elighting_data['received']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+										<div class="col estimate-completed elighting-completed">
+											<?php
+											if($elighting_data['completed']!='') {
+												?>
+												<div class="bg-danger" title="<?=esc_attr($elighting_data['completed_label'])?>">
+													<?php echo esc_html(date('d/m', strtotime($elighting_data['completed']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+										<div class="col estimate-sent elighting-sent">
+											<?php
+											if($elighting_data['sent']!='') {
+												?>
+												<div class="bg-danger" title="<?=esc_attr($elighting_data['sent_label'])?>">
+													<?php echo esc_html(date('d/m', strtotime($elighting_data['sent']))); ?>
+												</div>
+												<?php
+											}
+											?>
+										</div>	
+									</div>
+									<div class="elighting-thumbnail position-relative">
+										<div class="elighting-control position-absolute top-0 start-0 p-1 z-3 d-flex">
+											<div class="elighting-require-content">
+											<?php
+											if($elighting_content!='') {
+												$elighting_content = '<div class="copy-text">'.wp_get_the_content($elighting_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($elighting_content)?>" data-bs-html="true">Đề bài</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="required-content">
+											<?php
+										
+											if($elighting_data['required_content']!='') {
+												$required_content = '<div class="copy-text">'.wp_get_the_content($elighting_data['required_content']).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
+												?>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung áp dụng" data-bs-content="<?=esc_attr($required_content)?>" data-bs-html="true">ÁP DỤNG</button>
+												<?php
+											}
+											?>
+											</div>
+											<div class="file-download">
+											<?php
+											if($elighting_data['file_id']!='') {
+												$attachment_url = wp_get_attachment_url($elighting_data['file_id']);
+												if($attachment_url) {
+												?>
+												<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="<?=esc_url($attachment_url)?>" target="_blank">Tải</a>
+												<?php
+												}
+											}
+											?>
+											</div>
+										</div>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark">
+											<?php
+											if(has_post_thumbnail( $elighting_id )) {
+												echo get_the_post_thumbnail( $elighting_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($elighting_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
+
+										<div class="elighting-control position-absolute bottom-0 end-0 m-1 d-flex">
+
+											<?php if(current_user_can('edit_elightings')) { ?>
+
+											<button class="elighting-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>" title="<?php echo (in_array($elighting_id, $elighting_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
+
+											<button class="elighting-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>" title="Ẩn/Hiện"></button>
+
+											<a href="<?php echo get_edit_post_link( $elighting_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
+											<?php } ?>
+											<?php if(current_user_can('elighting_edit')) { ?>
+											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-elighting" data-client="<?=$current_client->term_id?>" data-elighting="<?=$elighting_id?>" data-elighting-title="<?php echo esc_attr(get_the_title( $elighting_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
+											<?php } ?>
+										</div>
+										
+										<div class="elighting-control zalo-link position-absolute top-0 end-0 p-1 d-flex">
+										<?php if($elighting_data['zalo']) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($elighting_data['zalo'])?>" target="_blank">RIÊNG</a>
+										<?php } ?>
+										<?php if($default_zalo) { ?>
+											<a class="btn btn-sm btn-shadow fw-bold ms-1" href="<?=esc_url($default_zalo)?>" target="_blank">Zalo</a>
+										<?php } ?>
+										</div>
+
+										<div class="elighting-control position-absolute start-0 bottom-0 p-1 z-3 d-flex">
+											<?php if($default_url) { ?>
+											<a class="btn btn-sm btn-primary btn-shadow fw-bold me-2" href="<?=esc_url($default_url)?>" target="_blank">Gốc</a>
+											<?php } ?>
+										</div>
+									</div>
+									<div class="elighting-info text-center px-1">
+										<div class="elighting-title pt-3 mb-1 fs-5 text-green text-uppercase">
+											<?php echo esc_html(get_the_title( $elighting_id )); ?>
+										</div>
+										<?php if($elighting_data['value']) { ?>
+										<div class="elighting-value mb-1">
+											<span class="text-red fw-bold"><?php echo esc_html($elighting_data['value']); ?></span>
+										</div>
+										<?php } ?>
+										<?php if($elighting_data['unit']) { ?>
+										<div class="elighting-unit mb-1">
+											<div class="text-red fw-bold"><?php echo esc_html($elighting_data['unit']); ?></div>
+										</div>
+										<?php } ?>
+										<div class="d-flex flex-wrap justify-content-center elighting-url mb-3">
+											<?php
+											if(isset($elighting_data['url']) && $elighting_data['url']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($elighting_data['url'])?>" target="_blank">Dự toán 1</a>
+												<?php
+											}
+
+											if(isset($elighting_data['url2']) && $elighting_data['url2']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($elighting_data['url2'])?>" target="_blank">Dự toán 2</a>
+												<?php
+											}
+
+											if(isset($elighting_data['url3']) && $elighting_data['url3']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($elighting_data['url3'])?>" target="_blank">Dự toán 3</a>
+												<?php
+											}
+
+											?>
+										</div>
+									</div>
+								</div>
+							</div>
+					<?php }
+					}
+					?>
+					</div>
+				</div>
+			</div>
+		</section>
+		<?php
+		}
+		?>
+		</div>
+	</div>
+	<?php
+}

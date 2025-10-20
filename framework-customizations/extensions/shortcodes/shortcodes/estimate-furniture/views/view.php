@@ -65,9 +65,12 @@ if($current_client) {
 									$contractor_furniture_hide = get_term_meta($current_client->term_id, 'contractor_furniture_hide', true);
 									if(empty($contractor_furniture_hide)) $contractor_furniture_hide = [];
 
+									$contractor_furniture_removed = get_term_meta($current_client->term_id, 'contractor_furniture_removed', true);
+									if(empty($contractor_furniture_removed)) $contractor_furniture_removed = [];
+
 									foreach($contractors as $i => $contractor_id) {
 										if($per<=0 || $i<$per) {
-											$shortcode->display_contractor($contractor_id, $current_client, $contractor_furniture_hide);
+											$shortcode->display_contractor($contractor_id, $current_client, $contractor_furniture_hide, $contractor_furniture_removed);
 										} else {
 											break;
 										}

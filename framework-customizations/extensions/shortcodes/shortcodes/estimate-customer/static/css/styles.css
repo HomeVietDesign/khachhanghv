@@ -34,9 +34,6 @@
 	padding-bottom: 60%;
 	overflow: hidden;
 }
-.fw-shortcode-estimates-customer .thumbnail-image {
-	background: #0e0d0d;
-}
 .fw-shortcode-estimates-customer .thumbnail-image img {
 	width: 100%;
 	height: 100%;
@@ -50,7 +47,9 @@
 .fw-shortcode-estimates-customer .estimate-item .contractor-thumbnail .contractor-control {
 	opacity: 0.6;
 }
-
+.fw-shortcode-estimates-customer .estimate-item.removed .estimate {
+	border-color: #f00 !important;
+} 
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .thumbnail-image,
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail .contractor-control,
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-info {
@@ -69,6 +68,7 @@
 .fw-shortcode-estimates-customer .estimate-item.active .contractor-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-estimates-customer .estimate-item .estimate-customer-toggle::before,
 .fw-shortcode-estimates-customer .estimate-item .estimate-customer-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -83,5 +83,11 @@
 }
 .fw-shortcode-estimates-customer .estimate-item.active .estimate-customer-hide::before {
 	content: "\f460";
+}
+.fw-shortcode-estimates-customer .estimate-item .estimate-customer-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-estimates-customer .estimate-item.removed .estimate-customer-toggle::before {
+	content: "\f147";
 }
 

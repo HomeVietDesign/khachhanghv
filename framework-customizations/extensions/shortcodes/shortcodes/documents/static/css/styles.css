@@ -70,6 +70,11 @@
 .fw-shortcode-documents .document-item.active .document-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-documents .document-item.removed .document {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-documents .document-item .document-toggle::before,
 .fw-shortcode-documents .document-item .document-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -85,4 +90,9 @@
 .fw-shortcode-documents .document-item.active .document-hide::before {
 	content: "\f460";
 }
-
+.fw-shortcode-documents .document-item .document-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-documents .document-item.removed .document-toggle::before {
+	content: "\f147";
+}

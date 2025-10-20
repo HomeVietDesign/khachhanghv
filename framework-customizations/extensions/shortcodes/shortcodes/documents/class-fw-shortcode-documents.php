@@ -17,7 +17,6 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		'zalo' => '',
 		'link' => '',
 		'attachment_id' => '',
-		'selected' => '',
 	];
 
 	public function _init()
@@ -27,6 +26,29 @@ class FW_Shortcode_Documents extends FW_Shortcode
 		add_action( 'wp_ajax_update_document', [$this, 'ajax_update_document']);
 		add_action( 'wp_ajax_get_document_info', [$this, 'ajax_get_document_info']);
 		add_action( 'wp_ajax_document_hide', [$this, 'ajax_document_hide']);
+		add_action( 'wp_ajax_document_toggle', [$this, 'ajax_document_toggle']);
+	}
+
+	public function ajax_document_toggle() {
+		global $current_client;
+		$doc_id = isset($_POST['doc']) ? absint($_POST['doc']) : 0;
+		$response = 0;
+		if(current_user_can('document_edit') && $current_client && $doc_id && check_ajax_referer( 'global', 'nonce', false )) {
+
+			$document_removed = get_term_meta($current_client->term_id, 'document_removed', true);
+			if(empty($document_removed)) $document_removed = [];
+
+			if(in_array($doc_id, $document_removed)) {
+				unset($document_removed[array_search($doc_id, $document_removed)]);
+				$response = -1;
+			} else {
+				$document_removed[] = $doc_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'document_removed', $document_removed);
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_document_hide() {
@@ -72,14 +94,12 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$response['zalo'] = ($document_data['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($document_data['zalo']).'" target="_blank">RIÊNG</a>':'';
 			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
 
-			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary me-1" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
+			$response['attachment'] = ($document_data['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="'.esc_url(wp_get_attachment_url($document_data['attachment_id'])).'" target="_blank">Tải</a>':'';
 			
 			$response['required'] = ($document_data['required']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['required_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['required']))).'</div>':'';
 			$response['created'] = ($document_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['created_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['created']))).'</div>':'';
 			$response['completed'] = ($document_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['completed_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['completed']))).'</div>':'';
 			$response['sent'] = ($document_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($document_data['sent_label']).'" data-bs-toggle="tooltip">'.esc_html(date('d/m', strtotime($document_data['sent']))).'</div>':'';
-
-			$response['selected'] = ($document_data['selected']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 			
@@ -152,7 +172,6 @@ class FW_Shortcode_Documents extends FW_Shortcode
 			$document_completed = isset($_POST['document_completed']) ? $_POST['document_completed'] : '';
 			$document_sent_label = isset($_POST['document_sent_label']) ? $_POST['document_sent_label'] : '';
 			$document_sent = isset($_POST['document_sent']) ? $_POST['document_sent'] : '';
-			$document_selected = isset($_POST['document_selected']) ? $_POST['document_selected'] : '';
 
 			if($document_client && $document_id) {
 				$data = get_post_meta($document_id, '_data', true);
@@ -175,7 +194,6 @@ class FW_Shortcode_Documents extends FW_Shortcode
 					'zalo' => $document_zalo,
 					'link' => $document_link,
 					'attachment_id' => $document_attachment_id,
-					'selected' => $document_selected,
 				];
 
 				// tải lên file dự toán
@@ -308,14 +326,7 @@ class FW_Shortcode_Documents extends FW_Shortcode
 								</label>
 							</div>
 						</div>
-						<div class="mb-3 text-center">
-							<div class="d-inline-block">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="yes" name="document_selected" id="document_selected" <?php checked( $document_data['selected']=='yes', true, true ); ?>>
-									<label class="form-check-label" for="document_selected">Được chọn?</label>
-								</div>
-							</div>
-						</div>
+						
 					</div>
 				</div>
 				<div class="mb-3">

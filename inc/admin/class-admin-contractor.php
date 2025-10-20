@@ -26,16 +26,27 @@ class Admin_Contractor {
 			}
 
 			add_action( 'wp_ajax_check_contractor_exists', [$this, 'ajax_check_contractor_exists'] );
+			
 
 			add_action( 'manage_contractor_posts_custom_column', [ $this, 'custom_columns_value' ], 2, 2 );
 			add_filter( 'manage_contractor_posts_columns', [ $this, 'add_custom_columns_header' ] );
 
 			add_filter( 'quick_edit_show_taxonomy', [$this, 'hide_tags_from_quick_edit'], 10, 3 );
 
+			add_action( 'edit_form_before_permalink', [$this, 'thumbnail_title_field'] );
 		}
 
 		//add_action( 'create_default_contractor_order_terms', [$this, 'async_create_default_contractor_order_terms'] );
 
+	}
+
+	public function thumbnail_title_field($post) {
+		if($post->post_type=='contractor') {
+			$thumbnail_title = get_post_meta( $post->ID, '_thumbnail_title', true );
+			?>
+			<p><strong>TIÊU ĐỀ ẢNH THUMBNAIL</strong><textarea name="thumbnail_title" rows="3" class="large-text code" style="width: 100%;"><?=esc_attr($thumbnail_title)?></textarea><br><i>Sẽ hiển thị thay thế khi không có ảnh thumbnail</i></p>
+			<?php
+		}
 	}
 
 	public function hide_tags_from_quick_edit($show_in_quick_edit, $taxonomy_name, $post_type) {
@@ -128,6 +139,11 @@ class Admin_Contractor {
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
+		}
+
+		if(isset($_POST['thumbnail_title'])) {
+			$thumbnail_title = sanitize_textarea_field($_POST['thumbnail_title']);
+			update_post_meta( $post_id, '_thumbnail_title', $thumbnail_title );
 		}
 
 		if(isset($_POST['fw_options']['_phone_number'])) {

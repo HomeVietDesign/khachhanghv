@@ -14,8 +14,13 @@ $document_cats = get_terms(['taxonomy' => 'document_cat','parent'=>0]);
 //debug($shortcode);
 
 if($document_cats && $current_client) {
+	
 	$document_hide = get_term_meta($current_client->term_id, 'document_hide', true);
 	if(empty($document_hide)) $document_hide = [];
+
+	$document_removed = get_term_meta($current_client->term_id, 'document_removed', true);
+	if(empty($document_removed)) $document_removed = [];
+
 	?>
 	<div class="fw-shortcode-documents">
 		<div class="accordion">
@@ -59,6 +64,10 @@ if($document_cats && $current_client) {
 
 							if(in_array($document_id, $document_hide)) {
 								$item_class .= ' active';
+							}
+
+							if(in_array($document_id, $document_removed)) {
+								$item_class .= ' removed';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 document-item mb-4<?=$item_class?>">
@@ -114,8 +123,9 @@ if($document_cats && $current_client) {
 											<div class="document-require-content">
 											<?php
 											if($document_content!='') {
+												$document_content = '<div class="copy-text">'.wp_get_the_content($document_content).'</div><div class="text-end mb-3"><a class="zalo-copy btn btn-sm btn-primary" href="#">Copy</a></div>';
 												?>
-												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr(wp_get_the_content($document_content))?>" data-bs-html="true">Đề bài</button>
+												<button type="button" class="btn-shadow btn btn-sm btn-primary fw-bold me-1" data-bs-toggle="popover" data-bs-title="Nội dung yêu cầu" data-bs-content="<?=esc_attr($document_content)?>" data-bs-html="true">Đề bài</button>
 												<?php
 											}
 											?>
@@ -144,7 +154,19 @@ if($document_cats && $current_client) {
 											</div>
 										</div>
 
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $document_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark">
+											<?php
+											if(has_post_thumbnail( $document_id )) {
+												echo get_the_post_thumbnail( $document_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($document_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 										
 										<div class="document-control position-absolute bottom-0 start-0 m-1 d-flex">
 											<?php if($default_url) { ?>
@@ -153,16 +175,10 @@ if($document_cats && $current_client) {
 										</div>
 
 										<div class="document-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="document-selected">
-												<?php
-												if($document_data['selected']=='yes') {
-													?>
-													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>
-													<?php
-												}
-												?>
-											</div>
+											
 											<?php if(current_user_can('edit_documents')) { ?>
+
+											<button class="document-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>" title="<?php echo (in_array($document_id, $document_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 											<button class="document-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-document="<?=$document_id?>" data-document-title="<?php echo esc_attr(get_the_title( $document_id )); ?>" title="Ẩn/Hiện"></button>
 											

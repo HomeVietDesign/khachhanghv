@@ -92,7 +92,19 @@ if($media_cats) {
 										</div>
 									</div>
 									<div class="media-thumbnail position-relative">
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark"><?php echo get_the_post_thumbnail( $media_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-bottom border-top border-dark">
+											<?php
+											if(has_post_thumbnail( $media_id )) {
+												echo get_the_post_thumbnail( $media_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($media_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 										<div class="position-absolute bottom-0 end-0 m-1 d-flex">
 											<?php if(current_user_can('edit_medias')) { ?>
 											<a href="<?php echo get_edit_post_link( $media_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>

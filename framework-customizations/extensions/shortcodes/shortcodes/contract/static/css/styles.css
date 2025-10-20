@@ -70,6 +70,11 @@
 .fw-shortcode-contracts .contract-item.active .contract-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-contracts .contract-item.removed .contract {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+}
+.fw-shortcode-contracts .contract-item .contract-toggle::before,
 .fw-shortcode-contracts .contract-item .contract-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -85,3 +90,10 @@
 .fw-shortcode-contracts .contract-item.active .contract-hide::before {
 	content: "\f460";
 }
+.fw-shortcode-contracts .contract-item .contract-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-contracts .contract-item.removed .contract-toggle::before {
+	content: "\f147";
+}
+

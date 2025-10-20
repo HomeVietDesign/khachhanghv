@@ -9,7 +9,7 @@ $contractor_ratings = get_terms(['taxonomy'=>'contractor_rating', 'hide_empty'=>
 
 $shortcode_html_id = uniqid('fw-shortcode-ratings-contractors-');
 
-// debug($contractor_ratings);
+//debug($contractor_ratings);
 
 $html_contractors = '';
 

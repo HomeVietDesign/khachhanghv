@@ -19,8 +19,9 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 		'link'=>'',
 		'link2'=>'',
 		'link3'=>'',
+		'link4'=>'',
+		'link5'=>'',
 		'attachment_id'=>'',
-		'quote'=>''
 	];
 
 	public function _init()
@@ -30,13 +31,36 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
       add_action( 'wp_ajax_update_estimate_furniture', [$this, 'ajax_update_estimate_furniture']);
       add_action( 'wp_ajax_get_estimate_furniture_info', [$this, 'ajax_get_estimate_furniture_info']);
       add_action( 'wp_ajax_estimate_contractor_furniture_hide', [$this, 'ajax_estimate_contractor_furniture_hide']);
+      add_action( 'wp_ajax_estimate_contractor_furniture_toggle', [$this, 'ajax_estimate_contractor_furniture_toggle']);
+	}
+
+	public function ajax_estimate_contractor_furniture_toggle() {
+		global $current_client;
+		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
+		$response = 0;
+		if(current_user_can('edit_estimate_furnitures') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+
+			$contractor_furniture_removed = get_term_meta($current_client->term_id, 'contractor_furniture_removed', true);
+			if(empty($contractor_furniture_removed)) $contractor_furniture_removed = [];
+
+			if(in_array($contractor_id, $contractor_furniture_removed)) {
+				unset($contractor_furniture_removed[array_search($contractor_id, $contractor_furniture_removed)]);
+				$response = -1;
+			} else {
+				$contractor_furniture_removed[] = $contractor_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'contractor_furniture_removed', $contractor_furniture_removed);
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_estimate_contractor_furniture_hide() {
 		global $current_client;
 		$contractor_id = isset($_POST['contractor']) ? absint($_POST['contractor']) : 0;
 		$response = 0;
-		if(current_user_can('estimate_furniture_edit') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
+		if(current_user_can('edit_estimate_furnitures') && $current_client && $contractor_id && check_ajax_referer( 'global', 'nonce', false )) {
 
 			$contractor_furniture_hide = get_term_meta($current_client->term_id, 'contractor_furniture_hide', true);
 			if(empty($contractor_furniture_hide)) $contractor_furniture_hide = [];
@@ -68,7 +92,6 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			'received' => '',
 			'completed' => '',
 			'sent' => '',
-			'quote' => '',
 		];
 		
 		if($current_client && $contractor_id) {
@@ -98,14 +121,12 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			$response['zalo'] = ($estimate['zalo'])?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($estimate['zalo']).'" target="_blank">RIÊNG</a>':'';
 			$response['zalo'] .= ($default_zalo)?'<a class="btn btn-sm btn-shadow fw-bold ms-1" href="'.esc_url($default_zalo).'" target="_blank">Zalo</a>':'';
 
-			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary me-1" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
+			$response['attachment'] = ($estimate['attachment_id'])?'<a class="btn-shadow btn btn-sm btn-primary fw-bold me-1" href="'.esc_url(wp_get_attachment_url($estimate['attachment_id'])).'" target="_blank">Tải</a>':'';
 
 			$response['required'] = ($estimate['required']!='')?'<div class="bg-danger" title="'.esc_attr($estimate['required_label']).'">'.esc_html(date('d/m', strtotime($estimate['required']))).'</div>':'';
 			$response['received'] = ($estimate['received']!='')?'<div class="bg-danger" title="'.esc_attr($estimate['received_label']).'">'.esc_html(date('d/m', strtotime($estimate['received']))).'</div>':'';
 			$response['completed'] = ($estimate['completed']!='')?'<div class="bg-danger" title="'.esc_attr($estimate['completed_label']).'">'.esc_html(date('d/m', strtotime($estimate['completed']))).'</div>':'';
 			$response['sent'] = ($estimate['sent']!='')?'<div class="bg-danger" title="'.esc_attr($estimate['sent_label']).'">'.esc_html(date('d/m', strtotime($estimate['sent']))).'</div>':'';
-
-			$response['quote'] = ($estimate['quote']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Dự toán được khách hàng chọn"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 			
@@ -181,6 +202,16 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 					<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link3'])?>" target="_blank">Dự toán 3</a>
 					<?php
 				}
+				if($estimate['link4']) {
+					?>
+					<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link4'])?>" target="_blank">Dự toán 4</a>
+					<?php
+				}
+				if($estimate['link5']) {
+					?>
+					<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link5'])?>" target="_blank">Dự toán 5</a>
+					<?php
+				}
 
 				?>
 			</div>
@@ -199,7 +230,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			'data' => []
 		];
 
-		if(current_user_can( 'estimate_furniture_edit' ) && check_ajax_referer( 'edit-estimate-furniture', 'nonce', false )) {
+		if(current_user_can( 'edit_estimate_furnitures' ) && check_ajax_referer( 'edit-estimate-furniture', 'nonce', false )) {
 			$estimate_furniture_client = isset($_POST['estimate_furniture_client'])?absint($_POST['estimate_furniture_client']):0;
 			$estimate_furniture_contractor = isset($_POST['estimate_furniture_contractor'])?absint($_POST['estimate_furniture_contractor']):0;
 			$required_content = isset($_POST['required_content'])?wp_kses_post($_POST['required_content']):'';
@@ -210,6 +241,8 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			$estimate_furniture_link = isset($_POST['estimate_furniture_link'])?sanitize_text_field($_POST['estimate_furniture_link']):'';
 			$estimate_furniture_link2 = isset($_POST['estimate_furniture_link2'])?sanitize_text_field($_POST['estimate_furniture_link2']):'';
 			$estimate_furniture_link3 = isset($_POST['estimate_furniture_link3'])?sanitize_text_field($_POST['estimate_furniture_link3']):'';
+			$estimate_furniture_link4 = isset($_POST['estimate_furniture_link4'])?sanitize_text_field($_POST['estimate_furniture_link4']):'';
+			$estimate_furniture_link5 = isset($_POST['estimate_furniture_link5'])?sanitize_text_field($_POST['estimate_furniture_link5']):'';
 
 			$estimate_furniture_attachment_id = isset($_POST['estimate_furniture_attachment_id'])?absint($_POST['estimate_furniture_attachment_id']):0;
 			$estimate_furniture_attachment = isset($_FILES['estimate_furniture_attachment']) ? $_FILES['estimate_furniture_attachment'] : null;
@@ -222,7 +255,6 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			$estimate_furniture_completed = isset($_POST['estimate_furniture_completed']) ? $_POST['estimate_furniture_completed'] : '';
 			$estimate_furniture_sent_label = isset($_POST['estimate_furniture_sent_label']) ? $_POST['estimate_furniture_sent_label'] : '';
 			$estimate_furniture_sent = isset($_POST['estimate_furniture_sent']) ? $_POST['estimate_furniture_sent'] : '';
-			$estimate_furniture_quote = isset($_POST['estimate_furniture_quote']) ? $_POST['estimate_furniture_quote'] : '';
 
 			//debug_log($_POST);
 
@@ -249,8 +281,9 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 					'link' => $estimate_furniture_link,
 					'link2' => $estimate_furniture_link2,
 					'link3' => $estimate_furniture_link3,
+					'link4' => $estimate_furniture_link4,
+					'link5' => $estimate_furniture_link5,
 					'attachment_id' => ($estimate_furniture_attachment_id!=0)?$estimate_furniture_attachment_id:'',
-					'quote' => $estimate_furniture_quote,
 				];
 
 				// tải lên file dự toán
@@ -301,7 +334,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 				<?php wp_nonce_field( 'edit-estimate-furniture', 'nonce' ); ?>
 				<div id="edit-estimate-furniture-response"></div>
 				<div class="row">
-					<div class="col-lg-7<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?>">
+					<div class="col-lg-7<?php echo (!current_user_can('edit_estimate_furnitures'))?' hidden':''; ?>">
 						<div class="mb-3">
 							Nội dung áp dụng
 							<?php
@@ -332,7 +365,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 							}
 						</style>
 					</div>
-					<div class="<?php echo (!current_user_can('edit_contractors'))?' col-lg-12':'col-lg-5'; ?>">
+					<div class="<?php echo (!current_user_can('edit_estimate_furnitures'))?' col-lg-12':'col-lg-5'; ?>">
 						<div class="mb-3">
 							<input class="form-control mb-2" type="text" value="<?php echo ($estimate['required_label']!='')?esc_html($estimate['required_label']):''; ?>" name="estimate_furniture_required_label" id="estimate_furniture_required_label" placeholder="Ghi chú ngày 1">
 							<input class="form-control" type="date" value="<?php echo ($estimate['required']!='')?esc_html(date('Y-m-d', strtotime($estimate['required']))):''; ?>" name="estimate_furniture_required" id="estimate_furniture_required">
@@ -377,6 +410,14 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 							Link dự toán 3
 							<input type="text" id="estimate_furniture_link3" name="estimate_furniture_link3" class="form-control" value="<?php echo esc_attr($estimate['link3']); ?>">
 						</div>
+						<div class="mb-3">
+							Link dự toán 4
+							<input type="text" id="estimate_furniture_link4" name="estimate_furniture_link4" class="form-control" value="<?php echo esc_attr($estimate['link4']); ?>">
+						</div>
+						<div class="mb-3">
+							Link dự toán 5
+							<input type="text" id="estimate_furniture_link5" name="estimate_furniture_link5" class="form-control" value="<?php echo esc_attr($estimate['link5']); ?>">
+						</div>
 					</div>
 					<div class="col-lg-12">
 						<div class="mb-3">
@@ -400,14 +441,6 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 										<input type="file" id="estimate_furniture_attachment" name="estimate_furniture_attachment" class="form-control">
 									</div>
 								</label>
-							</div>
-						</div>
-						<div class="mb-3<?php echo (!current_user_can('edit_contractors'))?' hidden':''; ?> text-center">
-							<div class="d-inline-block">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="yes" name="estimate_furniture_quote" id="estimate_furniture_quote" <?php checked( $estimate['quote']=='yes', true, true ); ?>>
-									<label class="form-check-label" for="estimate_furniture_quote">Được khách hàng lựa chọn?</label>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -438,7 +471,7 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 		<?php
 	}
 
-	public function display_contractor($contractor_id, $client, $contractor_hide=[]) {
+	public function display_contractor($contractor_id, $client, $contractor_hide=[], $contractor_removed=[]) {
 		$default_estimate_attachment = fw_get_db_post_option($contractor_id,'estimate_attachment');
 		$default_zalo = fw_get_db_post_option($contractor_id,'estimate_zalo');
 		$default_estimate = [
@@ -469,6 +502,9 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 			$item_class .= ' active';
 		}
 
+		if(in_array($contractor_id, $contractor_removed)) {
+			$item_class .= ' removed';
+		}
 		?>
 		<div class="col-lg-3 col-md-6 estimate-item mb-4<?=$item_class?>">
 			<div class="estimate estimate-<?=$contractor_id?> border border-dark h-100 bg-black">
@@ -554,26 +590,28 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 						</div>
 					</div>
 					<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark">
-						<?php echo get_the_post_thumbnail( $contractor_id, 'full' ); ?>
+						<?php
+						if(has_post_thumbnail( $contractor_id )) {
+							echo get_the_post_thumbnail( $contractor_id, 'full' );
+						} else {
+							?>
+							<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+								<?=nl2br(esc_textarea(get_post_meta($contractor_id, '_thumbnail_title', true)))?>
+							</div>
+							<?php
+						}
+						?>
 					</div>
 					<div class="contractor-control position-absolute bottom-0 end-0 m-1 d-flex">
-						<div class="estimate-quote<?php echo (isset($estimate['quote']) && $estimate['quote']=='yes')?' on':''; ?>">
-							<?php
-							if(isset($estimate['quote']) && $estimate['quote']=='yes') {
-								?>
-								<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Dự toán được khách hàng chọn"><span class="dashicons dashicons-yes"></span></span>
-								<?php
-							}
-							?>
-						</div>
-						
-						<?php if(current_user_can('edit_contractors')) { ?>
+					
+						<?php if(current_user_can('edit_estimate_furnitures')) { ?>
+
+						<button class="estimate-contractor-furniture-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="<?php echo (in_array($contractor_id, $contractor_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 						<button class="estimate-contractor-furniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>" title="Ẩn/Hiện"></button>
 						
 						<a href="<?php echo get_edit_post_link( $contractor_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-						<?php } ?>
-						<?php if(current_user_can('estimate_furniture_edit')) { ?>
+						
 						<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-estimate-furniture" data-client="<?=$client->term_id?>" data-contractor="<?=$contractor_id?>" data-contractor-title="<?php echo esc_attr(get_the_title( $contractor_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 						<?php } ?>
 					</div>
@@ -654,6 +692,16 @@ class FW_Shortcode_Estimate_Furniture extends FW_Shortcode
 						if($estimate['link3']!='') {
 							?>
 							<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link3'])?>" target="_blank">Dự toán 3</a>
+							<?php
+						}
+						if($estimate['link4']!='') {
+							?>
+							<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link4'])?>" target="_blank">Dự toán 4</a>
+							<?php
+						}
+						if($estimate['link5']!='') {
+							?>
+							<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($estimate['link5'])?>" target="_blank">Dự toán 5</a>
 							<?php
 						}
 						?>

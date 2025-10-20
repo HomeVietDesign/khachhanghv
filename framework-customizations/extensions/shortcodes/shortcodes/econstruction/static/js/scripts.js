@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.econstruction-'+formData.get('econstruction')+' .econstruction-received').html(response['received']);
 								$('.econstruction-'+formData.get('econstruction')+' .econstruction-completed').html(response['completed']);
 								$('.econstruction-'+formData.get('econstruction')+' .econstruction-sent').html(response['sent']);
-								$('.econstruction-'+formData.get('econstruction')+' .econstruction-quote').html(response['quote']);
 								$('#edit-econstruction .btn-close').trigger('click');
 							}
 						});
@@ -132,6 +131,33 @@ document.addEventListener('DOMContentLoaded', function(e){
 							$econstruction.addClass('active');
 						} else if(response===-1) {
 							$econstruction.removeClass('active');
+						}
+					}
+				});
+			}
+		});
+
+		$('.econstruction-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				econstruction = $this.data('econstruction'),
+				econstruction_title = $this.data('econstructionTitle'),
+				$econstruction = $this.closest('.econstruction-item');
+
+			if(confirm((($econstruction.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+econstruction_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'econstruction_toggle', client: client, econstruction: econstruction},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$econstruction.addClass('removed');
+						} else if(response===-1) {
+							$econstruction.removeClass('removed');
 						}
 					}
 				});

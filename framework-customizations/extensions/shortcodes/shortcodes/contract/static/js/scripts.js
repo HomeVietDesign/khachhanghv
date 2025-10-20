@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.contract-'+formData.get('contract_id')+' .contract-created').html(response['created']);
 								$('.contract-'+formData.get('contract_id')+' .contract-completed').html(response['completed']);
 								$('.contract-'+formData.get('contract_id')+' .contract-sent').html(response['sent']);
-								$('.contract-'+formData.get('contract_id')+' .contract-signed').html(response['signed']);
 								$('#edit-contract .btn-close').trigger('click');
 							}
 						});
@@ -137,42 +136,32 @@ document.addEventListener('DOMContentLoaded', function(e){
 			}
 		});
 
-		if($('#contract-filter-form').length) {
-			let none = 0, required = 0, created = 0, completed = 0, sent = 0, signed = 0;
-			$('#contract-filter-form').find('.contract-item:not(.hide)').each(function(i, el){
-				let $el = $(el), isNone = true;
-					
-				if($el.find('.contract-required').hasClass('on')) {
-					required += 1;
-					isNone = false;
-				}
-				if($el.find('.contract-created').hasClass('on')) {
-					created += 1;
-					isNone = false;
-				}
-				if($el.find('.contract-completed').hasClass('on')) {
-					completed += 1;
-					isNone = false;
-				}
-				if($el.find('.contract-sent').hasClass('on')) {
-					sent += 1;
-					isNone = false;
-				}
-				if($el.find('.contract-signed').hasClass('on')) {
-					signed += 1;
-					isNone = false;
-				}
-				if(isNone) {
-					none += 1;
-				}
-			});
-			$('label[for="progress-none"] span').text(none);
-			$('label[for="progress-required"] span').text(required);
-			$('label[for="progress-created"] span').text(created);
-			$('label[for="progress-completed"] span').text(completed);
-			$('label[for="progress-sent"] span').text(sent);
-			$('label[for="progress-signed"] span').text(signed);
-		}
+		$('.contract-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contract = $this.data('contract'),
+				contract_title = $this.data('contractTitle'),
+				$contract = $this.closest('.contract-item');
+
+			if(confirm((($contract.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+contract_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'contract_toggle', client: client, contract: contract},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$contract.addClass('removed');
+						} else if(response===-1) {
+							$contract.removeClass('removed');
+						}
+					}
+				});
+			}
+		});
 		
 	});
 });

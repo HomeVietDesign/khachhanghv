@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 					$('.efurniture-'+efurniture+' .efurniture-received').html(response['received']);
 					$('.efurniture-'+efurniture+' .efurniture-completed').html(response['completed']);
 					$('.efurniture-'+efurniture+' .efurniture-sent').html(response['sent']);
-					$('.efurniture-'+efurniture+' .efurniture-quote').html(response['quote']);
 					if(save) {
 						$('#edit-efurniture .btn-close').trigger('click');
 					}
@@ -267,6 +266,33 @@ document.addEventListener('DOMContentLoaded', function(e){
 							$efurniture.addClass('active');
 						} else if(response===-1) {
 							$efurniture.removeClass('active');
+						}
+					}
+				});
+			}
+		});
+
+		$('.efurniture-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				efurniture = $this.data('efurniture'),
+				efurniture_title = $this.data('efurnitureTitle'),
+				$efurniture = $this.closest('.efurniture-item');
+
+			if(confirm((($efurniture.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+efurniture_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'efurniture_toggle', client: client, efurniture: efurniture},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$efurniture.addClass('removed');
+						} else if(response===-1) {
+							$efurniture.removeClass('removed');
 						}
 					}
 				});

@@ -16,6 +16,9 @@ if($efurniture_cats && $current_client) {
 	$efurniture_hide = get_term_meta($current_client->term_id, 'efurniture_hide', true);
 	if(empty($efurniture_hide)) $efurniture_hide = [];
 
+	$efurniture_removed = get_term_meta($current_client->term_id, 'efurniture_removed', true);
+	if(empty($efurniture_removed)) $efurniture_removed = [];
+
 	// $data = fw_get_db_term_option($current_client->term_id, 'passwords', 'efurniture', []); // bỏ vì gây mất dữ liệu
 	$data = get_term_meta($current_client->term_id, 'efurniture', true);
 	if(empty($data)) $data = [];
@@ -69,6 +72,10 @@ if($efurniture_cats && $current_client) {
 
 							if(in_array($efurniture_id, $efurniture_hide)) {
 								$item_class .= ' active';
+							}
+
+							if(in_array($efurniture_id, $efurniture_removed)) {
+								$item_class .= ' removed';
 							}
 							?>
 							<div class="col-lg-3 col-md-6 estimate-item efurniture-item mb-4<?=$item_class?>">
@@ -155,25 +162,30 @@ if($efurniture_cats && $current_client) {
 											?>
 											</div>
 										</div>
-										<span class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark"><?php echo get_the_post_thumbnail( $efurniture_id, 'full' ); ?></span>
+										<div class="thumbnail-image position-absolute w-100 h-100 start-0 top-0 border-top border-bottom border-dark">
+											<?php
+											if(has_post_thumbnail( $efurniture_id )) {
+												echo get_the_post_thumbnail( $efurniture_id, 'full' );
+											} else {
+												?>
+												<div class="thumbnail-title d-flex w-100 h-100 align-items-center text-center justify-content-center">
+													<?=nl2br(esc_textarea(get_post_meta($efurniture_id, '_thumbnail_title', true)))?>
+												</div>
+												<?php
+											}
+											?>
+										</div>
 
 										<div class="efurniture-control position-absolute bottom-0 end-0 m-1 d-flex">
-											<div class="estimate-quote efurniture-quote">
-												<?php
-												if($efurniture_data['quote']=='yes') {
-													?>
-													<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã chọn"><span class="dashicons dashicons-yes"></span></span>
-													<?php
-												}
-												?>
-											</div>
-											<?php if(current_user_can('edit_efurnitures')) { ?>
+
+											<?php if(current_user_can('edit_estimate_furnitures')) { ?>
+
+											<button class="efurniture-toggle btn btn-sm btn-warning ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="<?php echo esc_attr(get_the_title( $efurniture_id )); ?>" title="<?php echo (in_array($efurniture_id, $efurniture_removed))?'Sử dụng':'Loại bỏ'; ?>"></button>
 
 											<button class="efurniture-hide btn btn-sm btn-danger text-yellow ms-2" type="button" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="<?php echo esc_attr(get_the_title( $efurniture_id )); ?>" title="Ẩn/Hiện"></button>
 
 											<a href="<?php echo get_edit_post_link( $efurniture_id ); ?>" class="btn btn-sm btn-primary btn-shadow fw-bold ms-2" target="blank" title="Sửa chi tiết"><span class="dashicons dashicons-edit-page"></span></a>
-											<?php } ?>
-											<?php if(current_user_can('efurniture_edit')) { ?>
+											
 											<button type="button" class="btn btn-sm btn-danger btn-shadow text-yellow fw-bold ms-2" data-bs-toggle="modal" data-bs-target="#edit-efurniture" data-client="<?=$current_client->term_id?>" data-efurniture="<?=$efurniture_id?>" data-efurniture-title="<?php echo esc_attr(get_the_title( $efurniture_id )); ?>"><span class="dashicons dashicons-edit" title="Sửa nhanh"></span></button>
 											<?php } ?>
 										</div>
@@ -227,6 +239,17 @@ if($efurniture_cats && $current_client) {
 												<?php
 											}
 
+											if(isset($efurniture_data['url4']) && $efurniture_data['url4']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url4'])?>" target="_blank">Dự toán 4</a>
+												<?php
+											}
+
+											if(isset($efurniture_data['url5']) && $efurniture_data['url5']) {
+												?>
+												<a class="btn btn-sm btn-primary my-1 mx-1" href="<?=esc_url($efurniture_data['url5'])?>" target="_blank">Dự toán 5</a>
+												<?php
+											}
 											?>
 										</div>
 									</div>

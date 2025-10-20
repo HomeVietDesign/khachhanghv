@@ -69,6 +69,11 @@
 .fw-shortcode-econstructions .estimate-item.active .econstruction-thumbnail:after {
 	display: none;
 }
+.fw-shortcode-econstructions .estimate-item.removed .econstruction {
+	border-color: #f00 !important;
+	border-width: 2px !important;
+} 
+.fw-shortcode-econstructions .estimate-item .econstruction-toggle::before,
 .fw-shortcode-econstructions .estimate-item .econstruction-hide::before {
 	display: inline-block;
 	font-family: 'dashicons';
@@ -83,4 +88,10 @@
 }
 .fw-shortcode-econstructions .estimate-item.active .econstruction-hide::before {
 	content: "\f460";
+}
+.fw-shortcode-econstructions .estimate-item .econstruction-toggle::before {
+	content: "\f335";
+}
+.fw-shortcode-econstructions .estimate-item.removed .econstruction-toggle::before {
+	content: "\f147";
 }

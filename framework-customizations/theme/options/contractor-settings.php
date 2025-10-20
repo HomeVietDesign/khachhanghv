@@ -72,6 +72,17 @@ $options = array(
 					'wp-option' => 'contractor_furniture',
 				),
 			],
+			'contractor_lighting' => [
+				'type'  => 'multi-select',
+				'population' => 'taxonomy',
+				'source' => 'contractor_rating',
+				'limit' => 1,
+				'label' => 'Nhóm ĐÈN',
+				'fw-storage' => array(
+					'type' => 'wp-option',
+					'wp-option' => 'contractor_lighting',
+				),
+			],
 		),
 	),
 );

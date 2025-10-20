@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function(e){
 								$('.estimate-'+formData.get('estimate_construction_contractor')+' .estimate-received').html(response['received']);
 								$('.estimate-'+formData.get('estimate_construction_contractor')+' .estimate-completed').html(response['completed']);
 								$('.estimate-'+formData.get('estimate_construction_contractor')+' .estimate-sent').html(response['sent']);
-								$('.estimate-'+formData.get('estimate_construction_contractor')+' .estimate-quote').html(response['quote']);
 								$('#edit-estimate-construction .btn-close').trigger('click');
 							}
 						});
@@ -134,6 +133,33 @@ document.addEventListener('DOMContentLoaded', function(e){
 							$estimate.addClass('active');
 						} else if(response===-1) {
 							$estimate.removeClass('active');
+						}
+					}
+				});
+			}
+		});
+
+		$('.estimate-contractor-construction-toggle').on('click', function(e){
+			let $this = $(this),
+				client = $this.data('client'),
+				contractor = $this.data('contractor'),
+				contractor_title = $this.data('contractorTitle'),
+				$estimate = $this.closest('.estimate-item');
+
+			if(confirm((($estimate.hasClass('removed'))?'Sử dụng "':'Loại bỏ "')+contractor_title+'" ?')) {
+				$.ajax({
+					url: theme.ajax_url,
+					type: 'POST',
+					dataType: 'json',
+					data: {nonce: theme.nonce, action: 'estimate_contractor_construction_toggle', client: client, contractor: contractor},
+					beforeSend: function() {
+
+					},
+					success: function(response) {
+						if(response===1) {
+							$estimate.addClass('removed');
+						} else if(response===-1) {
+							$estimate.removeClass('removed');
 						}
 					}
 				});

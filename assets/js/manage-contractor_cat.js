@@ -1,5 +1,14 @@
 window.addEventListener('DOMContentLoaded', function(){
 	jQuery(function($){
+
+		$(document).ajaxSuccess(function(event, xhr, settings) {
+			//console.log(settings);
+			// Kiểm tra đúng request thêm category
+			if (settings.data && settings.data.indexOf("action=add-tag") !== -1) {
+				window.location.reload(); // tải lại trang
+			}
+		});
+
 		function add_query_url(key,value,url) {
 			let new_url = new URL(url);
 			let search_params = new_url.searchParams;

@@ -10,7 +10,7 @@
 $options = array(
 	'estimate' => array(
 		'context' => 'advanced',
-		'title'   => 'Dự toán mặc định',
+		'title'   => 'Thông tin mặc định',
 		'type'    => 'box',
         'options' => array(
         	'estimate_value' => array(

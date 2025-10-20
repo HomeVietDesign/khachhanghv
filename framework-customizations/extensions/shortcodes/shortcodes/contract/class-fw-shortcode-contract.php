@@ -18,7 +18,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 		'url'=>'',
 		'url2'=>'',
 		'url3'=>'',
-		'signed'=>''
 	];
 
 	public function _init()
@@ -28,6 +27,29 @@ class FW_Shortcode_Contract extends FW_Shortcode
       add_action( 'wp_ajax_update_contract', [$this, 'ajax_update_contract']);
       add_action( 'wp_ajax_get_contract_info', [$this, 'ajax_get_contract_info']);
       add_action( 'wp_ajax_contract_hide', [$this, 'ajax_contract_hide']);
+      add_action( 'wp_ajax_contract_toggle', [$this, 'ajax_contract_toggle']);
+	}
+
+	public function ajax_contract_toggle() {
+		global $current_client;
+		$contract_id = isset($_POST['contract']) ? absint($_POST['contract']) : 0;
+		$response = 0;
+		if(current_user_can('contract_edit') && $current_client && $contract_id && check_ajax_referer( 'global', 'nonce', false )) {
+
+			$contract_removed = get_term_meta($current_client->term_id, 'contract_removed', true);
+			if(empty($contract_removed)) $contract_removed = [];
+
+			if(in_array($contract_id, $contract_removed)) {
+				unset($contract_removed[array_search($contract_id, $contract_removed)]);
+				$response = -1;
+			} else {
+				$contract_removed[] = $contract_id;
+				$response = 1;
+			}
+
+			update_term_meta($current_client->term_id, 'contract_removed', $contract_removed);
+		}
+		wp_send_json($response);
 	}
 
 	public function ajax_contract_hide() {
@@ -84,8 +106,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			$response['created'] = ($contract_data['created']!='')?'<div class="bg-danger" title="'.esc_attr($contract_data['created_label']).'">'.esc_html(date('d/m', strtotime($contract_data['created']))).'</div>':'';
 			$response['completed'] = ($contract_data['completed']!='')?'<div class="bg-danger" title="'.esc_attr($contract_data['completed_label']).'">'.esc_html(date('d/m', strtotime($contract_data['completed']))).'</div>':'';
 			$response['sent'] = ($contract_data['sent']!='')?'<div class="bg-danger" title="'.esc_attr($contract_data['sent_label']).'">'.esc_html(date('d/m', strtotime($contract_data['sent']))).'</div>':'';
-
-			$response['signed'] = ($contract_data['signed']=='yes')?'<span class="btn-shadow btn btn-sm btn-warning border-0 bg-green text-dark fw-bold ms-2" title="Khách hàng đã ký"><span class="dashicons dashicons-yes"></span></span>':'';
 
 			ob_start();
 			
@@ -167,7 +187,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 			$contract_completed = isset($_POST['contract_completed']) ? $_POST['contract_completed'] : '';
 			$contract_sent_label = isset($_POST['contract_sent_label']) ? $_POST['contract_sent_label'] : '';
 			$contract_sent = isset($_POST['contract_sent']) ? $_POST['contract_sent'] : '';
-			$contract_signed = isset($_POST['contract_signed']) ? $_POST['contract_signed'] : '';
 
 			if($contract_client && $contract_id) {
 				$data = get_post_meta($contract_id, '_data', true);
@@ -191,7 +210,6 @@ class FW_Shortcode_Contract extends FW_Shortcode
 					'url' => $contract_url,
 					'url2' => $contract_url2,
 					'url3' => $contract_url3,
-					'signed' => $contract_signed,
 				];
 
 				$data[$contract_client] = $new_contract_data;
@@ -230,7 +248,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 								'media_buttons' => false,
 								'teeny'         => false,
 								'quicktags'     => false,
-								'editor_height' => '800',
+								'editor_height' => '765',
 								'tinymce'       => [
 									'toolbar1' => 'bold,italic,underline,alignleft,aligncenter,alignright,alignjustify,link,unlink,bullist,numlist,forecolor,pastetext,removeformat,charmap,fullscreen',
 									'toolbar2' => '',
@@ -294,12 +312,7 @@ class FW_Shortcode_Contract extends FW_Shortcode
 							Hợp đồng bản 3
 							<input type="text" id="contract_url3" name="contract_url3" class="form-control" value="<?php echo ($contract_data['url3'])?esc_url($contract_data['url3']):''; ?>">
 						</div>
-						<div class="mb-3">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="yes" name="contract_signed" id="contract_signed" <?php checked( $contract_data['signed']=='yes', true, true ); ?>>
-								<label class="form-check-label" for="contract_signed">Đã ký?</label>
-							</div>
-						</div>
+						
 					</div>
 				</div>
 				<div class="mb-3">
